@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Start Screen</title>
+    <style>
+        :root {
+            /* Metro Colors */
+            --c-blue: #2d89ef;
+            --c-teal: #00a300;
+            --c-purple: #603cba;
+            --c-red: #ee1111;
+            --c-green: #00aba9;
+            --c-orange: #da532c;
+            --c-yellow: #ffc40d;
+            --c-pink: #e0598b;
+            --c-dark: #1d1d1d;
+            --c-light: #ffffff;
+            --c-gray: #eff4ff;
+            
+            /* Base Settings */
+            --tile-gap: 10px;
+            --tile-base: 110px;
+            --bg-anim-1: #1a1a2e;
+            --bg-anim-2: #16213e;
+            --bg-anim-3: #0f3460;
+            --text-main: #ffffff;
+        }
+
+        /* Light Mode Overrides */
+        body.light-mode {
+            --bg-anim-1: #f0f2f5;
+            --bg-anim-2: #e4e6eb;
+            --bg-anim-3: #dbe0e6;
+            --text-main: #111111;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+
+        body {
+            background: linear-gradient(-45deg, var(--bg-anim-1), var(--bg-anim-2), var(--bg-anim-3));
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: var(--text-main);
+            min-height: 100vh;
+            overflow-x: hidden;
+            padding: 20px;
+            transition: color 0.3s ease;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .clock-container {
+            text-align: left;
+        }
+        #time { font-size: 3rem; font-weight: 300; line-height: 1; }
+        #date { font-size: 1.2rem; opacity: 0.8; text-transform: uppercase; letter-spacing: 1px; }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        /* Search Bar */
+        .search-box {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 10px 15px;
+            border-radius: 0;
+            color: inherit;
+            font-size: 1rem;
+            width: 250px;
+            backdrop-filter: blur(5px);
+            outline: none;
+            transition: background 0.2s;
+        }
+        body.light-mode .search-box { 
+            background: rgba(0,0,0,0.05); 
+            border-color: rgba(0,0,0,0.1); 
+            color: #000;
+        }
+        .search-box:focus { background: rgba(255, 255, 255, 0.25); }
+
+        /* Toggle Switch */
+        .theme-toggle {
+            cursor: pointer;
+            background: none;
+            border: 2px solid currentColor;
+            color: inherit;
+            padding: 5px 10px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+        .theme-toggle:hover { opacity: 1; }
+
+        /* Grid Layout */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(var(--tile-base), 1fr));
+            grid-auto-rows: var(--tile-base);
+            grid-auto-flow: dense; /* Critical for packing different sizes */
+            gap: var(--tile-gap);
+            max-width: 1600px;
+            margin: 0 auto;
+            padding-bottom: 50px;
+        }
+
+        /* Tile Styles */
+        .tile {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end; /* Text at bottom */
+            padding: 10px;
+            cursor: pointer;
+            color: white;
+            text-decoration: none;
+            overflow: hidden;
+            transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.2s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            user-select: none;
+        }
+
+        .tile:hover {
+            transform: scale(1.03);
+            z-index: 10;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.3);
+            outline: 2px solid rgba(255,255,255,0.3);
+        }
+
+        .tile:active { transform: scale(0.98); }
+
+        /* Tile Sizes */
+        .size-1x1 { grid-column: span 1; grid-row: span 1; }
+        .size-2x1 { grid-column: span 2; grid-row: span 1; }
+        .size-2x2 { grid-column: span 2; grid-row: span 2; }
+        .size-4x2 { grid-column: span 4; grid-row: span 2; }
+
+        /* Tile Colors */
+        .bg-blue { background-color: var(--c-blue); }
+        .bg-teal { background-color: var(--c-teal); }
+        .bg-purple { background-color: var(--c-purple); }
+        .bg-red { background-color: var(--c-red); }
+        .bg-green { background-color: var(--c-green); }
+        .bg-orange { background-color: var(--c-orange); }
+        .bg-yellow { background-color: var(--c-yellow); }
+        .bg-pink { background-color: var(--c-pink); }
+
+        /* Tile Content */
+        .tile-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 40%;
+            height: 40%;
+            fill: white;
+        }
+        
+        /* Adjust icon position for different sizes */
+        .size-2x1 .tile-icon, .size-4x2 .tile-icon { top: 45%; width: 40px; height: 40px; }
+        .size-1x1 .tile-icon { width: 40%; height: 40%; }
+
+        .tile-label {
+            font-size: 0.85rem;
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-left: 2px;
+            z-index: 2;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 800px) {
+            :root { --tile-base: 100px; }
+            .size-4x2 { grid-column: span 2; grid-row: span 2; } /* Downgrade huge tiles on tablets */
+            header { flex-direction: column; align-items: flex-start; }
+            .controls { width: 100%; justify-content: space-between; }
+            .search-box { width: 100%; }
+        }
+
+        @media (max-width: 500px) {
+            .grid-container { grid-template-columns: repeat(2, 1fr); }
+            .size-2x2, .size-2x1, .size-4x2 { grid-column: span 1; grid-row: span 1; } /* Force uniform grid on mobile */
+            .tile-icon { width: 30px; height: 30px; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="clock-container">
+        <div id="time">00:00:00</div>
+        <div id="date">Monday, January 1</div>
+    </div>
+    <div class="controls">
+        <input type="text" id="searchInput" class="search-box" placeholder="Search apps...">
+        <button id="themeToggle" class="theme-toggle">Light Mode</button>
+    </div>
+</header>
+
+<div id="appGrid" class="grid-container">
+    <!-- Tiles generated by JS -->
+</div>
+
+<script>
+    // --- Configuration & Data ---
+    const colors = ['bg-blue', 'bg-teal', 'bg-purple', 'bg-red', 'bg-green', 'bg-orange', 'bg-yellow', 'bg-pink'];
+    const sizes = ['size-1x1', 'size-1x1', 'size-1x1', 'size-2x1', 'size-2x1', 'size-2x2', 'size-4x2']; // Weighted for variety
+
+    // SVG Icons (Paths only to save space)
+    const icons = {
+        chat: '<path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>',
+        folder: '<path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/>',
+        image: '<path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>',
+        chart: '<path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/>',
+        split: '<path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zM8 18H4V6h4v12zm12 0h-8V6h8v12z"/>',
+        generic: '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>',
+        music: '<path d="M12 3v9.28c-.47-.17-.97-.28-1.5-.28C8.01 12 6 14.01 6 16.5S8.01 21 10.5 21c2.31 0 4.2-1.75 4.45-4H15V6h4V3h-7z"/>',
+        calc: '<path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-6 14H7v-2h6v2zm4-4H7v-2h10v2zm0-4H7V7h10v2z"/>',
+        mail: '<path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>',
+        gear: '<path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/>'
+    };
+
+    const appNames = ["Calculator", "Music", "Mail", "Settings", "Camera", "Maps", "Calendar", "Store", "Photos", "Weather", "News", "Video", "People", "OneDrive", "Word", "Excel", "PowerPoint", "OneNote", "Edge", "Skype", "Spotify", "Netflix", "Twitter", "Facebook", "Instagram", "LinkedIn", "Reddit", "Discord", "Zoom", "Teams", "Slack", "Notepad", "Paint", "Terminal", "Clock", "Alarm", "Timer", "Stopwatch", "Voice Rec", "Tasks", "To-Do", "Notes", "Wallet", "Pay", "Health", "Fitness", "Food", "Travel", "Money", "Sports", "Games", "Xbox", "Solitaire", "Chess", "Code", "DevTools", "Git", "Docker", "Admin", "Security", "System", "Network", "Wifi", "Bluetooth", "Printer", "Scanner", "Help", "Tips", "Search", "Run", "Files", "Backup", "Restore", "Update", "Power", "Battery", "Display", "Sound", "Mouse", "Keyboard", "Pen", "Touch", "Tablet", "Phone", "Messages", "Contacts", "Log", "Event", "Service", "Task Mgr", "Registry", "Editor", "Viewer", "Player", "Browser"];
+
+    // 1. Fixed Tiles (The first 5)
+    const fixedTiles = [
+        { name: "AI Chatbot", link: "webpages/AI-chatbot.html", color: "bg-purple", size: "size-2x2", icon: icons.chat },
+        { name: "File Explorer", link: "webpages/file_explorer.html", color: "bg-yellow", size: "size-4x2", icon: icons.folder },
+        { name: "Media Gallery", link: "webpages/media_gallery.html", color: "bg-red", size: "size-2x1", icon: icons.image },
+        { name: "Portfolio", link: "webpages/portfolio.html", color: "bg-blue", size: "size-2x1", icon: icons.chart },
+        { name: "Split-Screen Tool v7", link: "webpages/split_screen_2_image_only_v7.html", color: "bg-teal", size: "size-2x1", icon: icons.split },
+        { name: "Cyberpunk Main page", link: "ideas/mainpage-cyberpunk-1.html", color: "bg-purple", size: "size-2x2", icon: icons.chat },
+        { name: "test-firebase_submit_name", link: "webpages_2/test-firebase_submit_name.html", color: "bg-orange", size: "size-1x1", icon: icons.generic },
+        { name: "test-firebase_fetch_name", link: "webpages_2/test-firebase_fetch_name.html", color: "bg-green", size: "size-2x1", icon: icons.generic },
+        { name: "test-firebase_fetch_name_display_table", link: "webpages_2/test-firebase_fetch_name_display_table.html", color: "bg-purple", size: "size-1x1", icon: icons.generic },
+        { name: "Portfolio Dashboard", link: "webpages/portfolio_dashboard.html", color: "bg-yellow", size: "size-1x1", icon: icons.generic },
+        { name: "Split-Screen Tool v2", link: "webpages/split_screen_2_image_only_v2.html", color: "bg-blue", size: "size-2x2", icon: icons.generic },
+        { name: "Split-Screen Tool v3", link: "webpages/split_screen_2_image_only_v3.html", color: "bg-teal", size: "size-1x1", icon: icons.generic },
+        { name: "test-superbase_demo", link: "webpages_2/test-superbase_demo.html", color: "bg-red", size: "size-2x1", icon: icons.generic },
+        { name: "edit Stock Watchlist", link: "webpages_2/edit_stock_watchlist.html", color: "bg-purple", size: "size-1x1", icon: icons.generic },
+        { name: "edit Stock Watchlist v2", link: "webpages_2/edit_stock_watchlist_v2.html", color: "bg-pink", size: "size-4x2", icon: icons.generic },
+        { name: "Weather", link: "webpages/Weather.html", color: "bg-blue", size: "size-1x1", icon: icons.generic },
+        { name: "News", link: "webpages/News.html", color: "bg-green", size: "size-2x2", icon: icons.generic },
+        { name: "Video", link: "webpages/Video.html", color: "bg-orange", size: "size-1x1", icon: icons.generic },
+        { name: "site directory", link: "webpages/site_list_menu.html", color: "bg-teal", size: "size-1x1", icon: icons.generic },
+        { name: "Site search 1", link: "webpages/links_1/site_bank.html", color: "bg-yellow", size: "size-2x1", icon: icons.generic },
+        { name: "ABCD", link: "webpages/abcd.html", color: "bg-blue", size: "size-1x1", icon: icons.generic },
+        { name: "Excel", link: "webpages/Excel.html", color: "bg-green", size: "size-2x1", icon: icons.generic },
+        { name: "PowerPoint", link: "webpages/PowerPoint.html", color: "bg-red", size: "size-1x1", icon: icons.generic },
+        { name: "OneNote", link: "webpages/OneNote.html", color: "bg-purple", size: "size-2x1", icon: icons.generic },
+        { name: "Edge", link: "webpages/Edge.html", color: "bg-teal", size: "size-1x1", icon: icons.generic },
+        { name: "Skype", link: "webpages/Skype.html", color: "bg-pink", size: "size-2x1", icon: icons.generic },
+        { name: "Spotify", link: "webpages/Spotify.html", color: "bg-green", size: "size-1x1", icon: icons.generic },
+        { name: "Netflix", link: "webpages/Netflix.html", color: "bg-red", size: "size-2x2", icon: icons.generic },
+        { name: "Twitter", link: "webpages/Twitter.html", color: "bg-blue", size: "size-1x1", icon: icons.generic },
+        { name: "Facebook", link: "webpages/Facebook.html", color: "bg-blue", size: "size-2x1", icon: icons.generic },
+        { name: "Instagram", link: "webpages/Instagram.html", color: "bg-pink", size: "size-1x1", icon: icons.generic },
+        { name: "LinkedIn", link: "webpages/LinkedIn.html", color: "bg-teal", size: "size-2x2", icon: icons.generic },
+        { name: "Reddit", link: "webpages/Reddit.html", color: "bg-orange", size: "size-2x1", icon: icons.generic },
+        { name: "Discord", link: "webpages/Discord.html", color: "bg-purple", size: "size-1x1", icon: icons.generic },
+        { name: "Zoom", link: "webpages/Zoom.html", color: "bg-blue", size: "size-1x1", icon: icons.generic },
+        { name: "Teams", link: "webpages/Teams.html", color: "bg-purple", size: "size-2x2", icon: icons.generic },
+        { name: "Slack", link: "webpages/Slack.html", color: "bg-teal", size: "size-1x1", icon: icons.generic },
+        { name: "Notepad", link: "webpages/Notepad.html", color: "bg-yellow", size: "size-1x1", icon: icons.generic },
+        { name: "Paint", link: "webpages/Paint.html", color: "bg-orange", size: "size-1x1", icon: icons.generic },
+        { name: "Terminal", link: "webpages/Terminal.html", color: "bg-red", size: "size-2x1", icon: icons.generic },
+        { name: "Clock", link: "webpages/Clock.html", color: "bg-green", size: "size-1x1", icon: icons.generic },
+        { name: "Alarm", link: "webpages/Alarm.html", color: "bg-yellow", size: "size-1x1", icon: icons.generic },
+        { name: "Timer", link: "webpages/Timer.html", color: "bg-blue", size: "size-1x1", icon: icons.generic },
+        { name: "Stopwatch", link: "webpages/Stopwatch.html", color: "bg-teal", size: "size-2x1", icon: icons.generic },
+        { name: "Voice Rec", link: "webpages/VoiceRec.html", color: "bg-red", size: "size-1x1", icon: icons.generic },
+        { name: "Tasks", link: "webpages/Tasks.html", color: "bg-purple", size: "size-1x2", icon: icons.generic },
+        { name: "To-Do", link: "webpages/ToDo.html", color: "bg-green", size: "size-2x1", icon: icons.generic },
+        { name: "Notes", link: "webpages/Notes.html", color: "bg-orange", size: "size-1x1", icon: icons.generic },
+        { name: "Wallet", link: "webpages/Wallet.html", color: "bg-blue", size: "size-1x1", icon: icons.generic },
+        { name: "Pay", link: "webpages/Pay.html", color: "bg-yellow", size: "size-1x1", icon: icons.generic },
+        { name: "Health", link: "webpages/Health.html", color: "bg-green", size: "size-2x1", icon: icons.generic },
+        { name: "Fitness", link: "webpages/Fitness.html", color: "bg-pink", size: "size-1x1", icon: icons.generic },
+        { name: "Food", link: "webpages/Food.html", color: "bg-orange", size: "size-1x1", icon: icons.generic },
+        { name: "Travel", link: "webpages/Travel.html", color: "bg-blue", size: "size-2x2", icon: icons.generic },
+        { name: "Money", link: "webpages/Money.html", color: "bg-green", size: "size-1x1", icon: icons.generic },
+        { name: "Sports", link: "webpages/Sports.html", color: "bg-red", size: "size-4x1", icon: icons.generic },
+        { name: "Games", link: "webpages/Games.html", color: "bg-purple", size: "size-4x2", icon: icons.generic },
+        { name: "Xbox", link: "webpages/Xbox.html", color: "bg-green", size: "size-2x1", icon: icons.generic },
+        { name: "Solitaire", link: "webpages/Solitaire.html", color: "bg-yellow", size: "size-1x1", icon: icons.generic },
+        { name: "Chess", link: "webpages/Chess.html", color: "bg-blue", size: "size-1x1", icon: icons.generic },
+        { name: "Code", link: "webpages/Code.html", color: "bg-red", size: "size-2x1", icon: icons.generic },
+        { name: "DevTools", link: "webpages/DevTools.html", color: "bg-orange", size: "size-1x1", icon: icons.generic },
+        { name: "Git", link: "webpages/Git.html", color: "bg-purple", size: "size-1x1", icon: icons.generic },
+        { name: "Docker", link: "webpages/Docker.html", color: "bg-blue", size: "size-2x2", icon: icons.generic },
+        { name: "Admin", link: "webpages/Admin.html", color: "bg-teal", size: "size-1x1", icon: icons.generic },
+        { name: "Security", link: "webpages/Security.html", color: "bg-red", size: "size-1x1", icon: icons.generic },
+        { name: "System", link: "webpages/System.html", color: "bg-green", size: "size-2x1", icon: icons.generic },
+        { name: "Network", link: "webpages/Network.html", color: "bg-blue", size: "size-1x1", icon: icons.generic },
+        { name: "Wifi", link: "webpages/Wifi.html", color: "bg-teal", size: "size-2x2", icon: icons.generic },
+        { name: "Bluetooth", link: "webpages/Bluetooth.html", color: "bg-pink", size: "size-1x1", icon: icons.generic },
+        { name: "Printer", link: "webpages/Printer.html", color: "bg-orange", size: "size-1x1", icon: icons.generic },
+        { name: "Scanner", link: "webpages/Scanner.html", color: "bg-green", size: "size-2x1", icon: icons.generic },
+        { name: "Help", link: "webpages/Help.html", color: "bg-yellow", size: "size-1x1", icon: icons.generic },
+        { name: "Tips", link: "webpages/Tips.html", color: "bg-blue", size: "size-1x1", icon: icons.generic },
+        { name: "Search", link: "webpages/Search.html", color: "bg-purple", size: "size-2x1", icon: icons.generic },
+        { name: "Run", link: "webpages/Run.html", color: "bg-red", size: "size-1x1", icon: icons.generic },
+        { name: "Files", link: "webpages/Files.html", color: "bg-teal", size: "size-2x1", icon: icons.generic },
+        { name: "Backup", link: "webpages/Backup.html", color: "bg-blue", size: "size-4x2", icon: icons.generic },
+        { name: "Restore", link: "webpages/Restore.html", color: "bg-yellow", size: "size-2x1", icon: icons.generic },
+        { name: "Update", link: "webpages/Update.html", color: "bg-orange", size: "size-1x1", icon: icons.generic },
+        { name: "Power", link: "webpages/Power.html", color: "bg-red", size: "size-2x1", icon: icons.generic },
+        { name: "Battery", link: "webpages/Battery.html", color: "bg-green", size: "size-1x1", icon: icons.generic },
+        { name: "Display", link: "webpages/Display.html", color: "bg-purple", size: "size-1x1", icon: icons.generic },
+        { name: "Sound", link: "webpages/Sound.html", color: "bg-blue", size: "size-1x1", icon: icons.generic },
+        { name: "Mouse", link: "webpages/Mouse.html", color: "bg-teal", size: "size-1x1", icon: icons.generic },
+        { name: "Keyboard", link: "webpages/Keyboard.html", color: "bg-yellow", size: "size-1x1", icon: icons.generic },
+        { name: "Pen", link: "webpages/Pen.html", color: "bg-orange", size: "size-1x1", icon: icons.generic },
+        { name: "Touch", link: "webpages/Touch.html", color: "bg-green", size: "size-1x1", icon: icons.generic },
+        { name: "Tablet", link: "webpages/Tablet.html", color: "bg-blue", size: "size-2x2", icon: icons.generic },
+        { name: "Phone", link: "webpages/Phone.html", color: "bg-purple", size: "size-4x2", icon: icons.generic },
+        { name: "Messages", link: "webpages/Messages.html", color: "bg-pink", size: "size-2x1", icon: icons.generic },
+        { name: "Contacts", link: "webpages/Contacts.html", color: "bg-blue", size: "size-1x1", icon: icons.generic },
+        { name: "Log", link: "webpages/Log.html", color: "bg-yellow", size: "size-1x1", icon: icons.generic },
+        { name: "Event", link: "webpages/Event.html", color: "bg-green", size: "size-2x2", icon: icons.generic },
+        { name: "Service", link: "webpages/Service.html", color: "bg-purple", size: "size-1x1", icon: icons.generic },
+        { name: "Task Mgr", link: "webpages/TaskMgr.html", color: "bg-red", size: "size-2x2", icon: icons.generic },
+        { name: "Registry", link: "webpages/Registry.html", color: "bg-orange", size: "size-1x1", icon: icons.generic },
+        { name: "Editor", link: "webpages/Editor.html", color: "bg-yellow", size: "size-1x1", icon: icons.generic },
+        { name: "Viewer", link: "webpages/Viewer.html", color: "bg-blue", size: "size-1x1", icon: icons.generic },
+        { name: "Player", link: "webpages/Player.html", color: "bg-green", size: "size-2x1", icon: icons.generic },
+        { name: "Browser", link: "webpages/Browser.html", color: "bg-purple", size: "size-1x1", icon: icons.generic }
+    ];
+
+    // 2. Generate remaining 95 tiles
+    let allTiles = [...fixedTiles];
+    
+    function getRandomItem(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+    function getIconForName(name) {
+        name = name.toLowerCase();
+        if (name.includes('mail') || name.includes('message')) return icons.mail;
+        if (name.includes('music') || name.includes('spotify') || name.includes('sound')) return icons.music;
+        if (name.includes('calc') || name.includes('math')) return icons.calc;
+        if (name.includes('setting') || name.includes('system') || name.includes('admin')) return icons.gear;
+        if (name.includes('photo') || name.includes('video')) return icons.image;
+        return icons.generic;
+    }
+
+    for (let i = 0; i < 2; i++) {
+        const name = getRandomItem(appNames);
+        const appNum = i + 1;
+        allTiles.push({
+            name: name,
+            link: `webpages/app${appNum}.html`,
+            color: getRandomItem(colors),
+            size: getRandomItem(sizes),
+            icon: getIconForName(name)
+        });
+    }
+
+    // --- Logic ---
+
+    const grid = document.getElementById('appGrid');
+    const searchInput = document.getElementById('searchInput');
+    const timeEl = document.getElementById('time');
+    const dateEl = document.getElementById('date');
+    const themeBtn = document.getElementById('themeToggle');
+
+    // Render Tiles
+    function renderTiles(filter = "") {
+        grid.innerHTML = "";
+        const filterLower = filter.toLowerCase();
+
+        allTiles.forEach((tile, index) => {
+            if (tile.name.toLowerCase().includes(filterLower)) {
+                const a = document.createElement('a');
+                a.href = tile.link;
+                a.target = "_blank";
+                a.className = `tile ${tile.color} ${tile.size}`;
+                
+                // Randomize entry animation delay for cool effect
+                a.style.animation = `fadeIn 0.3s ease forwards ${index * 0.01}s`;
+
+                const iconSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                iconSvg.setAttribute("viewBox", "0 0 24 24");
+                iconSvg.setAttribute("class", "tile-icon");
+                iconSvg.innerHTML = tile.icon;
+
+                const span = document.createElement('span');
+                span.className = 'tile-label';
+                span.textContent = tile.name;
+
+                a.appendChild(iconSvg);
+                a.appendChild(span);
+                grid.appendChild(a);
+            }
+        });
+    }
+
+    // Clock
+    function updateClock() {
+        const now = new Date();
+        timeEl.textContent = now.toLocaleTimeString('en-US', { hour12: false });
+        dateEl.textContent = now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+    }
+
+    // Theme Toggle
+    function initTheme() {
+        const savedTheme = localStorage.getItem('metroTheme');
+        if (savedTheme === 'light') {
+            document.body.classList.add('light-mode');
+            themeBtn.textContent = "Dark Mode";
+        }
+    }
+
+    themeBtn.addEventListener('click', () => {
+        document.body.classList.toggle('light-mode');
+        const isLight = document.body.classList.contains('light-mode');
+        themeBtn.textContent = isLight ? "Dark Mode" : "Light Mode";
+        localStorage.setItem('metroTheme', isLight ? 'light' : 'dark');
+    });
+
+    // Search Listener
+    searchInput.addEventListener('input', (e) => {
+        renderTiles(e.target.value);
+    });
+
+    // Initialize
+    initTheme();
+    updateClock();
+    setInterval(updateClock, 1000);
+    renderTiles();
+
+</script>
+</body>
+</html>
+
