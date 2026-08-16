@@ -3,30 +3,30 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>OmniSearch Pro | Multi-Engine Query Builder, OSINT & Advanced Dorking Station</title>
-  <meta name="description" content="Professional OSINT research & dorking workstation, multi-engine query builder, exclusion presets, resolution filters, and uncensored/independent search launcher." />
+  <title>OmniSearch Pro | Multi-Engine Query Builder & Advanced Filter Launcher</title>
+  <meta name="description" content="Power-user multi-engine search query builder with advanced presets, resolution filters, exclusion rules, filetype targeting, and uncensored/privacy engine support." />
   
-  <!-- Google Fonts -->
+  <!-- Modern Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 
   <style>
     /* ==========================================================================
-       1. CSS VARIABLES & THEMES
+       1. CSS VARIABLES & THEME DEFINITIONS
        ========================================================================== */
     :root {
       --font-main: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       --font-mono: 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
-      /* Dark Slate (Default) */
-      --bg-base: #090d16;
-      --bg-surface: #0f172a;
-      --bg-surface-elevated: #1e293b;
-      --bg-surface-glass: rgba(15, 23, 42, 0.8);
-      --bg-input: #0b1120;
+      /* Dark Theme (Default) */
+      --bg-base: #0a0d14;
+      --bg-surface: #111726;
+      --bg-surface-elevated: #182238;
+      --bg-surface-glass: rgba(17, 23, 38, 0.75);
+      --bg-input: #0e1422;
       --border-subtle: #1e293b;
-      --border-focus: #6366f1;
+      --border-focus: #4f46e5;
       --border-glass: rgba(255, 255, 255, 0.08);
 
       --text-primary: #f8fafc;
@@ -43,8 +43,8 @@
       --accent-rose: #f43f5e;
       --accent-violet: #8b5cf6;
 
-      --card-gradient: linear-gradient(145deg, rgba(30, 41, 59, 0.6) 0%, rgba(15, 23, 42, 0.85) 100%);
-      --hero-gradient: radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.18) 0%, rgba(6, 182, 212, 0.08) 45%, transparent 70%);
+      --card-gradient: linear-gradient(145deg, rgba(24, 34, 56, 0.6) 0%, rgba(17, 23, 38, 0.8) 100%);
+      --hero-gradient: radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.18) 0%, rgba(6, 182, 212, 0.08) 40%, transparent 70%);
 
       --radius-sm: 6px;
       --radius-md: 10px;
@@ -152,8 +152,8 @@
 
     /* Custom Scrollbar */
     ::-webkit-scrollbar {
-      width: 7px;
-      height: 7px;
+      width: 8px;
+      height: 8px;
     }
     ::-webkit-scrollbar-track {
       background: var(--bg-base);
@@ -170,13 +170,13 @@
        3. LAYOUT & CONTAINERS
        ========================================================================== */
     .app-container {
-      max-width: 1420px;
+      max-width: 1360px;
       margin: 0 auto;
-      padding: 1.25rem 1.5rem 3.5rem;
+      padding: 1.25rem 1.5rem 3rem;
       width: 100%;
       display: flex;
       flex-direction: column;
-      gap: 1.4rem;
+      gap: 1.5rem;
     }
 
     /* Top Header */
@@ -238,7 +238,7 @@
     .header-actions {
       display: flex;
       align-items: center;
-      gap: 0.55rem;
+      gap: 0.6rem;
       flex-wrap: wrap;
     }
 
@@ -257,7 +257,7 @@
     }
 
     .btn-sm {
-      padding: 0.38rem 0.75rem;
+      padding: 0.35rem 0.75rem;
       font-size: 0.8rem;
       border-radius: var(--radius-sm);
     }
@@ -272,6 +272,9 @@
       box-shadow: 0 6px 20px var(--accent-primary-glow);
       filter: brightness(1.1);
     }
+    .btn-primary:active {
+      transform: translateY(0);
+    }
 
     .btn-secondary {
       background: var(--bg-surface-elevated);
@@ -280,7 +283,6 @@
     }
     .btn-secondary:hover {
       background: var(--border-subtle);
-      border-color: rgba(255, 255, 255, 0.15);
       color: #fff;
     }
 
@@ -313,7 +315,7 @@
     .search-hero {
       display: flex;
       flex-direction: column;
-      gap: 1.2rem;
+      gap: 1.25rem;
       background: var(--card-gradient);
       border: 1px solid var(--border-glass);
       backdrop-filter: blur(16px);
@@ -377,8 +379,8 @@
     }
 
     .search-launch-btn {
-      padding: 0.65rem 1.35rem;
-      font-size: 0.92rem;
+      padding: 0.65rem 1.4rem;
+      font-size: 0.95rem;
       font-weight: 700;
       border-radius: var(--radius-md);
     }
@@ -395,84 +397,7 @@
     }
 
     /* ==========================================================================
-       5. OPERATOR QUICK-INSERT TOOLBAR
-       ========================================================================== */
-    .operator-toolbar-wrapper {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-      background: rgba(0, 0, 0, 0.25);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-md);
-      padding: 0.65rem 0.85rem;
-    }
-
-    .operator-toolbar-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      font-size: 0.75rem;
-    }
-
-    .op-header-title {
-      font-weight: 700;
-      color: var(--text-highlight);
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      display: flex;
-      align-items: center;
-      gap: 0.35rem;
-    }
-
-    .no-space-warning {
-      color: var(--accent-amber);
-      font-size: 0.73rem;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 0.3rem;
-    }
-
-    .operator-chips-bar {
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-      flex-wrap: wrap;
-    }
-
-    .op-chip {
-      font-family: var(--font-mono);
-      font-size: 0.76rem;
-      font-weight: 600;
-      padding: 0.25rem 0.55rem;
-      border-radius: var(--radius-sm);
-      background: var(--bg-surface-elevated);
-      color: var(--text-primary);
-      border: 1px solid var(--border-subtle);
-      transition: all var(--transition-fast);
-      display: inline-flex;
-      align-items: center;
-      gap: 0.25rem;
-    }
-    .op-chip:hover {
-      background: var(--accent-primary);
-      color: #ffffff;
-      border-color: var(--accent-primary);
-      transform: translateY(-1px);
-    }
-    .op-chip-accent {
-      border-color: rgba(99, 102, 241, 0.35);
-      color: #a5b4fc;
-    }
-    .op-chip-date {
-      border-color: rgba(6, 182, 212, 0.35);
-      color: #67e8f9;
-    }
-
-    /* ==========================================================================
-       6. SEARCH TYPE TABS & DORKING WORKSTATION NAV
+       5. SEARCH TYPE TABS
        ========================================================================== */
     .search-types-nav {
       display: flex;
@@ -490,9 +415,9 @@
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
-      padding: 0.55rem 1.05rem;
+      padding: 0.55rem 1.1rem;
       border-radius: var(--radius-md);
-      font-size: 0.86rem;
+      font-size: 0.88rem;
       font-weight: 600;
       color: var(--text-secondary);
       background: rgba(255, 255, 255, 0.03);
@@ -517,17 +442,8 @@
       color: var(--accent-cyan);
     }
 
-    .tab-badge-dork {
-      background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%);
-      color: #fff;
-      font-size: 0.65rem;
-      padding: 0.1rem 0.45rem;
-      border-radius: var(--radius-full);
-      font-weight: 800;
-    }
-
     /* ==========================================================================
-       7. DYNAMIC FILTERS & OSINT DORK TEMPLATES PANEL
+       6. DYNAMIC FILTERS & CONTROLS PANELS
        ========================================================================== */
     .filters-container {
       background: var(--bg-surface);
@@ -562,7 +478,6 @@
       color: var(--text-muted);
       display: flex;
       align-items: center;
-      justify-content: space-between;
       gap: 0.4rem;
     }
 
@@ -678,135 +593,8 @@
     }
 
     /* ==========================================================================
-       8. DORK TEMPLATES BROWSER MODULE
+       7. OPERATOR BUILDER & PRESETS SECTION
        ========================================================================== */
-    .dork-module-container {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      background: rgba(0, 0, 0, 0.2);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-lg);
-      padding: 1.25rem;
-    }
-
-    .dork-categories-nav {
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-      overflow-x: auto;
-      padding-bottom: 0.35rem;
-    }
-
-    .dork-cat-btn {
-      padding: 0.4rem 0.8rem;
-      border-radius: var(--radius-sm);
-      font-size: 0.8rem;
-      font-weight: 600;
-      color: var(--text-secondary);
-      background: var(--bg-surface-elevated);
-      border: 1px solid var(--border-subtle);
-      white-space: nowrap;
-      transition: all var(--transition-fast);
-    }
-    .dork-cat-btn:hover {
-      color: var(--text-primary);
-      border-color: var(--text-muted);
-    }
-    .dork-cat-btn.active {
-      background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-violet) 100%);
-      color: #ffffff;
-      border-color: transparent;
-      box-shadow: 0 2px 8px var(--accent-primary-glow);
-    }
-
-    .dork-cards-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 0.9rem;
-      max-height: 480px;
-      overflow-y: auto;
-      padding-right: 0.35rem;
-    }
-
-    .dork-card {
-      background: var(--bg-surface-elevated);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-md);
-      padding: 0.9rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.55rem;
-      transition: all var(--transition-fast);
-    }
-    .dork-card:hover {
-      border-color: var(--accent-cyan);
-      transform: translateY(-1px);
-    }
-
-    .dork-card-header {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 0.5rem;
-    }
-
-    .dork-card-title {
-      font-size: 0.88rem;
-      font-weight: 700;
-      color: var(--text-primary);
-      display: flex;
-      align-items: center;
-      gap: 0.35rem;
-    }
-
-    .dork-card-desc {
-      font-size: 0.76rem;
-      color: var(--text-muted);
-      line-height: 1.35;
-    }
-
-    .dork-code-box {
-      font-family: var(--font-mono);
-      font-size: 0.74rem;
-      background: var(--bg-input);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-sm);
-      padding: 0.5rem 0.65rem;
-      color: #38bdf8;
-      word-break: break-all;
-      line-height: 1.4;
-      max-height: 60px;
-      overflow-y: auto;
-    }
-
-    .dork-card-actions {
-      display: flex;
-      align-items: center;
-      gap: 0.45rem;
-      margin-top: auto;
-    }
-
-    .dork-apply-btn {
-      flex: 1;
-      padding: 0.38rem 0.75rem;
-      font-size: 0.78rem;
-      font-weight: 700;
-      border-radius: var(--radius-sm);
-      background: var(--bg-input);
-      border: 1px solid var(--accent-primary);
-      color: #a5b4fc;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.35rem;
-    }
-    .dork-apply-btn:hover {
-      background: var(--accent-primary);
-      color: #ffffff;
-    }
-
-    /* Advanced Custom Inputs Grid */
     .presets-and-operators {
       display: flex;
       flex-direction: column;
@@ -843,7 +631,7 @@
     }
 
     /* ==========================================================================
-       9. ENGINES HUB & RESULTS ACTION BAR
+       8. ENGINE HUBS & RESULTS ACTION BAR
        ========================================================================== */
     .results-header-bar {
       display: flex;
@@ -902,7 +690,7 @@
       padding: 1.15rem;
       display: flex;
       flex-direction: column;
-      gap: 0.85rem;
+      gap: 0.9rem;
       transition: all var(--transition-fast);
       position: relative;
       overflow: hidden;
@@ -1003,7 +791,7 @@
       border-radius: var(--radius-md);
       padding: 0.55rem 0.75rem;
       font-family: var(--font-mono);
-      font-size: 0.74rem;
+      font-size: 0.75rem;
       color: var(--text-secondary);
       word-break: break-all;
       line-height: 1.4;
@@ -1064,7 +852,7 @@
     }
 
     /* ==========================================================================
-       10. MODAL & USER MANUAL STYLES
+       9. MODAL & DRAWER STYLES (User Manual, Dorks, Settings)
        ========================================================================== */
     .modal-overlay {
       position: fixed;
@@ -1072,7 +860,7 @@
       left: 0;
       right: 0;
       bottom: 0;
-      background: rgba(0, 0, 0, 0.78);
+      background: rgba(0, 0, 0, 0.75);
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
       z-index: 1000;
@@ -1090,9 +878,9 @@
       background: var(--bg-surface);
       border: 1px solid var(--border-glass);
       border-radius: var(--radius-xl);
-      max-width: 960px;
+      max-width: 900px;
       width: 100%;
-      max-height: 88vh;
+      max-height: 85vh;
       display: flex;
       flex-direction: column;
       box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
@@ -1143,12 +931,12 @@
     .syntax-table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 0.84rem;
+      font-size: 0.85rem;
       margin-top: 0.5rem;
     }
     .syntax-table th, .syntax-table td {
       border: 1px solid var(--border-subtle);
-      padding: 0.55rem 0.75rem;
+      padding: 0.6rem 0.8rem;
       text-align: left;
     }
     .syntax-table th {
@@ -1224,9 +1012,6 @@
       .main-search-input {
         font-size: 1rem;
       }
-      .dork-cards-grid {
-        grid-template-columns: 1fr;
-      }
     }
   </style>
 </head>
@@ -1235,7 +1020,7 @@
   <div class="app-container">
     
     <!-- ====================================================================
-         HEADER & TOP NAVIGATION
+         HEADER & NAV
          ==================================================================== -->
     <header class="header">
       <div class="brand-group">
@@ -1250,9 +1035,9 @@
         <div>
           <div class="brand-title">
             OmniSearch Pro
-            <span class="brand-badge">OSINT &amp; Dorking Hub</span>
+            <span class="brand-badge">Engine Hub</span>
           </div>
-          <p style="font-size: 0.75rem; color: var(--text-muted);">Multi-engine query synthesis, advanced operators &amp; deep research launcher</p>
+          <p style="font-size: 0.75rem; color: var(--text-muted);">Ultra-deep multi-engine query synthesis & launcher</p>
         </div>
       </div>
 
@@ -1260,21 +1045,20 @@
         <!-- Preset Profiles Dropdown -->
         <select id="profileSelector" class="custom-select btn-sm" style="width: auto; font-weight: 600;" title="Load Filter Profile">
           <option value="default">⚡ Profile: Standard Web</option>
-          <option value="osint_dork">🕵️ Profile: OSINT &amp; Cloud Dorks</option>
           <option value="deep_image">🖼️ Profile: 8MP+ Clean Images</option>
           <option value="indie_video">🎥 Profile: Uncensored Indie Video</option>
-          <option value="doc_hunt">📄 Profile: Documents &amp; Papers</option>
-          <option value="dev_dork">💻 Profile: Clean Dev &amp; Forums</option>
+          <option value="doc_hunt">📄 Profile: Documents & Papers</option>
+          <option value="dev_dork">💻 Profile: Dev & Clean Forums</option>
         </select>
 
         <!-- Reset Filters Button -->
-        <button id="resetAllBtn" class="btn btn-secondary btn-sm" title="Reset all filters, presets, and query">
+        <button id="resetAllBtn" class="btn btn-secondary btn-sm" title="Reset all filters and presets to default">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
           Reset
         </button>
 
         <!-- Save Profile Button -->
-        <button id="saveConfigBtn" class="btn btn-secondary btn-sm" title="Save current state to browser storage">
+        <button id="saveConfigBtn" class="btn btn-secondary btn-sm" title="Save current filters to browser storage">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
           Save State
         </button>
@@ -1286,9 +1070,9 @@
         </button>
 
         <!-- User Manual Button -->
-        <button id="openManualBtn" class="btn btn-secondary btn-sm" title="Open Cheatsheet &amp; Operator Manual">
+        <button id="openManualBtn" class="btn btn-secondary btn-sm" title="Open Manual & Cheat Sheet">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-          Manual &amp; Cheatsheet
+          Manual & Help
         </button>
 
         <!-- Theme Selector -->
@@ -1317,7 +1101,7 @@
           type="text" 
           id="mainSearchInput" 
           class="main-search-input" 
-          placeholder="Type query or dork (e.g. quantum computing, intitle:&quot;index of /&quot; (pdf|epub), -site:pinterest.*)..." 
+          placeholder="Type query keywords, operators (e.g. milkyway galaxy, &quot;quantum&quot;, -ad)..." 
           autocomplete="off"
           spellcheck="false"
           autofocus
@@ -1340,37 +1124,11 @@
         </div>
       </div>
 
-      <!-- ==================================================================
-           OPERATOR QUICK-INSERT TOOLBAR
-           ================================================================== -->
-      <div class="operator-toolbar-wrapper">
-        <div class="operator-toolbar-header">
-          <span class="op-header-title">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
-            Operator Quick-Insert Toolbar
-          </span>
-          <span class="no-space-warning">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-            No space after colons or dashes (e.g. <code>-site:domain.com</code>)
-          </span>
-        </div>
-
-        <div class="operator-chips-bar" id="operatorChipsBar">
-          <!-- Populated dynamically via JS -->
-        </div>
-      </div>
-
       <!-- Search Type Tabs -->
       <nav class="search-types-nav" id="searchTypesNav">
         <button class="type-tab-btn active" data-type="web">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
           Web
-        </button>
-
-        <button class="type-tab-btn" data-type="dorks">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
-          Dork Templates &amp; OSINT
-          <span class="tab-badge-dork">Pro</span>
         </button>
 
         <button class="type-tab-btn" data-type="images">
@@ -1395,47 +1153,25 @@
 
         <button class="type-tab-btn" data-type="discussions">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-          Forums &amp; Discussions
+          Forums & Discussions
+        </button>
+
+        <button class="type-tab-btn" data-type="dorks">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
+          Open Dirs & Dorks
         </button>
       </nav>
 
       <!-- ==================================================================
-           FILTERS & MODULES CONTAINER
+           FILTERS CONTAINERS
            ================================================================== -->
       <div class="filters-container">
         
-        <!-- PANEL: ADVANCED DORK TEMPLATES BROWSER -->
-        <div class="filter-panel" id="panel-dorks">
-          <div class="dork-module-container">
-            <div class="filter-section-title">
-              <span style="display:flex; align-items:center; gap:0.4rem;">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
-                Categorized OSINT &amp; Research Dork Templates
-              </span>
-              <span style="font-size:0.75rem; color:var(--text-muted); text-transform:none;">
-                Click <strong>"Apply Dork"</strong> to insert into search bar
-              </span>
-            </div>
-
-            <!-- Category switcher -->
-            <div class="dork-categories-nav" id="dorkCategoriesNav">
-              <!-- Dynamically populated by JS -->
-            </div>
-
-            <!-- Templates Card Grid -->
-            <div class="dork-cards-grid" id="dorkCardsGrid">
-              <!-- Dynamically populated by JS -->
-            </div>
-          </div>
-        </div>
-
         <!-- PANEL: IMAGE FILTERS -->
         <div class="filter-panel" id="panel-images">
           <div class="filter-section-title">
-            <span style="display:flex; align-items:center; gap:0.4rem;">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polygon points="12 8 8 12 12 16 16 12 12 8"></polygon></svg>
-              Advanced Image Search Parameters (Google tbs= / Bing qft= / Yandex)
-            </span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polygon points="12 8 8 12 12 16 16 12 12 8"></polygon></svg>
+            Advanced Image Search Filters
           </div>
 
           <div class="filter-grid">
@@ -1450,16 +1186,11 @@
                 <option value="2mp">≥ 2 MegaPixels (1600x1200)</option>
                 <option value="4mp">≥ 4 MegaPixels (2272x1704)</option>
                 <option value="8mp" selected>≥ 8 MegaPixels (3264x2448 / 4K)</option>
-                <option value="10mp">≥ 10 MegaPixels (3648x2736)</option>
                 <option value="12mp">≥ 12 MegaPixels (4000x3000)</option>
-                <option value="15mp">≥ 15 MegaPixels (4480x3360)</option>
                 <option value="16mp">≥ 16 MegaPixels (4928x3264)</option>
                 <option value="20mp">≥ 20 MegaPixels (5184x3888)</option>
                 <option value="40mp">≥ 40 MegaPixels (Ultra Hi-Res)</option>
-                <option value="70mp">≥ 70 MegaPixels (Gigapixel Master)</option>
                 <option value="large">Standard Large Size</option>
-                <option value="medium">Medium Size</option>
-                <option value="icon">Icon / Favicon</option>
               </select>
             </div>
 
@@ -1468,8 +1199,8 @@
               <label class="filter-label" for="imgFormatSelect">Image File Format</label>
               <select id="imgFormatSelect" class="custom-select">
                 <option value="any">Any Format</option>
-                <option value="png">PNG (Lossless / Transparent)</option>
                 <option value="jpg">JPG / JPEG (Photographs)</option>
+                <option value="png">PNG (Lossless / Transparent)</option>
                 <option value="gif">GIF (Animated / Graphics)</option>
                 <option value="webp">WEBP (Modern Web)</option>
                 <option value="svg">SVG (Vector Graphics)</option>
@@ -1482,7 +1213,6 @@
               <label class="filter-label" for="imgTimeSelect">Time / Recency</label>
               <select id="imgTimeSelect" class="custom-select">
                 <option value="any">Any Time</option>
-                <option value="h">Past Hour</option>
                 <option value="d">Past 24 Hours</option>
                 <option value="w">Past Week</option>
                 <option value="m">Past Month</option>
@@ -1492,28 +1222,27 @@
 
             <!-- Aspect Ratio / Type -->
             <div class="filter-group">
-              <label class="filter-label" for="imgAspectSelect">Aspect Ratio &amp; Style</label>
+              <label class="filter-label" for="imgAspectSelect">Aspect Ratio & Style</label>
               <select id="imgAspectSelect" class="custom-select">
                 <option value="any">Any Aspect Ratio</option>
                 <option value="wide">Wide / Landscape (16:9)</option>
-                <option value="panoramic">Panoramic / Ultrawide</option>
                 <option value="tall">Tall / Portrait (9:16)</option>
                 <option value="square">Square (1:1)</option>
-                <option value="photo">Photograph Only</option>
-                <option value="clipart">Clip Art</option>
+                <option value="panoramic">Panoramic</option>
+                <option value="photo">Photo Only</option>
+                <option value="clipart">Clipart / Illustration</option>
                 <option value="lineart">Line Drawing</option>
-                <option value="animated">Animated GIF</option>
               </select>
             </div>
           </div>
 
           <!-- Color Filters -->
           <div class="filter-group" style="margin-top: 0.25rem;">
-            <label class="filter-label">Color &amp; Transparency Palette</label>
+            <label class="filter-label">Color & Transparency</label>
             <div class="color-swatches-grid" id="imageColorSwatches">
               <button type="button" class="chip-toggle active" data-color="any">Any Color</button>
               <button type="button" class="chip-toggle" data-color="trans">✨ Transparent PNG</button>
-              <button type="button" class="chip-toggle" data-color="gray">⬛ Black &amp; White</button>
+              <button type="button" class="chip-toggle" data-color="gray">⬛ Black & White</button>
               <button type="button" class="color-swatch-btn" style="background:#ef4444;" data-color="red" title="Red"></button>
               <button type="button" class="color-swatch-btn" style="background:#f97316;" data-color="orange" title="Orange"></button>
               <button type="button" class="color-swatch-btn" style="background:#eab308;" data-color="yellow" title="Yellow"></button>
@@ -1531,10 +1260,8 @@
         <!-- PANEL: VIDEO FILTERS -->
         <div class="filter-panel" id="panel-videos">
           <div class="filter-section-title">
-            <span style="display:flex; align-items:center; gap:0.4rem;">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
-              Video Search Controls &amp; Duration Parameters
-            </span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
+            Video Specific Controls
           </div>
           <div class="filter-grid">
             <div class="filter-group">
@@ -1547,10 +1274,10 @@
               </select>
             </div>
             <div class="filter-group">
-              <label class="filter-label" for="vidQualitySelect">Quality &amp; Captions</label>
+              <label class="filter-label" for="vidQualitySelect">Quality & Captions</label>
               <select id="vidQualitySelect" class="custom-select">
                 <option value="any">Any Quality</option>
-                <option value="hd">High Definition (HD / 1080p+)</option>
+                <option value="hd">High Definition (HD)</option>
                 <option value="cc">Closed Captions / Subtitles (CC)</option>
               </select>
             </div>
@@ -1558,7 +1285,6 @@
               <label class="filter-label" for="vidRecencySelect">Upload Recency</label>
               <select id="vidRecencySelect" class="custom-select">
                 <option value="any">Any Time</option>
-                <option value="h">Past Hour</option>
                 <option value="d">Past 24 Hours</option>
                 <option value="w">Past Week</option>
                 <option value="m">Past Month</option>
@@ -1571,12 +1297,11 @@
         <!-- PANEL: DOCUMENT / FILETYPES -->
         <div class="filter-panel" id="panel-documents">
           <div class="filter-section-title">
-            <span style="display:flex; align-items:center; gap:0.4rem;">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
-              Target Document Formats (Multi-select)
-            </span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+            Target File Types & Documents
           </div>
           <div class="filter-group">
+            <label class="filter-label">Quick Filetype Selector (Multi-select)</label>
             <div class="chips-group" id="docChipsGroup">
               <button type="button" class="chip-toggle active-include" data-ext="pdf">📄 PDF (.pdf)</button>
               <button type="button" class="chip-toggle" data-ext="doc,docx">📝 Word (.doc, .docx)</button>
@@ -1590,9 +1315,25 @@
               <button type="button" class="chip-toggle" data-ext="sql,sqlite">🗄️ Database (.sql)</button>
             </div>
           </div>
-          <div class="filter-group" style="max-width: 340px;">
+          <div class="filter-group" style="max-width: 320px;">
             <label class="filter-label" for="customFiletypeInput">Custom File Extension</label>
-            <input type="text" id="customFiletypeInput" class="custom-input" placeholder="e.g. parquet, kml, log, gpx, apk, iso" />
+            <input type="text" id="customFiletypeInput" class="custom-input" placeholder="e.g. log, kml, gpx, apk" />
+          </div>
+        </div>
+
+        <!-- PANEL: OPEN DIRECTORIES & DORKS -->
+        <div class="filter-panel" id="panel-dorks">
+          <div class="filter-section-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
+            Google Dorking & Deep Unindexed Server Presets
+          </div>
+          <div class="chips-group" id="dorkPresetsGroup">
+            <button type="button" class="chip-toggle" data-dork="intitle:&quot;index of /&quot; (mp4|mkv|avi)">🎬 Open Directory Videos</button>
+            <button type="button" class="chip-toggle" data-dork="intitle:&quot;index of /&quot; (mp3|flac|wav)">🎵 Open Directory Audio</button>
+            <button type="button" class="chip-toggle" data-dork="intitle:&quot;index of /&quot; (pdf|epub|mobi)">📚 Open Directory E-Books</button>
+            <button type="button" class="chip-toggle" data-dork="intitle:&quot;index of /&quot; (zip|rar|tar|7z|iso)">💾 Open Directory Software / ISOs</button>
+            <button type="button" class="chip-toggle" data-dork="&quot;parent directory&quot; intext:&quot;DCIM&quot;">📷 Raw Unindexed Photos</button>
+            <button type="button" class="chip-toggle" data-dork="filetype:env &quot;DB_PASSWORD&quot; | filetype:yml">🔒 Config & Leaks (Security Research)</button>
           </div>
         </div>
 
@@ -1601,10 +1342,8 @@
              ================================================================== -->
         <div class="presets-and-operators">
           <div class="filter-section-title">
-            <span style="display:flex; align-items:center; gap:0.4rem;">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
-              Active Exclusion &amp; Domain Filtering Presets (Click to Toggle)
-            </span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
+            Active Exclusion & Domain Filtering Presets (Click to Toggle)
           </div>
 
           <!-- Dynamic Preset Chips loaded from JavaScript Config -->
@@ -1616,11 +1355,11 @@
           <div class="advanced-inputs-grid">
             <div class="input-with-tag">
               <span class="input-tag">-site:</span>
-              <input type="text" id="customExcludeSites" class="custom-input" placeholder="Exclude domains (e.g. spam.com, medium.com)" />
+              <input type="text" id="customExcludeSites" class="custom-input" placeholder="Exclude domains (e.g. spam.com, annoying.org)" />
             </div>
             <div class="input-with-tag">
               <span class="input-tag">site:</span>
-              <input type="text" id="customIncludeSite" class="custom-input" placeholder="Limit site / TLD (e.g. github.com, edu)" />
+              <input type="text" id="customIncludeSite" class="custom-input" placeholder="Limit to single site (e.g. github.com, reddit.com)" />
             </div>
             <div class="input-with-tag">
               <span class="input-tag">&quot;exact&quot;:</span>
@@ -1648,7 +1387,7 @@
 
         <div class="category-filter-chips" id="engineCatFilters">
           <button class="cat-chip active" data-cat="all">All Engines</button>
-          <button class="cat-chip" data-cat="privacy">🛡️ Privacy &amp; Indie</button>
+          <button class="cat-chip" data-cat="privacy">🛡️ Privacy & Indie</button>
           <button class="cat-chip" data-cat="uncensored">⚡ Uncensored / Raw</button>
           <button class="cat-chip" data-cat="major">🌐 Major Web</button>
           <button class="cat-chip" data-cat="specialized">🎯 Specialized</button>
@@ -1671,7 +1410,7 @@
       <div class="modal-header">
         <div class="modal-title">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
-          Master Search Operators, Dorking Cheatsheet &amp; Dev Guide
+          OmniSearch Pro: User Manual & Developer Guide
         </div>
         <button id="closeManualBtn" class="btn-icon-only" title="Close modal (Esc)">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
@@ -1680,60 +1419,23 @@
 
       <div class="modal-body">
         
-        <!-- SECTION 1: CORE BOOLEAN & SYNTAX RULES -->
+        <!-- SECTION 1: OVERVIEW & QUICK START -->
         <div class="manual-section">
-          <div class="manual-heading">🔍 1. Core Boolean &amp; Syntax Rules</div>
-          <table class="syntax-table">
-            <thead>
-              <tr>
-                <th>Operator</th>
-                <th>Syntax Example</th>
-                <th>Description &amp; Engine Support</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><code>&quot;...&quot;</code> (Exact Phrase)</td>
-                <td><code>&quot;quantum computing architecture&quot;</code></td>
-                <td>Forces strict character and word-order match without synonym expansion.</td>
-              </tr>
-              <tr>
-                <td><code>-</code> (Exclusion)</td>
-                <td><code>python -wikipedia -youtube</code></td>
-                <td>Excludes pages containing the keyword or domain. <strong>No space after minus!</strong></td>
-              </tr>
-              <tr>
-                <td><code>OR</code> / <code>|</code></td>
-                <td><code>(rust OR golang OR python)</code></td>
-                <td>Matches either term. Must be uppercase in Google/Bing.</td>
-              </tr>
-              <tr>
-                <td><code>( ... )</code> (Grouping)</td>
-                <td><code>(site:github.com OR site:gitlab.com) &quot;docker&quot;</code></td>
-                <td>Combines complex boolean logic operations.</td>
-              </tr>
-              <tr>
-                <td><code>*</code> (Wildcard)</td>
-                <td><code>&quot;the * of artificial intelligence&quot;</code></td>
-                <td>Matches any word or sequence between terms (Google, Bing, Yandex).</td>
-              </tr>
-              <tr>
-                <td><code>..</code> (Number Range)</td>
-                <td><code>camera $300..$700</code> or <code>tesla 2020..2025</code></td>
-                <td>Matches numbers, prices, or years within a given interval.</td>
-              </tr>
-              <tr>
-                <td><code>AROUND(n)</code> (Proximity)</td>
-                <td><code>&quot;OpenAI&quot; AROUND(4) &quot;Anthropic&quot;</code></td>
-                <td>Finds pages where terms appear within <code>n</code> words of each other (Google, Yandex <code>/n</code>).</td>
-              </tr>
-            </tbody>
-          </table>
+          <div class="manual-heading">🚀 Quick Start Guide</div>
+          <p>
+            <strong>OmniSearch Pro</strong> transforms your search query into optimized, engine-specific URL structures with granular resolution filters, domain exclusion presets, filetype constraints, and deep-web operators across 15+ independent and uncensored search engines.
+          </p>
+          <ol style="margin-left: 1.5rem; display: flex; flex-direction: column; gap: 0.35rem; color: var(--text-secondary);">
+            <li><strong>Type keywords</strong> in the top search bar (e.g. <code>milkyway galaxy</code> or <code>climate report</code>).</li>
+            <li><strong>Select your search mode</strong> (Web, Images 8MP+, Videos, Documents, or Dorks).</li>
+            <li><strong>Toggle Preset Chips</strong> to instantly strip mainstream video sites, stock photo watermarks, or SEO content farms.</li>
+            <li>Click <strong>"Launch All"</strong> to open every engine simultaneously in tabs, or click any individual engine card to inspect and copy the exact generated URL.</li>
+          </ol>
         </div>
 
-        <!-- SECTION 2: TARGET & LOCATION OPERATORS -->
+        <!-- SECTION 2: SYNTAX CHEAT SHEET -->
         <div class="manual-section">
-          <div class="manual-heading">🌐 2. Location &amp; Structural Target Operators</div>
+          <div class="manual-heading">🔍 Universal Search Operator Cheat Sheet</div>
           <table class="syntax-table">
             <thead>
               <tr>
@@ -1744,399 +1446,97 @@
             </thead>
             <tbody>
               <tr>
-                <td><code>site:</code> / <code>-site:</code></td>
-                <td><code>site:arxiv.org</code> / <code>-site:pinterest.*</code></td>
-                <td>Restricts or excludes entire domains, subdomains, or TLDs.</td>
+                <td><code>-site:</code></td>
+                <td><code>-site:pinterest.com</code></td>
+                <td>Completely exclude results from a specific domain.</td>
+              </tr>
+              <tr>
+                <td><code>site:</code></td>
+                <td><code>site:arxiv.org machine learning</code></td>
+                <td>Restricts all results exclusively to the given website or TLD (e.g. <code>site:edu</code>, <code>site:gov</code>).</td>
+              </tr>
+              <tr>
+                <td><code>&quot;exact phrase&quot;</code></td>
+                <td><code>&quot;unidentified aerial phenomena&quot;</code></td>
+                <td>Forces strict character-by-character exact match.</td>
               </tr>
               <tr>
                 <td><code>filetype:</code> / <code>ext:</code></td>
-                <td><code>filetype:pdf &quot;machine learning&quot;</code></td>
-                <td>Limits search to specific document/data extensions (pdf, docx, xlsx, json, sql, etc.).</td>
+                <td><code>financial audit filetype:pdf</code></td>
+                <td>Finds direct downloadable documents (.pdf, .docx, .xlsx, .csv).</td>
               </tr>
               <tr>
-                <td><code>inurl:</code> / <code>allinurl:</code></td>
-                <td><code>inurl:/.git/config</code> or <code>allinurl:admin login</code></td>
-                <td>Finds keywords located in the page URL path.</td>
+                <td><code>-keyword</code></td>
+                <td><code>tesla -elon -musk -stock</code></td>
+                <td>Negative search: excludes any page containing the specified words.</td>
               </tr>
               <tr>
                 <td><code>intitle:</code> / <code>allintitle:</code></td>
-                <td><code>intitle:&quot;index of /&quot;</code></td>
-                <td>Matches strings inside the HTML <code>&lt;title&gt;</code> tag.</td>
+                <td><code>intitle:&quot;index of /&quot; (mkv|mp4)</code></td>
+                <td>Requires the specified string to appear inside the page HTML title.</td>
               </tr>
               <tr>
-                <td><code>intext:</code> / <code>allintext:</code></td>
-                <td><code>intext:&quot;API_KEY&quot;</code></td>
-                <td>Restricts matching to the body text of the webpage.</td>
+                <td><code>inurl:</code></td>
+                <td><code>inurl:wp-content/uploads</code></td>
+                <td>Matches strings within the website's URL path.</td>
+              </tr>
+              <tr>
+                <td><code>OR</code> / <code>|</code></td>
+                <td><code>(cats OR felines) AND nutrition</code></td>
+                <td>Boolean OR logic between multiple terms.</td>
               </tr>
             </tbody>
           </table>
         </div>
 
-        <!-- SECTION 3: IMAGE & VIDEO TBS PARAMETERS -->
+        <!-- SECTION 3: RESOLUTION & IMAGE SEARCH LOGIC -->
         <div class="manual-section">
-          <div class="manual-heading">🖼️ 3. Direct URL Parameter Breakdown</div>
+          <div class="manual-heading">🖼️ Image Resolution & Filter Logic</div>
+          <p>
+            When searching images with resolution filters (e.g., <strong>8MP</strong>), OmniSearch Pro synthesizes native engine query parameters:
+          </p>
           <div class="code-block">
-Google Images:  &amp;tbm=isch&amp;tbs=isz:lt,islt:8mp,iar:w,ift:png,ic:trans
-Bing Images:    /images/search?q=QUERY&amp;qft=+filterui:imagesize-custom_3840_2160+filterui:photo-transparent
-Yandex Images:  /images/search?text=QUERY&amp;isize=large&amp;itype=png
-Google Video:   &amp;tbm=vid&amp;tbs=dur:l,fmt:hd,cc:1
-Bing Video:     /videos/search?q=QUERY&amp;qft=+filterui:duration-long+filterui:resolution-high
+Google:  &amp;tbm=isch&amp;tbs=isz%3Alt%2Cislt%3A8mp (Minimum 8 MegaPixels / 3264x2448)
+Bing:    &amp;qft=+filterui:imagesize-custom_3840_2160+filterui:photo-photo
+Yandex:  &amp;isize=large&amp;itype=png
+SearXNG: &amp;categories=images
           </div>
         </div>
 
-        <!-- SECTION 4: HOW TO EDIT TEMPLATES & PRESETS IN CODE -->
+        <!-- SECTION 4: HOW TO EDIT PRESETS IN CODE -->
         <div class="manual-section">
-          <div class="manual-heading">🛠️ 4. Developer Guide: Adding Custom Dorks &amp; Presets in JS</div>
+          <div class="manual-heading">🛠️ Developer Guide: Adding & Customizing Presets in Code</div>
           <p>
-            All exclusion rules, dork templates, and search engine definitions are cleanly declared in standalone JavaScript objects at the beginning of the <code>&lt;script&gt;</code> block:
+            All exclusion rules and search engines are declared in clean JavaScript data structures at the beginning of the script. To add your own custom preset, simply add an object to <code>PRESETS_CONFIG</code>:
           </p>
           <div class="code-block">
-// 1. Add a new Dork Template to DORK_TEMPLATES:
+// Example: Adding a new preset to PRESETS_CONFIG
 {
-  id: "my_dork",
-  category: "cloud", // open_dir | academic | cloud | leaks | webcam | media | code | anti_spam
-  name: "Custom S3 Leak Hunt",
-  desc: "Locates public Amazon S3 buckets with backups",
-  template: 'site:s3.amazonaws.com "backup" "KEYWORD"'
-}
-
-// 2. Add a new Preset to PRESETS_CONFIG:
-{
-  id: "custom_preset",
-  name: "Exclude AI Content Generators",
-  icon: "🤖",
-  category: "web",
+  id: "exclude_ai_art",
+  name: "Exclude AI Art Sites",
+  icon: "🎨",
+  category: "images",
   defaultActive: false,
-  domains: ["civitai.com", "midjourney.com", "nightcafe.studio"],
-  tooltip: "Strips AI generative platforms"
+  domains: ["artstation.com", "deviantart.com", "midjourney.com", "civitai.com", "nightcafe.studio"],
+  tooltip: "Strips AI image generator showcases"
 }
           </div>
+          <p style="margin-top: 0.5rem;">
+            To add a new search engine, simply add an entry to <code>ENGINES_CONFIG</code> with its <code>buildUrl()</code> handler!
+          </p>
         </div>
 
       </div>
     </div>
   </div>
 
-  <!-- Toast Notification Container -->
+  <!-- Toast Notification System -->
   <div class="toast-container" id="toastContainer"></div>
 
   <!-- ======================================================================
-       11. JAVASCRIPT LOGIC, PRESETS, DORK TEMPLATES & ENGINES CONFIG
+       10. JAVASCRIPT LOGIC & ENGINE CONFIGURATIONS
        ====================================================================== -->
   <script>
-    /* ==========================================================================
-       CENTRAL CONFIGURATION: OPERATOR QUICK-INSERT LIST
-       ========================================================================== */
-    const OPERATORS_LIST = [
-      { op: "site:", insert: "site:", tooltip: "Restrict to domain or TLD (e.g. site:github.com or site:.edu)" },
-      { op: "-site:", insert: "-site:", tooltip: "Exclude domain from results (e.g. -site:pinterest.*)" },
-      { op: "filetype:", insert: "filetype:", tooltip: "Target file extension (e.g. filetype:pdf or filetype:env)" },
-      { op: "-filetype:", insert: "-filetype:", tooltip: "Exclude specific file extension (e.g. -filetype:html)" },
-      { op: '"" (Exact)', insert: '""', cursorOffset: 1, tooltip: "Exact phrase match (no synonyms or stemming)" },
-      { op: "intitle:", insert: 'intitle:""', cursorOffset: 9, tooltip: "Search in HTML title (e.g. intitle:\"index of /\")" },
-      { op: "inurl:", insert: "inurl:", tooltip: "Search in URL path (e.g. inurl:/.git/config)" },
-      { op: "intext:", insert: 'intext:""', cursorOffset: 8, tooltip: "Search only inside page body text" },
-      { op: "OR", insert: " OR ", tooltip: "Boolean OR condition (must be uppercase)" },
-      { op: "( )", insert: "()", cursorOffset: 1, tooltip: "Group logical conditions" },
-      { op: "* (Wildcard)", insert: " * ", tooltip: "Wildcard placeholder for any word or phrase" },
-      { op: ".. (Range)", insert: "2020..2026", tooltip: "Numeric or date range filter (e.g. $100..$500)" },
-      { op: "AROUND(n)", insert: " AROUND(5) ", tooltip: "Proximity operator: terms within n words of each other" },
-      { op: "after:YYYY-MM-DD", insert: "after:2025-01-01 ", isDate: true, tooltip: "Content published after date (Google/Bing)" },
-      { op: "before:YYYY-MM-DD", insert: "before:2024-12-31 ", isDate: true, tooltip: "Content published before date" }
-    ];
-
-    /* ==========================================================================
-       CENTRAL CONFIGURATION: ADVANCED DORK TEMPLATES
-       High-impact OSINT & research dork templates categorized cleanly!
-       ========================================================================== */
-    const DORK_CATEGORIES = [
-      { id: "open_dir", name: "📂 Open Dirs & Files" },
-      { id: "academic", name: "📚 Books & Research" },
-      { id: "cloud", name: "☁️ Cloud Storage" },
-      { id: "leaks", name: "🔒 Secrets & Leaks" },
-      { id: "webcam", name: "👁️ Webcams & IoT" },
-      { id: "media", name: "🎬 Direct Media" },
-      { id: "code", name: "💻 Clean Dev & Docs" },
-      { id: "anti_spam", name: "🚫 Anti-SEO & Human" }
-    ];
-
-    const DORK_TEMPLATES = [
-      // 1. OPEN DIRECTORIES / INDEX OF
-      {
-        id: "open_dir_docs",
-        category: "open_dir",
-        name: "Open Directory Books & PDFs",
-        desc: "Unindexed open file servers hosting PDF, EPUB, and MOBI digital books.",
-        template: 'intitle:"index of /" "parent directory" (pdf|epub|mobi) "KEYWORD"'
-      },
-      {
-        id: "open_dir_audio",
-        category: "open_dir",
-        name: "Lossless Audio Directories",
-        desc: "Direct music / audio open servers without HTML scrapers.",
-        template: 'intitle:"index of" (mp3|flac|wav|m4a) "KEYWORD" -html -htm -php -asp'
-      },
-      {
-        id: "open_dir_video",
-        category: "open_dir",
-        name: "Direct Video / Movie Servers",
-        desc: "Unindexed MP4, MKV, and AVI server folders with last modified dates.",
-        template: 'intitle:"index of /" "last modified" (mp4|mkv|avi) "KEYWORD" -inurl:(jsp|php|html)'
-      },
-      {
-        id: "open_dir_software",
-        category: "open_dir",
-        name: "Software & Archive Repositories",
-        desc: "Open directory file trees hosting ZIP, TAR.GZ, 7Z, and ISO files.",
-        template: 'intitle:"index of /" (zip|tar.gz|7z|iso|rar) "KEYWORD"'
-      },
-      {
-        id: "open_dir_datasets",
-        category: "open_dir",
-        name: "Public Datasets & Database Dumps",
-        desc: "Finds exposed data stores containing CSV, SQLite, JSON, and Parquet sets.",
-        template: 'intitle:"index of /" "datasets" (csv|sqlite|json|parquet) "KEYWORD"'
-      },
-      {
-        id: "open_dir_dcim",
-        category: "open_dir",
-        name: "Raw Unindexed Photo Folders (DCIM)",
-        desc: "Locates unindexed camera storage and photo directories.",
-        template: '"parent directory" intext:"DCIM" "KEYWORD"'
-      },
-
-      // 2. FREE E-BOOKS, ACADEMIC PAPERS & WHITEPAPERS
-      {
-        id: "academic_textbooks",
-        category: "academic",
-        name: "Direct Downloadable PDF Textbooks",
-        desc: "Finds textbooks while filtering commercial bookstores and review hubs.",
-        template: 'filetype:pdf (intitle:"textbook" OR intitle:"introduction to") "KEYWORD" -site:amazon.* -site:goodreads.com'
-      },
-      {
-        id: "academic_papers",
-        category: "academic",
-        name: "University & Preprint Research Papers",
-        desc: "Restricts results to educational TLDs, arXiv, bioRxiv, and peer preprints.",
-        template: '(site:edu OR site:ac.uk OR site:arxiv.org OR site:biorxiv.org) filetype:pdf "KEYWORD"'
-      },
-      {
-        id: "academic_slides",
-        category: "academic",
-        name: "Technical Presentation Slide Decks",
-        desc: "Finds architectural and technical slides in PPTX and PDF formats.",
-        template: '(filetype:ppt OR filetype:pptx OR filetype:pdf) intitle:"architecture" "KEYWORD"'
-      },
-      {
-        id: "academic_audits",
-        category: "academic",
-        name: "Whitepapers & Security Audit Reports",
-        desc: "Finds official security assessments, whitepapers, and formal audits.",
-        template: '(filetype:pdf OR filetype:docx) (intitle:"whitepaper" OR intitle:"security audit" OR intitle:"annual report") "KEYWORD"'
-      },
-      {
-        id: "academic_gov_reports",
-        category: "academic",
-        name: "Government & NGO Intelligence Reports",
-        desc: "Searches official governmental and global agency publications.",
-        template: '(site:gov OR site:un.org OR site:who.int OR site:europa.eu) filetype:pdf "KEYWORD"'
-      },
-
-      // 3. EXPOSED CLOUD STORAGE
-      {
-        id: "cloud_gdrive_folders",
-        category: "cloud",
-        name: "Shared Google Drive Folders",
-        desc: "Discovers publicly shared Google Drive directory collections.",
-        template: 'site:drive.google.com/drive/folders/ "KEYWORD"'
-      },
-      {
-        id: "cloud_gdrive_files",
-        category: "cloud",
-        name: "Shared Google Drive Direct Files",
-        desc: "Finds public direct Google Drive document and file links.",
-        template: 'site:drive.google.com/file/d/ "KEYWORD"'
-      },
-      {
-        id: "cloud_aws_s3",
-        category: "cloud",
-        name: "Public AWS S3 Cloud Buckets",
-        desc: "Exposed Amazon S3 bucket storage hosting files or archives.",
-        template: 'site:s3.amazonaws.com "KEYWORD"'
-      },
-      {
-        id: "cloud_gcp_storage",
-        category: "cloud",
-        name: "Google Cloud Storage Buckets",
-        desc: "Exposed Google Cloud storage files, databases, and backups.",
-        template: 'site:storage.googleapis.com ("backup" OR "database" OR "KEYWORD")'
-      },
-      {
-        id: "cloud_azure_blob",
-        category: "cloud",
-        name: "Microsoft Azure Blob Storage",
-        desc: "Public Microsoft Azure blob storage exports and invoices.",
-        template: 'site:blob.core.windows.net ("invoice" OR "export" OR "KEYWORD")'
-      },
-      {
-        id: "cloud_mega",
-        category: "cloud",
-        name: "Mega.nz Shared Folders",
-        desc: "Public Mega.nz cloud shared archives and dataset collections.",
-        template: 'site:mega.nz/folder/ "KEYWORD"'
-      },
-      {
-        id: "cloud_dropbox",
-        category: "cloud",
-        name: "Dropbox & Box Public Shares",
-        desc: "Finds shared Dropbox and Box.com shared asset links.",
-        template: '(site:dropbox.com/s/ OR site:app.box.com/s/) "KEYWORD"'
-      },
-
-      // 4. LEAKED SECRETS, CONFIGS & CREDENTIALS
-      {
-        id: "leaks_env_secrets",
-        category: "leaks",
-        name: "Exposed .env & API Key Files",
-        desc: "Discovers exposed environment configuration files with credentials.",
-        template: 'filetype:env ("DB_PASSWORD" OR "AWS_SECRET_KEY" OR "API_KEY") -site:github.com'
-      },
-      {
-        id: "leaks_sql_dumps",
-        category: "leaks",
-        name: "Exposed SQL Database Dumps",
-        desc: "Finds leaked or misconfigured SQL insert statements with member tables.",
-        template: 'filetype:sql "INSERT INTO" ("admin"|"users"|"members") ("password"|"passwd"|"hash")'
-      },
-      {
-        id: "leaks_git_config",
-        category: "leaks",
-        name: "Exposed .git/config Endpoints",
-        desc: "Discovers exposed Git source control directories on live servers.",
-        template: 'inurl:/.git/config "repository"'
-      },
-      {
-        id: "leaks_server_logs",
-        category: "leaks",
-        name: "Public Server & Error Logs",
-        desc: "Finds live access and error logs exposing root accounts and traces.",
-        template: 'filetype:log inurl:error.log OR inurl:access.log "root"'
-      },
-      {
-        id: "leaks_pastebin",
-        category: "leaks",
-        name: "Public Paste Credential Dumps",
-        desc: "Searches Pastebin, Ghostbin, and JustPaste for credentials and keys.",
-        template: '(site:pastebin.com OR site:ghostbin.com OR site:justpaste.it) ("password" OR "api_key" OR "leak") "KEYWORD"'
-      },
-
-      // 5. LIVE WEBCAMS & IOT INTERFACES
-      {
-        id: "webcam_network_cams",
-        category: "webcam",
-        name: "Network Video Cameras (Axis / Sony)",
-        desc: "Locates live IP webcam streaming viewer frames.",
-        template: 'inurl:"view/index.shtml" OR inurl:"ViewerFrame?Mode="'
-      },
-      {
-        id: "webcam_live_view",
-        category: "webcam",
-        name: "LiveCam & Security Web Interfaces",
-        desc: "Finds live video feeds and network camera dashboards.",
-        template: 'intitle:"Live View / - AXIS" OR intitle:"Network Camera NetworkCamera"'
-      },
-      {
-        id: "webcam_routers",
-        category: "webcam",
-        name: "Exposed Router & Gateway Consoles",
-        desc: "Identifies exposed RouterOS and embedded web configuration portals.",
-        template: 'intitle:"RouterOS router configuration page" OR inurl:"/html/login.html"'
-      },
-      {
-        id: "webcam_admin_panels",
-        category: "webcam",
-        name: "Web Admin & Dashboard Consoles",
-        desc: "Finds unindexed server dashboard and administrator login panels.",
-        template: 'intitle:"dashboard" inurl:admin (inurl:login OR inurl:auth)'
-      },
-
-      // 6. DIRECT MEDIA FILES
-      {
-        id: "media_clean_video",
-        category: "media",
-        name: "Clean Web Video (No Mainstream Social)",
-        desc: "Finds independent videos while stripping YouTube, TikTok, Reels, etc.",
-        template: '"KEYWORD" -site:youtube.com -site:youtu.be -site:tiktok.com -site:instagram.com -site:facebook.com -site:twitter.com -site:x.com -site:vimeo.com'
-      },
-      {
-        id: "media_direct_stream",
-        category: "media",
-        name: "Direct MP4/MKV/WEBM Video Streams",
-        desc: "Locates raw video files without web landing wrappers.",
-        template: 'intitle:"index of" (mp4|mkv|webm|avi) "KEYWORD" -html -htm -php -asp'
-      },
-      {
-        id: "media_niche_platforms",
-        category: "media",
-        name: "Niche & Uncensored Video Archives",
-        desc: "Searches Archive.org, Dailymotion, Rumble, Bitchute, and Odysee.",
-        template: '"KEYWORD" (site:archive.org OR site:dailymotion.com OR site:bitchute.com OR site:rumble.com OR site:odysee.com)'
-      },
-      {
-        id: "media_lossless_audio",
-        category: "media",
-        name: "Direct Lossless FLAC/WAV Audio",
-        desc: "Finds downloadable lossless audio tracks skipping streaming stores.",
-        template: '(filetype:flac OR filetype:wav OR filetype:alac) "KEYWORD" -site:spotify.com -site:apple.com'
-      },
-
-      // 7. CLEAN PROGRAMMING & DOCUMENTATION
-      {
-        id: "code_clean_docs",
-        category: "code",
-        name: "Clean Developer Documentation Only",
-        desc: "Restricts results to official documentation and primary open-source hubs.",
-        template: '"KEYWORD" (site:github.com OR site:gitlab.com OR site:docs.rs OR site:readthedocs.io OR site:developer.mozilla.org OR site:stackoverflow.com)'
-      },
-      {
-        id: "code_source_repos",
-        category: "code",
-        name: "Source Code Configs & Dockerfiles",
-        desc: "Locates real-world configuration files across GitHub, GitLab, and SourceHut.",
-        template: '(site:github.com OR site:gitlab.com OR site:sourcehut.org) filename:docker-compose.yml "KEYWORD"'
-      },
-      {
-        id: "code_rfcs",
-        category: "code",
-        name: "Technical RFCs & Open Standards",
-        desc: "Searches IETF, W3C, and ISO technical standards and specifications.",
-        template: '(site:ietf.org OR site:w3.org OR site:iso.org) "KEYWORD"'
-      },
-
-      // 8. ANTI-SEO & HUMAN DISCUSSION
-      {
-        id: "anti_spam_seo_buster",
-        category: "anti_spam",
-        name: "The Ultimate SEO-Buster Spam Filter",
-        desc: "Aggressively strips Pinterest, Quora, GeeksForGeeks, Medium, and ad farms.",
-        template: '-site:pinterest.* -site:quora.com -site:geeksforgeeks.org -site:w3schools.com -site:tutorialspoint.com -site:medium.com -site:linkedin.com "KEYWORD"'
-      },
-      {
-        id: "anti_spam_human_reviews",
-        category: "anti_spam",
-        name: "Human Discussion & Honest Reviews",
-        desc: "Bypasses affiliate review spam blogs and prioritizes human bulletin boards.",
-        template: '"KEYWORD" (site:reddit.com OR site:news.ycombinator.com OR site:lobste.rs OR site:tildes.net OR site:forum.*) -site:pinterest.*'
-      },
-      {
-        id: "anti_spam_indie_web",
-        category: "anti_spam",
-        name: "Non-Commercial Indie & Educational Web",
-        desc: "Forces results from .org and .edu domains while excluding retail giants.",
-        template: '(site:.org OR site:.edu) -site:amazon.* -site:ebay.* -site:walmart.* "KEYWORD"'
-      }
-    ];
-
     /* ==========================================================================
        CENTRAL CONFIGURATION: SEARCH PRESETS
        Easily add, modify, or remove presets here!
@@ -2189,12 +1589,13 @@ Bing Video:     /videos/search?q=QUERY&amp;qft=+filterui:duration-long+filterui:
         category: "images",
         defaultActive: true,
         domains: [
-          "pinterest.com", "pinterest.*", "instagram.com", "facebook.com", "twitter.com", "x.com", "tiktok.com"
+          "pinterest.com", "pinterest.co.uk", "pinterest.ca", "pinterest.de",
+          "instagram.com", "facebook.com", "twitter.com", "x.com", "tiktok.com"
         ],
         tooltip: "Strips Pinterest redirection loops and social media image posts."
       },
 
-      // 3. GENERAL WEB & ANTI-SEO PRESETS
+      // 3. GENERAL WEB PRESETS
       {
         id: "exclude_content_farms",
         name: "Exclude SEO Spam & Content Farms",
@@ -2203,7 +1604,7 @@ Bing Video:     /videos/search?q=QUERY&amp;qft=+filterui:duration-long+filterui:
         defaultActive: false,
         domains: [
           "quora.com", "pinterest.com", "geeksforgeeks.org", "w3schools.com",
-          "tutorialspoint.com", "wikihow.com", "softonic.com", "cnet.com", "ehow.com", "medium.com"
+          "wikihow.com", "softonic.com", "cnet.com", "ehow.com", "answers.com"
         ],
         tooltip: "Omits clickbait content farms and autogenerated listicles."
       },
@@ -2231,23 +1632,13 @@ Bing Video:     /videos/search?q=QUERY&amp;qft=+filterui:duration-long+filterui:
       },
       {
         id: "include_forums_discussions",
-        name: "High-Signal Human Discussions",
+        name: "High-Signal Discussions Only",
         icon: "💬",
         category: "discussions",
         type: "inclusion",
         defaultActive: true,
         clause: "(site:reddit.com OR site:news.ycombinator.com OR site:lobste.rs OR site:tildes.net OR site:stackexchange.com OR site:forum.*)",
         tooltip: "Searches human discussions on HackerNews, Reddit, Lobsters, Tildes, and bulletin boards."
-      },
-      {
-        id: "include_clean_dev",
-        name: "Clean Code & Repositories Only",
-        icon: "💻",
-        category: "web",
-        type: "inclusion",
-        defaultActive: false,
-        clause: "(site:github.com OR site:gitlab.com OR site:docs.rs OR site:developer.mozilla.org OR site:stackoverflow.com)",
-        tooltip: "Restricts results strictly to primary open-source code and official documentation."
       }
     ];
 
@@ -2264,7 +1655,7 @@ Bing Video:     /videos/search?q=QUERY&amp;qft=+filterui:duration-long+filterui:
         badgeClass: "badge-tag",
         avatarBg: "linear-gradient(135deg, #4285F4 0%, #EA4335 100%)",
         avatarLetter: "G",
-        description: "Full operator, tbs parameters, and deep index.",
+        description: "Standard web index with full image/video/tbs parameter synthesis.",
         supports: ["web", "images", "videos", "documents", "news", "discussions", "dorks"],
         buildUrl: (q, type, filters) => {
           let baseUrl = "https://www.google.com/search?q=" + encodeURIComponent(q);
@@ -2272,20 +1663,15 @@ Bing Video:     /videos/search?q=QUERY&amp;qft=+filterui:duration-long+filterui:
           if (type === "images") {
             baseUrl += "&tbm=isch";
             let tbsParts = [];
-            // Megapixels resolution
+            // Resolution handling
             if (filters.imgResolution === "2mp") tbsParts.push("isz:lt,islt:2mp");
             else if (filters.imgResolution === "4mp") tbsParts.push("isz:lt,islt:4mp");
             else if (filters.imgResolution === "8mp") tbsParts.push("isz:lt,islt:8mp");
-            else if (filters.imgResolution === "10mp") tbsParts.push("isz:lt,islt:10mp");
             else if (filters.imgResolution === "12mp") tbsParts.push("isz:lt,islt:12mp");
-            else if (filters.imgResolution === "15mp") tbsParts.push("isz:lt,islt:15mp");
             else if (filters.imgResolution === "16mp") tbsParts.push("isz:lt,islt:16mp");
             else if (filters.imgResolution === "20mp") tbsParts.push("isz:lt,islt:20mp");
             else if (filters.imgResolution === "40mp") tbsParts.push("isz:lt,islt:40mp");
-            else if (filters.imgResolution === "70mp") tbsParts.push("isz:lt,islt:70mp");
             else if (filters.imgResolution === "large") tbsParts.push("isz:l");
-            else if (filters.imgResolution === "medium") tbsParts.push("isz:m");
-            else if (filters.imgResolution === "icon") tbsParts.push("isz:i");
 
             // Format
             if (filters.imgFormat && filters.imgFormat !== "any") {
@@ -2308,9 +1694,7 @@ Bing Video:     /videos/search?q=QUERY&amp;qft=+filterui:duration-long+filterui:
             if (filters.imgAspect === "photo") tbsParts.push("itp:photo");
             else if (filters.imgAspect === "clipart") tbsParts.push("itp:clipart");
             else if (filters.imgAspect === "lineart") tbsParts.push("itp:lineart");
-            else if (filters.imgAspect === "animated") tbsParts.push("itp:animated");
             else if (filters.imgAspect === "wide") tbsParts.push("iar:w");
-            else if (filters.imgAspect === "panoramic") tbsParts.push("iar:xw");
             else if (filters.imgAspect === "tall") tbsParts.push("iar:t");
             else if (filters.imgAspect === "square") tbsParts.push("iar:s");
 
@@ -2324,8 +1708,8 @@ Bing Video:     /videos/search?q=QUERY&amp;qft=+filterui:duration-long+filterui:
             else if (filters.vidDuration === "medium") tbsParts.push("dur:m");
             else if (filters.vidDuration === "long") tbsParts.push("dur:l");
 
-            if (filters.vidQuality === "hd") tbsParts.push("fmt:hd");
-            else if (filters.vidQuality === "cc") tbsParts.push("cc:1");
+            if (filters.vidQuality === "hd") tbsParts.push("src:hd");
+            else if (filters.vidQuality === "cc") tbsParts.push("src:cc");
 
             if (filters.vidRecency && filters.vidRecency !== "any") {
               tbsParts.push("qdr:" + filters.vidRecency);
@@ -2348,44 +1732,30 @@ Bing Video:     /videos/search?q=QUERY&amp;qft=+filterui:duration-long+filterui:
         badgeClass: "badge-tag",
         avatarBg: "linear-gradient(135deg, #008373 0%, #00a4ef 100%)",
         avatarLetter: "B",
-        description: "Rich operator support with qft custom media filters.",
+        description: "Rich operator support with customizable media filters.",
         supports: ["web", "images", "videos", "documents", "news", "discussions", "dorks"],
         buildUrl: (q, type, filters) => {
           if (type === "images") {
             let url = "https://www.bing.com/images/search?q=" + encodeURIComponent(q) + "&form=HDRSC2";
             let qft = [];
-            if (filters.imgResolution === "8mp" || filters.imgResolution === "10mp" || filters.imgResolution === "12mp" || filters.imgResolution === "15mp" || filters.imgResolution === "16mp" || filters.imgResolution === "20mp" || filters.imgResolution === "40mp" || filters.imgResolution === "70mp") {
+            if (filters.imgResolution === "8mp" || filters.imgResolution === "12mp" || filters.imgResolution === "16mp" || filters.imgResolution === "20mp" || filters.imgResolution === "40mp") {
               qft.push("filterui:imagesize-custom_3840_2160");
             } else if (filters.imgResolution === "2mp" || filters.imgResolution === "4mp" || filters.imgResolution === "large") {
               qft.push("filterui:imagesize-large");
             }
-            if (filters.imgAspect === "wide" || filters.imgAspect === "panoramic") qft.push("filterui:aspect-wide");
+            if (filters.imgAspect === "wide") qft.push("filterui:aspect-wide");
             else if (filters.imgAspect === "tall") qft.push("filterui:aspect-tall");
             else if (filters.imgAspect === "square") qft.push("filterui:aspect-square");
             
-            if (filters.imgColor === "trans") qft.push("filterui:photo-transparent");
-            else if (filters.imgColor === "gray") qft.push("filterui:color2-BW");
-
-            if (filters.imgTime === "d") qft.push("filterui:age-lt1440");
-            else if (filters.imgTime === "w") qft.push("filterui:age-lt10080");
-            else if (filters.imgTime === "m") qft.push("filterui:age-lt43200");
-            else if (filters.imgTime === "y") qft.push("filterui:age-lt525600");
+            if (filters.imgColor === "trans") qft.push("filterui:color2-transparent");
+            else if (filters.imgColor === "gray") qft.push("filterui:color2-bw");
 
             if (qft.length > 0) {
               url += "&qft=" + encodeURIComponent("+" + qft.join("+"));
             }
             return url;
           } else if (type === "videos") {
-            let url = "https://www.bing.com/videos/search?q=" + encodeURIComponent(q);
-            let qft = [];
-            if (filters.vidDuration === "short") qft.push("filterui:duration-short");
-            else if (filters.vidDuration === "medium") qft.push("filterui:duration-medium");
-            else if (filters.vidDuration === "long") qft.push("filterui:duration-long");
-            if (filters.vidQuality === "hd") qft.push("filterui:resolution-high");
-            if (qft.length > 0) {
-              url += "&qft=" + encodeURIComponent("+" + qft.join("+"));
-            }
-            return url;
+            return "https://www.bing.com/videos/search?q=" + encodeURIComponent(q);
           } else if (type === "news") {
             return "https://www.bing.com/news/search?q=" + encodeURIComponent(q);
           }
@@ -2438,7 +1808,7 @@ Bing Video:     /videos/search?q=QUERY&amp;qft=+filterui:duration-long+filterui:
         badgeClass: "badge-privacy",
         avatarBg: "linear-gradient(135deg, #0550DA 0%, #307AF7 100%)",
         avatarLetter: "S",
-        description: "Delivers Google search quality without cookies or tracking.",
+        description: "Delivers full Google search quality without cookies or tracking.",
         supports: ["web", "images", "videos", "documents", "news", "discussions", "dorks"],
         buildUrl: (q, type) => {
           let url = "https://www.startpage.com/sp/search?query=" + encodeURIComponent(q);
@@ -2453,16 +1823,15 @@ Bing Video:     /videos/search?q=QUERY&amp;qft=+filterui:duration-long+filterui:
         id: "mojeek",
         name: "Mojeek",
         category: "uncensored",
-        badge: "8B Independent Crawler",
+        badge: "Independent Crawler",
         badgeClass: "badge-crawler",
         avatarBg: "linear-gradient(135deg, #FF6F00 0%, #FFA000 100%)",
         avatarLetter: "M",
-        description: "Independent UK crawler built from scratch with zero tracking bias.",
+        description: "Independent UK crawler built from scratch with zero algorithmic bias.",
         supports: ["web", "images", "documents", "news", "discussions", "dorks"],
         buildUrl: (q, type) => {
           let url = "https://www.mojeek.com/search?q=" + encodeURIComponent(q);
           if (type === "news") url += "&fmt=news";
-          else if (type === "images") url += "&fmt=images";
           return url;
         }
       },
@@ -2475,29 +1844,10 @@ Bing Video:     /videos/search?q=QUERY&amp;qft=+filterui:duration-long+filterui:
         badgeClass: "badge-uncensored",
         avatarBg: "linear-gradient(135deg, #0D9488 0%, #14B8A6 100%)",
         avatarLetter: "Mg",
-        description: "Text-heavy index penalizing modern SEO spam and ad farms.",
+        description: "Unique text-heavy search engine indexing non-commercial indie websites.",
         supports: ["web", "documents", "discussions", "dorks"],
         buildUrl: (q) => {
           return "https://search.marginalia.nu/search?query=" + encodeURIComponent(q);
-        }
-      },
-
-      {
-        id: "dogpile",
-        name: "Dogpile",
-        category: "specialized",
-        badge: "Metasearch Hub",
-        badgeClass: "badge-tag",
-        avatarBg: "linear-gradient(135deg, #10B981 0%, #059669 100%)",
-        avatarLetter: "Dp",
-        description: "Aggregates results simultaneously across Google and Yahoo indexes.",
-        supports: ["web", "images", "videos", "news", "dorks"],
-        buildUrl: (q, type) => {
-          let url = "https://www.dogpile.com/serp?q=" + encodeURIComponent(q);
-          if (type === "images") url += "&qc=images";
-          else if (type === "videos") url += "&qc=video";
-          else if (type === "news") url += "&qc=news";
-          return url;
         }
       },
 
@@ -2529,18 +1879,11 @@ Bing Video:     /videos/search?q=QUERY&amp;qft=+filterui:duration-long+filterui:
         buildUrl: (q, type, filters) => {
           if (type === "images") {
             let url = "https://yandex.com/images/search?text=" + encodeURIComponent(q);
-            if (filters.imgResolution === "8mp" || filters.imgResolution === "10mp" || filters.imgResolution === "12mp" || filters.imgResolution === "16mp" || filters.imgResolution === "large") {
+            if (filters.imgResolution === "8mp" || filters.imgResolution === "12mp" || filters.imgResolution === "large") {
               url += "&isize=large";
             }
             if (filters.imgFormat && filters.imgFormat !== "any") {
               url += "&itype=" + filters.imgFormat;
-            }
-            if (filters.imgAspect === "wide" || filters.imgAspect === "panoramic") {
-              url += "&iorient=horizontal";
-            } else if (filters.imgAspect === "tall") {
-              url += "&iorient=vertical";
-            } else if (filters.imgAspect === "square") {
-              url += "&iorient=square";
             }
             return url;
           } else if (type === "videos") {
@@ -2567,7 +1910,6 @@ Bing Video:     /videos/search?q=QUERY&amp;qft=+filterui:duration-long+filterui:
           else if (type === "videos") cat = "videos";
           else if (type === "news") cat = "news";
           else if (type === "documents") cat = "files";
-          else if (type === "dorks") cat = "it";
           return `${instance}/search?q=${encodeURIComponent(q)}&categories=${cat}`;
         }
       },
@@ -2580,7 +1922,7 @@ Bing Video:     /videos/search?q=QUERY&amp;qft=+filterui:duration-long+filterui:
         badgeClass: "badge-privacy",
         avatarBg: "linear-gradient(135deg, #5C6BC0 0%, #3949AB 100%)",
         avatarLetter: "Q",
-        description: "European search engine respecting privacy with no profiling.",
+        description: "European search engine respecting privacy with no ad profiling.",
         supports: ["web", "images", "videos", "documents", "news", "discussions"],
         buildUrl: (q, type) => {
           let tab = "web";
@@ -2632,7 +1974,7 @@ Bing Video:     /videos/search?q=QUERY&amp;qft=+filterui:duration-long+filterui:
         badgeClass: "badge-custom",
         avatarBg: "linear-gradient(135deg, #374151 0%, #111827 100%)",
         avatarLetter: "🏛️",
-        description: "Search millions of free books, movies, audio, and web archives.",
+        description: "Search millions of free books, movies, audio, and archived web pages.",
         supports: ["web", "videos", "documents", "dorks"],
         buildUrl: (q, type) => {
           let mediatype = "";
@@ -2648,8 +1990,7 @@ Bing Video:     /videos/search?q=QUERY&amp;qft=+filterui:duration-long+filterui:
        ========================================================================== */
     const state = {
       query: "",
-      searchType: "web", // web | dorks | images | videos | documents | news | discussions
-      activeDorkCategory: "open_dir",
+      searchType: "web", // web | images | videos | documents | news | discussions | dorks
       activePresets: new Set(),
       activeFiletypes: new Set(["pdf"]),
       customFiletype: "",
@@ -2657,6 +1998,7 @@ Bing Video:     /videos/search?q=QUERY&amp;qft=+filterui:duration-long+filterui:
       customIncludeSite: "",
       exactPhrase: "",
       excludeWords: "",
+      activeDork: "",
       
       // Image filters
       imgResolution: "8mp",
@@ -2680,160 +2022,12 @@ Bing Video:     /videos/search?q=QUERY&amp;qft=+filterui:duration-long+filterui:
        ========================================================================== */
     document.addEventListener("DOMContentLoaded", () => {
       loadSavedState();
-      initOperatorToolbar();
-      initDorkCategories();
-      renderDorkCards();
       initPresets();
       initUIEventListeners();
       updateSearchTypeUI();
       renderEngineCards();
       updateEngineCountBadge();
     });
-
-    // Initialize Operator Quick-Insert Chips
-    function initOperatorToolbar() {
-      const container = document.getElementById("operatorChipsBar");
-      container.innerHTML = "";
-
-      OPERATORS_LIST.forEach(item => {
-        const btn = document.createElement("button");
-        btn.type = "button";
-        btn.className = `op-chip ${item.isDate ? "op-chip-date" : "op-chip-accent"}`;
-        btn.title = item.tooltip;
-        btn.innerText = item.op;
-        
-        btn.addEventListener("click", () => {
-          insertOperatorAtCursor(item.insert, item.cursorOffset);
-        });
-
-        container.appendChild(btn);
-      });
-    }
-
-    function insertOperatorAtCursor(textToInsert, cursorOffset) {
-      const input = document.getElementById("mainSearchInput");
-      const start = input.selectionStart || 0;
-      const end = input.selectionEnd || 0;
-      const val = input.value;
-
-      // Handle wrapping selected text in quotes
-      if (textToInsert === '""' && start !== end) {
-        const selected = val.substring(start, end);
-        input.value = val.substring(0, start) + `"${selected}"` + val.substring(end);
-        input.selectionStart = start + 1;
-        input.selectionEnd = end + 1;
-      } else {
-        const spacerBefore = (start > 0 && val[start - 1] !== " " && !val.substring(0, start).endsWith(":") && textToInsert !== '""') ? " " : "";
-        input.value = val.substring(0, start) + spacerBefore + textToInsert + val.substring(end);
-        const newPos = cursorOffset ? start + spacerBefore.length + cursorOffset : start + spacerBefore.length + textToInsert.length;
-        input.selectionStart = newPos;
-        input.selectionEnd = newPos;
-      }
-
-      state.query = input.value;
-      document.getElementById("clearInputBtn").style.display = state.query.length > 0 ? "block" : "none";
-      input.focus();
-      renderEngineCards();
-      showToast(`Inserted operator '${textToInsert.trim()}'`);
-    }
-
-    // Initialize Dork Template Category Tabs
-    function initDorkCategories() {
-      const nav = document.getElementById("dorkCategoriesNav");
-      nav.innerHTML = "";
-
-      DORK_CATEGORIES.forEach(cat => {
-        const btn = document.createElement("button");
-        btn.type = "button";
-        btn.className = `dork-cat-btn ${state.activeDorkCategory === cat.id ? "active" : ""}`;
-        btn.innerText = cat.name;
-        btn.addEventListener("click", () => {
-          state.activeDorkCategory = cat.id;
-          initDorkCategories();
-          renderDorkCards();
-        });
-        nav.appendChild(btn);
-      });
-    }
-
-    // Render Dork Cards for Active Category
-    function renderDorkCards() {
-      const grid = document.getElementById("dorkCardsGrid");
-      grid.innerHTML = "";
-
-      const templates = DORK_TEMPLATES.filter(t => t.category === state.activeDorkCategory);
-
-      templates.forEach(item => {
-        const card = document.createElement("div");
-        card.className = "dork-card";
-        card.innerHTML = `
-          <div class="dork-card-header">
-            <div class="dork-card-title">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
-              ${escapeHtml(item.name)}
-            </div>
-          </div>
-          <div class="dork-card-desc">${escapeHtml(item.desc)}</div>
-          <div class="dork-code-box">${escapeHtml(item.template)}</div>
-          <div class="dork-card-actions">
-            <button class="dork-apply-btn" title="Inject dork into search box">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
-              Apply Dork
-            </button>
-            <button class="btn btn-secondary btn-sm copy-dork-btn" title="Copy raw dork string">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-            </button>
-          </div>
-        `;
-
-        // Apply Button
-        card.querySelector(".dork-apply-btn").addEventListener("click", () => {
-          applyDorkTemplate(item.template);
-        });
-
-        // Copy Button
-        card.querySelector(".copy-dork-btn").addEventListener("click", () => {
-          navigator.clipboard.writeText(item.template).then(() => {
-            showToast(`Copied dork template to clipboard!`);
-          });
-        });
-
-        grid.appendChild(card);
-      });
-    }
-
-    // Apply Dork Template to Input Bar with Smart Keyword Preservation
-    function applyDorkTemplate(templateStr) {
-      const input = document.getElementById("mainSearchInput");
-      const currentVal = input.value.trim();
-
-      let finalDork = templateStr;
-      
-      // If user has typed free text without operators, replace "KEYWORD" placeholder
-      if (currentVal && !currentVal.includes(":") && !currentVal.includes('"') && !currentVal.startsWith("-")) {
-        finalDork = templateStr.replace(/"KEYWORD"/g, `"${currentVal}"`).replace(/KEYWORD/g, currentVal);
-      } else if (!currentVal) {
-        // If empty, replace placeholder with generic quote and place cursor inside
-        finalDork = templateStr.replace(/"KEYWORD"/g, '""');
-      }
-
-      input.value = finalDork;
-      state.query = finalDork;
-      document.getElementById("clearInputBtn").style.display = "block";
-
-      // If quotes were placed, move cursor between them
-      const quoteIndex = finalDork.indexOf('""');
-      if (quoteIndex !== -1) {
-        input.focus();
-        input.selectionStart = quoteIndex + 1;
-        input.selectionEnd = quoteIndex + 1;
-      } else {
-        input.focus();
-      }
-
-      renderEngineCards();
-      showToast("Applied Dork Template to search query!");
-    }
 
     // Initialize Preset Toggles
     function initPresets() {
@@ -2922,6 +2116,7 @@ Bing Video:     /videos/search?q=QUERY&amp;qft=+filterui:duration-long+filterui:
         state.customIncludeSite = "";
         state.exactPhrase = "";
         state.excludeWords = "";
+        state.activeDork = "";
         state.imgResolution = "8mp";
         state.imgFormat = "any";
         state.imgTime = "any";
@@ -2958,7 +2153,7 @@ Bing Video:     /videos/search?q=QUERY&amp;qft=+filterui:duration-long+filterui:
 
         updateSearchTypeUI();
         renderEngineCards();
-        showToast("Reset all filters, queries & presets to default.");
+        showToast("Reset all filters & presets to default.");
       });
 
       // SearXNG Instance Custom URL Config Prompt
@@ -3082,6 +2277,23 @@ Bing Video:     /videos/search?q=QUERY&amp;qft=+filterui:duration-long+filterui:
         renderEngineCards();
       });
 
+      // Dorks Presets
+      const dorkChips = document.querySelectorAll("#dorkPresetsGroup .chip-toggle");
+      dorkChips.forEach(chip => {
+        chip.addEventListener("click", () => {
+          const dork = chip.dataset.dork;
+          if (state.activeDork === dork) {
+            state.activeDork = "";
+            chip.classList.remove("active-include");
+          } else {
+            dorkChips.forEach(c => c.classList.remove("active-include"));
+            state.activeDork = dork;
+            chip.classList.add("active-include");
+          }
+          renderEngineCards();
+        });
+      });
+
       // Advanced Input Bars
       document.getElementById("customExcludeSites").addEventListener("input", (e) => {
         state.customExcludeSites = e.target.value.trim();
@@ -3142,6 +2354,7 @@ Bing Video:     /videos/search?q=QUERY&amp;qft=+filterui:duration-long+filterui:
 
     // Switch panels based on active Search Type
     function updateSearchTypeUI() {
+      // Hide all panels
       document.querySelectorAll(".filter-panel").forEach(p => p.classList.remove("active"));
       
       const panel = document.getElementById("panel-" + state.searchType);
@@ -3168,7 +2381,7 @@ Bing Video:     /videos/search?q=QUERY&amp;qft=+filterui:duration-long+filterui:
     function buildMasterQuery() {
       let parts = [];
 
-      // 1. Base keyword query / dork string
+      // 1. Base keyword query
       if (state.query && state.query.trim().length > 0) {
         parts.push(state.query.trim());
       }
@@ -3227,6 +2440,11 @@ Bing Video:     /videos/search?q=QUERY&amp;qft=+filterui:duration-long+filterui:
         } else if (extClauses.length > 1) {
           parts.push(`(${extClauses.join(" OR ")})`);
         }
+      }
+
+      // 8. Dorks clause
+      if (state.searchType === "dorks" && state.activeDork) {
+        parts.push(state.activeDork);
       }
 
       return parts.join(" ").trim();
@@ -3356,7 +2574,7 @@ Bing Video:     /videos/search?q=QUERY&amp;qft=+filterui:duration-long+filterui:
     function launchAllEngines() {
       const masterQuery = buildMasterQuery();
       if (!masterQuery || masterQuery.trim().length === 0) {
-        showToast("Please enter a search query keyword or dork first!");
+        showToast("Please enter a search query keyword first!");
         document.getElementById("mainSearchInput").focus();
         return;
       }
@@ -3397,10 +2615,6 @@ Bing Video:     /videos/search?q=QUERY&amp;qft=+filterui:duration-long+filterui:
       if (profileKey === "default") {
         state.searchType = "web";
         state.activePresets.clear();
-      } else if (profileKey === "osint_dork") {
-        state.searchType = "dorks";
-        state.activeDorkCategory = "open_dir";
-        state.activePresets.clear();
       } else if (profileKey === "deep_image") {
         state.searchType = "images";
         state.imgResolution = "8mp";
@@ -3417,9 +2631,9 @@ Bing Video:     /videos/search?q=QUERY&amp;qft=+filterui:duration-long+filterui:
         state.activeFiletypes = new Set(["pdf", "doc,docx", "epub,mobi"]);
         state.activePresets.clear();
       } else if (profileKey === "dev_dork") {
-        state.searchType = "web";
+        state.searchType = "discussions";
         state.activePresets.clear();
-        state.activePresets.add("include_clean_dev");
+        state.activePresets.add("include_forums_discussions");
         state.activePresets.add("exclude_content_farms");
       }
 
@@ -3433,10 +2647,6 @@ Bing Video:     /videos/search?q=QUERY&amp;qft=+filterui:duration-long+filterui:
       document.getElementById("vidDurationSelect").value = state.vidDuration;
 
       updateSearchTypeUI();
-      if (state.searchType === "dorks") {
-        initDorkCategories();
-        renderDorkCards();
-      }
       renderEngineCards();
       showToast(`Applied preset profile: ${profileKey}`);
     }
