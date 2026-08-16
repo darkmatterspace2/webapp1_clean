@@ -1034,7 +1034,7 @@
     };
 
     // Check hardware acceleration support
-    const isWebCodecsSupported = typeof VideoEncoder !== 'undefined' && typeof Mp4Muxer !== 'undefined';
+    const isWebCodecsSupported = typeof VideoEncoder !== 'undefined' && (typeof Mp4Muxer !== 'undefined' || typeof window.Mp4Muxer !== 'undefined');
     document.getElementById('stat-engine-mode').textContent = isWebCodecsSupported ? 'WebCodecs (H.264)' : 'MediaRecorder';
 
     // ==========================================
@@ -1753,23 +1753,46 @@
         singleCycle.forEach(f => resultFrames.push(f));
       }
 
+      // Ensure minimum 2.0 seconds (2000ms) total duration for Windows File Explorer thumbnail generator compatibility
+      let totalDurationMs = resultFrames.reduce((sum, f) => sum + f.durationMs, 0);
+      if (totalDurationMs < 2000 && singleCycle.length > 0) {
+        while (totalDurationMs < 2000) {
+          for (const f of singleCycle) {
+            resultFrames.push(f);
+            totalDurationMs += f.durationMs;
+            if (totalDurationMs >= 2000) break;
+          }
+        }
+      }
+
       return resultFrames;
     }
 
     // ==========================================
     // WebCodecs H.264 Encoder Implementation
+    // Produces MP4 files with proper thumbnails
+    // matching ffmpeg -pix_fmt yuv420p -movflags +faststart
     // ==========================================
     async function encodeMp4WebCodecs(renderedFrames, width, height, bitrate, onProgress) {
       return new Promise(async (resolve, reject) => {
         try {
-          const muxer = new Mp4Muxer.Muxer({
-            target: new Mp4Muxer.ArrayBufferTarget(),
+          const MuxerClass = (window.Mp4Muxer && window.Mp4Muxer.Muxer) || window.Mp4Muxer;
+          const ArrayBufferTargetClass = (window.Mp4Muxer && window.Mp4Muxer.ArrayBufferTarget) || window.ArrayBufferTarget;
+
+          if (!MuxerClass || !ArrayBufferTargetClass) {
+            throw new Error('Mp4Muxer library not loaded');
+          }
+
+          const muxer = new MuxerClass({
+            target: new ArrayBufferTargetClass(),
             video: {
               codec: 'avc',
               width: width,
-              height: height
+              height: height,
+              timescale: 90000 // 90kHz timescale matching ffmpeg for Windows Shell thumbnail compatibility
             },
-            fastStart: 'in-memory'
+            fastStart: 'in-memory',
+            firstTimestampBehavior: 'offset'
           });
 
           let encodedChunksCount = 0;
@@ -1780,12 +1803,16 @@
             error: (err) => reject(err)
           });
 
+          // H.264 Baseline Profile Level 3.1 with default AVCC formatting
+          // This ensures Chromium includes meta.decoderConfig.description (SPS/PPS)
+          // allowing Mp4Muxer to construct a valid avcC box for Windows thumbnail decoders
           videoEncoder.configure({
-            codec: 'avc1.42001f', // Baseline profile
+            codec: 'avc1.42001f',
             width: width,
             height: height,
             bitrate: bitrate,
-            framerate: 30
+            framerate: 30,
+            latencyMode: 'quality'
           });
 
           let currentTimestampUs = 0;
@@ -1799,7 +1826,9 @@
               duration: durationUs
             });
 
-            videoEncoder.encode(videoFrame, { keyFrame: i % 30 === 0 });
+            // First frame is ALWAYS a keyframe for thumbnail generation
+            const isKeyFrame = (i === 0) || (i % 30 === 0);
+            videoEncoder.encode(videoFrame, { keyFrame: isKeyFrame });
             videoFrame.close();
 
             currentTimestampUs += durationUs;
