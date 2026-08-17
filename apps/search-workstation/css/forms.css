@@ -1,0 +1,112 @@
+/* ==========================================================================
+   Form Controls & Input Styling
+   ========================================================================== */
+
+.filter-select, .modal-select {
+    width: 100%;
+    padding: 0.45rem 0.75rem;
+    border-radius: var(--radius-sm);
+    background: var(--bg-input);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-bright);
+    font-size: 0.85rem;
+    transition: all var(--transition-fast);
+}
+
+.filter-select:focus, .modal-select:focus {
+    border-color: var(--border-focus);
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
+}
+
+.filter-input, .modal-input {
+    width: 100%;
+    padding: 0.45rem 0.75rem;
+    border-radius: var(--radius-sm);
+    background: var(--bg-input);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-bright);
+    font-size: 0.85rem;
+    transition: all var(--transition-fast);
+}
+
+.filter-input:focus, .modal-input:focus {
+    border-color: var(--border-focus);
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
+}
+
+.modal-textarea {
+    width: 100%;
+    padding: 0.6rem 0.75rem;
+    border-radius: var(--radius-sm);
+    background: var(--bg-input);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-bright);
+    font-size: 0.85rem;
+    font-family: var(--font-mono);
+    resize: vertical;
+}
+
+.modal-textarea:focus {
+    border-color: var(--border-focus);
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
+}
+
+.filter-date-input {
+    width: 100%;
+    padding: 0.45rem 0.75rem;
+    border-radius: var(--radius-sm);
+    background: var(--bg-input);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-bright);
+    font-size: 0.85rem;
+    color-scheme: dark;
+}
+
+.filter-checkbox-group {
+    margin-top: 0.3rem;
+}
+
+.filter-checkbox-label, .modal-checkbox-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--text-main);
+    cursor: pointer;
+}
+
+.filter-checkbox, input[type="checkbox"] {
+    accent-color: var(--accent-blue);
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+.modal-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    margin-bottom: 0.85rem;
+}
+
+.modal-label {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+.modal-hint {
+    font-size: 0.75rem;
+    color: var(--text-dim);
+}
+
+.preset-snapshot-box {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    padding: 0.75rem;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin: 0.5rem 0;
+}
