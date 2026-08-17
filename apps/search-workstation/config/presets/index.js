@@ -15,11 +15,14 @@ import imagesNormal from './images/normal.js';
 import imagesHighRes from './images/high-resolution.js';
 import imagesNoStock from './images/no-stock.js';
 import imagesNoSocial from './images/no-social-media.js';
+import image_filter_1 from './images/image_filter_1.js';
 
 // Video presets
 import videosNormal from './videos/normal.js';
 import noMainstreamVideo from './videos/no-mainstream.js';
 import independentVideo from './videos/independent-video.js';
+import extreme_explicit from './videos/extreme_explicit.js';
+import explicit_p1 from './videos/explicit_p1.js';
 
 // Document presets
 import academicDocs from './documents/academic.js';
@@ -34,18 +37,22 @@ export const BUILT_IN_PRESETS = [
     cleanCode,
     noSocialMedia,
     cloudFocused,
-    
+
     // Images
     imagesNormal,
     imagesHighRes,
     imagesNoStock,
     imagesNoSocial,
-    
+    image_filter_1,
+
     // Videos
     videosNormal,
     noMainstreamVideo,
     independentVideo,
-    
+    explicit_p1,
+    extreme_explicit,
+
+
     // Documents
     academicDocs,
     technicalDocs,
