@@ -9,22 +9,33 @@ import humanDiscussion from './web/human-discussion.js';
 import cleanCode from './web/clean-code.js';
 import noSocialMedia from './web/no-social-media.js';
 import cloudFocused from './web/cloud-focused.js';
+import antiMainstreamIndie from './web/independent-web.js';
+import independentWeb2 from './web/independent-web-2.js';
+import independentWeb3 from './web/independent-web-3.js';
 
 // Images presets
 import imagesNormal from './images/normal.js';
 import imagesHighRes from './images/high-resolution.js';
 import imagesNoStock from './images/no-stock.js';
 import imagesNoSocial from './images/no-social-media.js';
+import image_filter_1 from './images/image_filter_1.js';
 
 // Video presets
 import videosNormal from './videos/normal.js';
 import noMainstreamVideo from './videos/no-mainstream.js';
 import independentVideo from './videos/independent-video.js';
+import extreme_explicit from './videos/extreme_explicit.js';
+import explicit_p1 from './videos/explicit_p1.js';
+import cloudPublicVideos from './videos/cloud-public-videos.js';
+import techLectures from './videos/tech-lectures.js';
 
 // Document presets
 import academicDocs from './documents/academic.js';
 import technicalDocs from './documents/technical.js';
 import researchData from './documents/research.js';
+import openDatasets from './documents/open-datasets.js';
+import openSciencePreprints from './documents/open-science.js';
+import presentationDecks from './documents/presentation-decks.js';
 
 export const BUILT_IN_PRESETS = [
     // Web
@@ -34,22 +45,36 @@ export const BUILT_IN_PRESETS = [
     cleanCode,
     noSocialMedia,
     cloudFocused,
-    
+    antiMainstreamIndie,
+    independentWeb2,
+    independentWeb3,
+
+
+
+
     // Images
     imagesNormal,
     imagesHighRes,
     imagesNoStock,
     imagesNoSocial,
-    
+    image_filter_1,
+
     // Videos
     videosNormal,
     noMainstreamVideo,
     independentVideo,
-    
+    explicit_p1,
+    extreme_explicit,
+    cloudPublicVideos,
+    techLectures,
+
     // Documents
     academicDocs,
     technicalDocs,
-    researchData
+    researchData,
+    openDatasets,
+    openSciencePreprints,
+    presentationDecks
 ];
 
 export function getPresetsForMode(modeId) {
@@ -61,3 +86,4 @@ export function getPresetById(id) {
 }
 
 export default BUILT_IN_PRESETS;
+

@@ -32,5 +32,16 @@ export default [
         variables: ["KEYWORD"],
         applicableModes: ["web", "documents", "site-search"],
         supportedEngines: ["google", "bing", "brave", "duckduckgo", "startpage", "searxng"]
+    },
+    {
+        id: "public-openapi-swagger",
+        name: "OpenAPI & Swagger Documentation Endpoints",
+        category: "source-code",
+        description: "Finds exposed live Swagger UI interfaces and raw openapi.json/yaml specifications.",
+        template: '(inurl:"/swagger/v1/swagger.json" OR inurl:"/api-docs" OR intitle:"Swagger UI") "{KEYWORD}" -site:github.com -site:gitlab.com',
+        variables: ["KEYWORD"],
+        applicableModes: ["web", "documents"],
+        supportedEngines: ["google", "bing", "brave", "duckduckgo", "searxng", "yandex"]
     }
 ];
+

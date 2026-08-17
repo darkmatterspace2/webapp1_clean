@@ -159,7 +159,59 @@ Adding a new engine requires zero UI code modifications:
    ```
 2. **Export it** in `config/presets/index.js`. The UI will automatically render the chip.
 
-### 3. How to Add a New Dork Template
+### 3. How to Include and Exclude Sites (Domains)
+
+There are 4 easy ways to include (`site:`) and exclude (`-site:`) websites depending on your workflow:
+
+#### A. Directly in the Search Bar or Quick Operators Toolbar (Instant)
+* **To include specific domains**: Type `site:github.com` (or group multiple: `(site:github.com OR site:gitlab.com)`).
+* **To exclude unwanted domains**: Type `-site:pinterest.com` or `-site:quora.com`.
+* **Quick insert**: Click the `site:` or `-site:` chips in the **⚡ Quick Operators** toolbar below the search bar to insert at cursor position.
+
+#### B. Using the Dynamic Filters Panel (No Typing Dorks)
+1. In the left sidebar under **Active Mode Filters**, locate:
+   * **Include Domains**: Type domains separated by commas (e.g., `github.com, stackoverflow.com`).
+   * **Exclude Domains**: Type domains separated by commas (e.g., `pinterest.com, quora.com, medium.com`).
+2. Click **💾 Save as Preset** (or press `Ctrl+S`) in the Presets panel to save your domain setup as a reusable custom preset.
+
+#### C. Modifying the Global Curated Domain Catalogs (`data/domains.js`)
+To permanently add domains to built-in presets (e.g. Anti-Content Farm, No Social Media, Clean Code):
+1. Open [`data/domains.js`](file:///apps/search-workstation/data/domains.js).
+2. Add or remove domain strings in the relevant array:
+   ```javascript
+   export const CONTENT_FARM_DOMAINS = [
+       "pinterest.com",
+       "quora.com",
+       "medium.com",
+       "new-unwanted-site.com" // <-- Add your domain here
+   ];
+   ```
+
+#### D. Creating a Dedicated Inclusion/Exclusion Preset (`config/presets/`)
+1. Create a new file in `config/presets/web/my-domain-filter.js`:
+   ```javascript
+   export default {
+       id: "my-domain-filter",
+       name: "My Domain Filter",
+       description: "Includes official developer sites while excluding scrapers",
+       category: "web",
+       enabledByDefault: false,
+       includeDomains: [
+           "developer.mozilla.org",
+           "github.com"
+       ],
+       excludeDomains: [
+           "geeksforgeeks.org",
+           "w3schools.com"
+       ],
+       applicableModes: ["web", "documents"]
+   };
+   ```
+2. Register the preset in [`config/presets/index.js`](file:///apps/search-workstation/config/presets/index.js). The UI will automatically render the chip.
+
+---
+
+### 4. How to Add a New Dork Template
 
 1. **Create/Add Template Object** in `config/templates/my-category.js`:
    ```javascript

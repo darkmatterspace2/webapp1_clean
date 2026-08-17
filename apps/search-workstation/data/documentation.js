@@ -84,9 +84,16 @@ export const DOCUMENTATION = {
         `
     },
     extensibility: {
-        title: "Extensibility & Custom Engines",
+        title: "Extensibility & Custom Sites",
         content: `
-            <p>Adding a new search engine is simple:</p>
+            <p><strong>1. Including & Excluding Sites:</strong></p>
+            <ul>
+                <li><strong>Search Bar / Toolbar:</strong> Use <code>site:domain.com</code> to include or <code>-site:domain.com</code> to exclude. Click the chips in the <em>Quick Operators</em> bar for one-click insertion.</li>
+                <li><strong>Active Mode Filters:</strong> Enter comma-separated domains into <em>Include Domains</em> or <em>Exclude Domains</em> in the sidebar.</li>
+                <li><strong>Curated Catalogs:</strong> Edit <code>data/domains.js</code> to permanently add domains to built-in presets (e.g. Content Farm lists, Social Media exclusions).</li>
+                <li><strong>Custom Preset Files:</strong> Create a new file in <code>config/presets/web/</code> with <code>includeDomains</code> or <code>excludeDomains</code> arrays and register in <code>config/presets/index.js</code>.</li>
+            </ul>
+            <p><strong>2. Adding a new search engine:</strong></p>
             <ol>
                 <li>Create <code>config/engines/engine-name.config.js</code> defining URLs, capabilities, and mode endpoints.</li>
                 <li>Create <code>js/engines/engine-name.js</code> extending <code>BaseEngine</code>.</li>
