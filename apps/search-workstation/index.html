@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Modular Multi-Engine Search Query Builder, Advanced Dorking & Research Workstation">
+    <title>Search Workstation — Multi-Engine Research Platform</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- CSS Design System -->
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/forms.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/themes.css">
+</head>
+<body>
+    <div class="app-wrapper">
+        <!-- Main Application Header -->
+        <header class="app-header">
+            <div class="header-container">
+                <div class="header-brand">
+                    <span class="brand-icon">⚡</span>
+                    <h1 class="brand-title">Search Workstation</h1>
+                    <span class="brand-badge">PRO OSINT</span>
+                </div>
+                <nav class="header-nav" aria-label="Global Navigation">
+                    <button type="button" id="nav-docs-btn" class="nav-btn" title="View documentation and cheatsheets">
+                        <span>📖</span> Docs & Guide
+                    </button>
+                    <button type="button" id="nav-history-btn" class="nav-btn" title="View search history">
+                        <span>🕒</span> History
+                    </button>
+                    <button type="button" id="nav-backup-btn" class="nav-btn" title="Import/Export JSON backup">
+                        <span>💾</span> Backup / Restore
+                    </button>
+                    <button type="button" id="nav-settings-btn" class="nav-btn" title="Configure workstation settings">
+                        <span>⚙️</span> Settings
+                    </button>
+                </nav>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="main-content-wrapper">
+            <!-- Search Hero Block (Search Input + Mode Selector + Quick Operator Toolbar) -->
+            <section class="search-hero-block" aria-label="Search Console">
+                <div id="search-bar-mount"></div>
+                <div id="mode-selector-mount"></div>
+                <div id="operator-toolbar-mount"></div>
+            </section>
+
+            <!-- Two Column Workstation Split View -->
+            <div class="workstation-split-layout">
+                <!-- Left Sidebar: Active Presets + Dynamic Mode Filters -->
+                <aside class="sidebar-controls-pane" aria-label="Filters and Presets">
+                    <div id="presets-panel-mount"></div>
+                    <div id="filters-panel-mount"></div>
+                </aside>
+
+                <!-- Right Main Pane: Engine Selection + Unified Query Preview + Results / Launcher Cards -->
+                <section class="main-results-pane" aria-label="Engine Results and Launcher">
+                    <div id="engine-results-mount"></div>
+                </section>
+            </div>
+
+            <!-- Full Width Advanced Dorking Templates Drawer -->
+            <section class="dork-templates-section" aria-label="Dork Templates">
+                <div id="templates-panel-mount"></div>
+            </section>
+        </main>
+
+        <!-- Application Footer -->
+        <footer class="app-footer">
+            <div class="footer-inner">
+                <span>⚡ Search Workstation — 100% Client-Side Privacy & Deterministic Query Pipeline</span>
+                <span>Zero Trackers • Pure ES Modules</span>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Notifications Container Mount -->
+    <div id="notifications-container" class="notifications-container"></div>
+
+    <!-- Main JavaScript ES Module Application -->
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>

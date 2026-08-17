@@ -1,0 +1,69 @@
+/* ==========================================================================
+   Responsive Breakpoints & Mobile Adaptations
+   ========================================================================== */
+
+@media (max-width: 1024px) {
+    .workstation-split-layout {
+        grid-template-columns: 1fr;
+    }
+    
+    .sidebar-controls-pane {
+        order: 2;
+    }
+
+    .main-results-pane {
+        order: 1;
+    }
+}
+
+@media (max-width: 768px) {
+    .header-container {
+        flex-direction: column;
+        gap: 0.75rem;
+        align-items: stretch;
+    }
+
+    .header-brand {
+        justify-content: space-between;
+    }
+
+    .header-nav {
+        justify-content: space-between;
+        overflow-x: auto;
+    }
+
+    .nav-btn {
+        padding: 0.4rem 0.6rem;
+        font-size: 0.8rem;
+    }
+
+    .main-content-wrapper {
+        padding: 1rem 0.75rem;
+        gap: 1rem;
+    }
+
+    .search-hero-block {
+        padding: 1rem;
+    }
+
+    .engine-cards-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .doc-modal-body {
+        grid-template-columns: 1fr;
+    }
+
+    .doc-sidebar-nav {
+        border-right: none;
+        border-bottom: 1px solid var(--border-subtle);
+        flex-direction: row;
+        overflow-x: auto;
+    }
+
+    .footer-inner {
+        flex-direction: column;
+        gap: 0.5rem;
+        text-align: center;
+    }
+}
