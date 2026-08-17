@@ -22,5 +22,26 @@ export default [
         variables: ["KEYWORD"],
         applicableModes: ["web", "documents"],
         supportedEngines: ["google", "bing", "brave", "duckduckgo", "startpage", "searxng"]
+    },
+    {
+        id: "open-directory-videos",
+        name: "Open Server Directory - Video Archives",
+        category: "media",
+        description: "Discovers open HTTP/FTP video file directories across web servers.",
+        template: 'intitle:"index of /" +("last modified" OR "parent directory") +("{KEYWORD}") +(mp4|mkv|mov|avi) -html -htm -php -asp -jsp',
+        variables: ["KEYWORD"],
+        applicableModes: ["videos", "web"],
+        supportedEngines: ["google", "bing", "brave", "duckduckgo", "startpage", "searxng", "yandex"]
+    },
+    {
+        id: "hls-m3u8-streams",
+        name: "Public HLS Streaming Feeds (.m3u8 / .mpd)",
+        category: "media",
+        description: "Finds raw direct HTTP Live Streaming (HLS) playlist files and streams.",
+        template: '(filetype:m3u8 OR inurl:".m3u8" OR inurl:".mpd") "{KEYWORD}" -site:github.com',
+        variables: ["KEYWORD"],
+        applicableModes: ["videos", "web"],
+        supportedEngines: ["google", "bing", "brave", "duckduckgo", "searxng", "yandex"]
     }
 ];
+
