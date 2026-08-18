@@ -482,12 +482,14 @@
       bottom: 0;
       left: 0;
       right: 0;
-      height: 28px;
+      height: 36px;
       display: flex;
       justify-content: center;
       align-items: center;
-      z-index: 9000;
-      cursor: ns-resize;
+      z-index: 25000;
+      cursor: pointer;
+      touch-action: none;
+      -webkit-tap-highlight-color: transparent;
     }
 
     .nav-pill {
@@ -495,14 +497,70 @@
       height: 5px;
       background: rgba(255, 255, 255, 0.85);
       border-radius: var(--radius-pill);
-      box-shadow: 0 1px 3px rgba(0,0,0,0.4);
-      transition: width 0.2s, background 0.2s;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.5);
+      transition: width 0.2s, background 0.2s, transform 0.15s;
     }
-    .nav-bar:hover .nav-pill {
+    .nav-bar:hover .nav-pill,
+    .nav-bar:active .nav-pill {
       width: 150px;
       background: #ffffff;
       height: 6px;
+      transform: scale(1.05);
     }
+
+    /* Shade Dismiss Handle */
+    .shade-dismiss-bar {
+      width: 100%;
+      padding: 16px 0 10px 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      margin-top: auto;
+      flex-shrink: 0;
+      touch-action: none;
+    }
+    .shade-dismiss-pill {
+      width: 50px;
+      height: 5px;
+      background: var(--md-sys-color-outline);
+      border-radius: var(--radius-pill);
+      opacity: 0.6;
+      transition: opacity 0.2s, width 0.2s, transform 0.2s;
+    }
+    .shade-dismiss-bar:hover .shade-dismiss-pill,
+    .shade-dismiss-bar:active .shade-dismiss-pill {
+      opacity: 1;
+      width: 70px;
+      transform: translateY(-2px);
+    }
+
+    /* Drawer Handle Bar */
+    .drawer-handle-bar {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 2px 0 14px 0;
+      cursor: pointer;
+      flex-shrink: 0;
+      touch-action: none;
+    }
+    .drawer-handle-pill {
+      width: 44px;
+      height: 5px;
+      background: var(--md-sys-color-outline);
+      border-radius: var(--radius-pill);
+      opacity: 0.6;
+      transition: opacity 0.2s, width 0.2s, transform 0.2s;
+    }
+    .drawer-handle-bar:hover .drawer-handle-pill,
+    .drawer-handle-bar:active .drawer-handle-pill {
+      opacity: 1;
+      width: 65px;
+      transform: translateY(2px);
+    }
+
 
     /* ==========================================================================
        NOTIFICATION SHADE & QUICK SETTINGS PANEL
@@ -1237,12 +1295,22 @@
         </div>
       </div>
 
+      <!-- Dismiss Handle Bar at Bottom of Shade -->
+      <div class="shade-dismiss-bar" onclick="closeShade()" title="Swipe up or tap to close">
+        <div class="shade-dismiss-pill"></div>
+      </div>
+
     </div>
 
     <!-- ==========================================================================
        APP DRAWER PANEL
        ========================================================================== -->
     <div class="drawer-panel" id="drawerPanel">
+      <!-- Drag Handle at Top of Drawer -->
+      <div class="drawer-handle-bar" onclick="closeDrawer()" title="Swipe down or tap to close">
+        <div class="drawer-handle-pill"></div>
+      </div>
+
       <div class="search-bar">
         <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
         <input type="text" class="search-input" id="drawerSearch" placeholder="Search apps..." oninput="filterDrawerApps(this.value)">
@@ -1252,6 +1320,7 @@
         <!-- Rendered dynamically -->
       </div>
     </div>
+
 
     <!-- ==========================================================================
        BUILT-IN ACTIVITY APPS
@@ -1836,15 +1905,19 @@
     /* ==========================================================================
        GESTURE CONTROLS & SYSTEM UI PANELS (TOUCH & MOUSE POINTER SUPPORT)
        ========================================================================== */
+    /* ==========================================================================
+       GESTURE CONTROLS & SYSTEM UI PANELS (TOUCH & MOUSE POINTER SUPPORT)
+       ========================================================================== */
     function setupGestures() {
       const deviceShell = document.getElementById('deviceShell');
       const statusBar = document.getElementById('statusBar');
       const shadePanel = document.getElementById('shadePanel');
       const drawerPanel = document.getElementById('drawerPanel');
-      const wallpaperLayer = document.getElementById('wallpaperLayer');
+      const drawerGrid = document.getElementById('drawerGrid');
 
       // Click to toggle shade from status bar
-      statusBar.addEventListener('click', () => {
+      statusBar.addEventListener('click', (e) => {
+        e.stopPropagation();
         if (shadePanel.classList.contains('open')) {
           closeShade();
         } else {
@@ -1852,75 +1925,167 @@
         }
       });
 
-      // Pointer Drag State (Mouse, Touch, Stylus)
+      // Gesture State Management
       let isDragging = false;
+      let startX = 0;
       let startY = 0;
-      let dragTarget = null; // 'top' or 'bottom'
+      let startTime = 0;
+      let dragMode = null; // 'open-shade' | 'open-drawer' | 'close-shade' | 'close-drawer'
       let currentDeltaY = 0;
 
-      deviceShell.addEventListener('pointerdown', (e) => {
+      function onDragStart(clientX, clientY, targetEl) {
+        if (state.activeApp) return;
+
         const rect = deviceShell.getBoundingClientRect();
-        const relativeY = e.clientY - rect.top;
+        const relY = clientY - rect.top;
+        const isShadeOpen = shadePanel.classList.contains('open');
+        const isDrawerOpen = drawerPanel.classList.contains('open');
 
-        // Check if drag starts near top (Status Bar region) or bottom (Nav Bar region)
-        if (relativeY < 120 && !drawerPanel.classList.contains('open') && !state.activeApp) {
+        startX = clientX;
+        startY = clientY;
+        startTime = Date.now();
+        currentDeltaY = 0;
+
+        if (isShadeOpen) {
+          // Closing Shade: allow gesture across panel (except interactive sliders/toggles)
+          if (targetEl && targetEl.closest('.range-slider, .switch, input, button:not(.shade-dismiss-bar)')) {
+            return;
+          }
           isDragging = true;
-          startY = e.clientY;
-          dragTarget = 'top';
+          dragMode = 'close-shade';
           shadePanel.style.transition = 'none';
-        } else if (relativeY > (rect.height - 120) && !shadePanel.classList.contains('open') && !state.activeApp) {
-          isDragging = true;
-          startY = e.clientY;
-          dragTarget = 'bottom';
-          drawerPanel.style.transition = 'none';
+        } else if (isDrawerOpen) {
+          // Closing Drawer: allowed from top handle, search area, or when drawerGrid is at top
+          if (targetEl && targetEl.closest('input')) {
+            return;
+          }
+          const isAtTop = !drawerGrid || drawerGrid.scrollTop <= 5;
+          const isHandleOrHeader = targetEl && targetEl.closest('.drawer-handle-bar, .search-bar');
+          
+          if (isAtTop || isHandleOrHeader) {
+            isDragging = true;
+            dragMode = 'close-drawer';
+            drawerPanel.style.transition = 'none';
+          }
+        } else {
+          // Home Screen: Opening Shade or Drawer
+          if (relY < rect.height * 0.42) {
+            // Dragging down from top -> Open Shade
+            isDragging = true;
+            dragMode = 'open-shade';
+            shadePanel.style.transition = 'none';
+          } else if (relY > rect.height * 0.52) {
+            // Dragging up from bottom -> Open Drawer
+            isDragging = true;
+            dragMode = 'open-drawer';
+            drawerPanel.style.transition = 'none';
+          }
         }
-      });
+      }
 
-      window.addEventListener('pointermove', (e) => {
-        if (!isDragging) return;
-        currentDeltaY = e.clientY - startY;
+      function onDragMove(clientX, clientY) {
+        if (!isDragging || !dragMode) return;
+        currentDeltaY = clientY - startY;
 
-        if (dragTarget === 'top') {
-          // Pulling shade down
+        if (dragMode === 'open-shade') {
+          // Pulling shade down from top (-100% to 0%)
           if (currentDeltaY > 0) {
-            const percent = Math.min(100, (currentDeltaY / 400) * 100);
+            const percent = Math.min(100, (currentDeltaY / 320) * 100);
             shadePanel.style.transform = `translateY(${percent - 100}%)`;
           }
-        } else if (dragTarget === 'bottom') {
-          // Pulling drawer up
+        } else if (dragMode === 'open-drawer') {
+          // Pulling drawer up from bottom (100% to 0%)
           if (currentDeltaY < 0) {
-            const percent = Math.min(100, (Math.abs(currentDeltaY) / 400) * 100);
+            const percent = Math.min(100, (Math.abs(currentDeltaY) / 320) * 100);
             drawerPanel.style.transform = `translateY(${100 - percent}%)`;
           }
+        } else if (dragMode === 'close-shade') {
+          // Dragging shade UP to close (0 to -100%)
+          if (currentDeltaY < 0) {
+            shadePanel.style.transform = `translateY(${currentDeltaY}px)`;
+          }
+        } else if (dragMode === 'close-drawer') {
+          // Dragging drawer DOWN to close (0 to 100%)
+          if (currentDeltaY > 0) {
+            drawerPanel.style.transform = `translateY(${currentDeltaY}px)`;
+          }
         }
-      });
+      }
 
-      window.addEventListener('pointerup', () => {
-        if (!isDragging) return;
-        isDragging = false;
-        
+      function onDragEnd() {
+        if (!isDragging || !dragMode) {
+          isDragging = false;
+          dragMode = null;
+          return;
+        }
+
+        const elapsed = Math.max(1, Date.now() - startTime);
+        const velocity = Math.abs(currentDeltaY) / elapsed; // px per ms
+        const isFlick = velocity > 0.25;
+
         shadePanel.style.transition = '';
         drawerPanel.style.transition = '';
 
-        if (dragTarget === 'top') {
-          if (currentDeltaY > 80) {
+        if (dragMode === 'open-shade') {
+          if (currentDeltaY > 60 || (currentDeltaY > 20 && isFlick)) {
             openShade();
           } else {
             closeShade();
           }
-        } else if (dragTarget === 'bottom') {
-          if (currentDeltaY < -80) {
+        } else if (dragMode === 'open-drawer') {
+          if (currentDeltaY < -60 || (currentDeltaY < -20 && isFlick)) {
             openDrawer();
           } else {
             closeDrawer();
+          }
+        } else if (dragMode === 'close-shade') {
+          if (currentDeltaY < -50 || (currentDeltaY < -15 && isFlick)) {
+            closeShade();
+          } else {
+            openShade();
+          }
+        } else if (dragMode === 'close-drawer') {
+          if (currentDeltaY > 50 || (currentDeltaY > 15 && isFlick)) {
+            closeDrawer();
+          } else {
+            openDrawer();
           }
         }
 
         shadePanel.style.transform = '';
         drawerPanel.style.transform = '';
-        dragTarget = null;
+        isDragging = false;
+        dragMode = null;
         currentDeltaY = 0;
+      }
+
+      // Pointer Events Support (Mouse, Stylus, Desktop)
+      deviceShell.addEventListener('pointerdown', (e) => {
+        onDragStart(e.clientX, e.clientY, e.target);
       });
+
+      window.addEventListener('pointermove', (e) => {
+        onDragMove(e.clientX, e.clientY);
+      });
+
+      window.addEventListener('pointerup', onDragEnd);
+      window.addEventListener('pointercancel', onDragEnd);
+
+      // Touch Events Support (Native Mobile Smoothness)
+      deviceShell.addEventListener('touchstart', (e) => {
+        if (e.touches && e.touches.length === 1) {
+          onDragStart(e.touches[0].clientX, e.touches[0].clientY, e.target);
+        }
+      }, { passive: true });
+
+      window.addEventListener('touchmove', (e) => {
+        if (isDragging && e.touches && e.touches.length === 1) {
+          onDragMove(e.touches[0].clientX, e.touches[0].clientY);
+        }
+      }, { passive: true });
+
+      window.addEventListener('touchend', onDragEnd, { passive: true });
+      window.addEventListener('touchcancel', onDragEnd, { passive: true });
 
       // Keyboard Shortcuts for Desktop Navigation
       window.addEventListener('keydown', (e) => {
@@ -1941,6 +2106,7 @@
     function openShade() {
       document.getElementById('shadePanel').classList.add('open');
       document.getElementById('wallpaperLayer').classList.add('blurred');
+      document.getElementById('drawerPanel').classList.remove('open');
     }
 
     function closeShade() {
@@ -1951,11 +2117,14 @@
     function openDrawer() {
       document.getElementById('drawerPanel').classList.add('open');
       document.getElementById('wallpaperLayer').classList.add('blurred');
+      document.getElementById('shadePanel').classList.remove('open');
     }
 
     function closeDrawer() {
       document.getElementById('drawerPanel').classList.remove('open');
       document.getElementById('wallpaperLayer').classList.remove('blurred');
+      const searchInput = document.getElementById('drawerSearch');
+      if (searchInput) searchInput.blur();
     }
 
     function handleNavClick() {
@@ -1965,6 +2134,7 @@
         closeApp(state.activeApp);
       }
     }
+
 
     function toggleQS(el) {
       el.classList.toggle('active');
