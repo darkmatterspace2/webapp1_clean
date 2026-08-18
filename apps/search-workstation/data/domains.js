@@ -459,4 +459,14 @@ export const INDEPENDENT_WEB_3_DOMAINS = [
 "rumble.tv"
 ];
 
+export const AI_GENERATIVE_MEDIA_DOMAINS = [
+    "rule34gen.com",
+];
+
+export const AI_GENERATIVE_MEDIA_DF_DOMAINS = [
+    "desifakes.com",
+    "sexbaba.co"
+];
+
+
 
