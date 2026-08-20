@@ -11,7 +11,7 @@ The **Android 14 Material You OS Simulator** ([`android_sim.html`](file:///d:/pr
 ### Key Features
 
 - **Material You Theme Engine**: Automatically extracts dominant color palettes from any wallpaper using HTML5 Canvas and updates CSS variables (`--md-sys-color-primary`, `--md-sys-color-surface`, etc.) in real time.
-- **Quick Settings & Notification Shade**: Swipe down or click the status bar to pull down Quick Settings tiles (Wi-Fi, Bluetooth, Dark Theme, Flashlight simulation, Do Not Disturb, Battery Saver), brightness slider, and dismissible notifications.
+- **Quick Settings & Notification Shade**: Swipe down or click the status bar to pull down Quick Settings tiles (Wi-Fi, Bluetooth, Dark Theme, Flashlight simulation, Do Not Disturb, Battery Saver), brightness slider, dismissible notifications, and upper-right action buttons (Restart System & Settings).
 - **5-Screen Multi-Paged Home Launcher**: Swipe left and right across 5 distinct home screens with animated page indicator dots:
   - **Screen 0 (Google Discover & Knowledge)**: Google Search bar pill, At A Glance live weather/date, trending news cards feed, and knowledge apps grid.
   - **Screen 1 (Main Home Screen)**: Material You Analog + Digital Clock widget, Lo-Fi Synthesizer Beats player, Battery & Storage meters, and core apps.
