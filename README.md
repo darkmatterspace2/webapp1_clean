@@ -11,6 +11,7 @@ The **Android 14 Material You OS Simulator** ([`android_sim.html`](file:///d:/pr
 ### Key Features
 
 - **Material You Theme Engine**: Automatically extracts dominant color palettes from any wallpaper using HTML5 Canvas and updates CSS variables (`--md-sys-color-primary`, `--md-sys-color-surface`, etc.) in real time.
+- **Alienware (Dell) Reboot / Boot Loading Screen**: Authentic glowing Alienware Head SVG logo with Alienware Cyan FX pulse animation, gradient progress bar, and `ALIENWARE | Android 14` footer triggered on initial load and when restarting via Quick Settings.
 - **Quick Settings & Notification Shade**: Swipe down or click the status bar to pull down Quick Settings tiles (Wi-Fi, Bluetooth, Dark Theme, Flashlight simulation, Do Not Disturb, Battery Saver), brightness slider, dismissible notifications, and upper-right action buttons (Restart System & Settings).
 - **5-Screen Multi-Paged Home Launcher**: Swipe left and right across 5 distinct home screens with animated page indicator dots:
   - **Screen 0 (Google Discover & Knowledge)**: Google Search bar pill, At A Glance live weather/date, trending news cards feed, and knowledge apps grid.
