@@ -219,28 +219,105 @@
     }
 
     /* ==========================================================================
-       HOME SCREEN & WIDGETS
+       PAGED HOME SCREENS SYSTEM (5 HOMESCREENS)
        ========================================================================== */
-    .home-screen {
+    .home-wrapper {
       position: relative;
       width: 100%;
       height: 100%;
       z-index: 10;
-      padding: 46px 16px calc(32px + env(safe-area-inset-bottom, 0px)) 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 44px 0 calc(28px + env(safe-area-inset-bottom, 0px)) 0;
+      overflow: hidden;
+      box-sizing: border-box;
+    }
+
+    .home-pager-container {
+      position: relative;
+      flex: 1;
+      width: 100%;
+      overflow: hidden;
+      display: flex;
+    }
+
+    .home-screens-track {
+      display: flex;
+      width: 500%;
+      height: 100%;
+      transform: translateX(-20%); /* Default to Page 1 (Main Home Screen) */
+      transition: transform 0.35s var(--motion-standard);
+      will-change: transform;
+    }
+
+    .home-page {
+      width: 20%;
+      height: 100%;
+      padding: 0 16px 4px 16px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       overflow-y: auto;
       scrollbar-width: none;
+      box-sizing: border-box;
+      flex-shrink: 0;
+      gap: 12px;
     }
-    .home-screen::-webkit-scrollbar { display: none; }
+    .home-page::-webkit-scrollbar { display: none; }
 
+    /* Page Indicator (5 Dots) */
+    .page-indicator {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      padding: 2px 0 6px 0;
+      z-index: 20;
+      cursor: pointer;
+    }
+
+    .page-indicator .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: var(--radius-pill);
+      background: rgba(255, 255, 255, 0.35);
+      transition: all 0.25s var(--motion-standard);
+      cursor: pointer;
+    }
+    .page-indicator .dot:hover {
+      background: rgba(255, 255, 255, 0.7);
+    }
+    .page-indicator .dot.active {
+      width: 22px;
+      background: #ffffff;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
+    }
+
+    /* Pinned Dock Container */
+    .dock-container {
+      background: var(--glass-bg);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      border: 1px solid var(--glass-border);
+      border-radius: 32px;
+      padding: 10px 14px;
+      display: flex;
+      justify-content: space-around;
+      margin: 0 16px 4px 16px;
+      flex-shrink: 0;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+      z-index: 20;
+    }
+
+    /* ==========================================================================
+       HOME SCREEN WIDGETS & SECTIONS
+       ========================================================================== */
     /* Widgets Section */
     .widgets-container {
       display: flex;
       flex-direction: column;
-      gap: 16px;
-      margin-top: 10px;
+      gap: 14px;
     }
 
     /* Clock Widget */
@@ -248,7 +325,7 @@
       background: var(--md-sys-color-primary-container);
       color: var(--md-sys-color-on-primary-container);
       border-radius: var(--radius-xl);
-      padding: 20px;
+      padding: 18px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -256,29 +333,10 @@
       transition: background-color var(--anim-speed), color var(--anim-speed);
       cursor: pointer;
     }
-
-    .widget-clock-digital {
-      display: flex;
-      flex-direction: column;
-    }
-    .widget-clock-time {
-      font-size: 42px;
-      font-weight: 800;
-      line-height: 1;
-      letter-spacing: -1px;
-    }
-    .widget-clock-date {
-      font-size: 14px;
-      font-weight: 500;
-      opacity: 0.85;
-      margin-top: 4px;
-    }
-
-    /* Analog Clock Canvas */
-    .analog-clock-canvas {
-      width: 68px;
-      height: 68px;
-    }
+    .widget-clock-digital { display: flex; flex-direction: column; }
+    .widget-clock-time { font-size: 38px; font-weight: 800; line-height: 1; letter-spacing: -1px; }
+    .widget-clock-date { font-size: 13px; font-weight: 500; opacity: 0.85; margin-top: 4px; }
+    .analog-clock-canvas { width: 64px; height: 64px; }
 
     /* Music Widget */
     .widget-music {
@@ -287,17 +345,16 @@
       -webkit-backdrop-filter: blur(20px);
       border: 1px solid var(--glass-border);
       border-radius: var(--radius-xl);
-      padding: 14px 18px;
+      padding: 12px 16px;
       display: flex;
       align-items: center;
       gap: 14px;
       color: #ffffff;
       box-shadow: 0 8px 24px rgba(0,0,0,0.25);
     }
-
     .music-art {
-      width: 52px;
-      height: 52px;
+      width: 48px;
+      height: 48px;
       border-radius: var(--radius-md);
       background: linear-gradient(135deg, var(--md-sys-color-primary), var(--md-sys-color-tertiary));
       display: flex;
@@ -306,83 +363,29 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.3);
       flex-shrink: 0;
     }
-
-    .music-art svg {
-      width: 26px;
-      height: 26px;
-      fill: #ffffff;
-    }
-
-    .music-info {
-      flex: 1;
-      overflow: hidden;
-    }
-    .music-title {
-      font-size: 15px;
-      font-weight: 700;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .music-artist {
-      font-size: 12px;
-      opacity: 0.8;
-      margin-top: 2px;
-    }
-
-    .music-controls {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .btn-icon {
-      background: none;
-      border: none;
-      color: currentColor;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 6px;
-      border-radius: 50%;
-      transition: background 0.2s;
-    }
-    .btn-icon:hover { background: rgba(255,255,255,0.15); }
-    .btn-icon:active { transform: scale(0.92); }
+    .music-art svg { width: 24px; height: 24px; fill: #ffffff; }
+    .music-info { flex: 1; overflow: hidden; }
+    .music-title { font-size: 14px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .music-artist { font-size: 11px; opacity: 0.8; margin-top: 2px; }
+    .music-controls { display: flex; align-items: center; gap: 10px; }
 
     /* Meter Widget Row */
-    .widgets-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-    }
-
+    .widgets-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     .widget-mini {
       background: var(--md-sys-color-surface-container);
       color: var(--md-sys-color-on-surface);
       border-radius: var(--radius-xl);
-      padding: 14px;
+      padding: 12px 14px;
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 6px;
       box-shadow: 0 4px 16px var(--md-sys-color-shadow);
       transition: background var(--anim-speed);
     }
-    .widget-mini-title {
-      font-size: 12px;
-      font-weight: 600;
-      opacity: 0.7;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    .widget-mini-value {
-      font-size: 22px;
-      font-weight: 800;
-    }
-
+    .widget-mini-title { font-size: 11px; font-weight: 600; opacity: 0.7; text-transform: uppercase; letter-spacing: 0.5px; }
+    .widget-mini-value { font-size: 20px; font-weight: 800; }
     .progress-bar-bg {
-      height: 8px;
+      height: 7px;
       width: 100%;
       background: var(--md-sys-color-surface-container-highest);
       border-radius: var(--radius-pill);
@@ -396,20 +399,175 @@
       transition: width 0.5s ease;
     }
 
+    /* Google Search Pill */
+    .google-search-widget {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-pill);
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+      transition: transform 0.2s;
+    }
+    .google-search-widget:active { transform: scale(0.98); }
+    .google-logo { width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .google-logo svg { width: 22px; height: 22px; }
+    .google-search-text { font-size: 13px; font-weight: 500; opacity: 0.85; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .google-search-icons { display: flex; align-items: center; gap: 8px; }
+    .google-search-icons svg { width: 18px; height: 18px; fill: currentColor; opacity: 0.8; }
+
+    /* At a Glance */
+    .widget-glance {
+      background: var(--md-sys-color-primary-container);
+      color: var(--md-sys-color-on-primary-container);
+      border-radius: var(--radius-xl);
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      box-shadow: 0 6px 20px var(--md-sys-color-shadow);
+    }
+    .glance-date { font-size: 16px; font-weight: 800; letter-spacing: -0.5px; }
+    .glance-info { display: flex; align-items: center; justify-content: space-between; font-size: 12px; font-weight: 600; opacity: 0.9; }
+    .glance-badge { background: var(--md-sys-color-primary); color: var(--md-sys-color-on-primary); padding: 2px 7px; border-radius: var(--radius-pill); font-size: 10px; font-weight: 700; }
+
+    /* Discover Feed Cards */
+    .discover-feed { display: flex; flex-direction: column; gap: 8px; }
+    .discover-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-md);
+      padding: 10px 12px;
+      cursor: pointer;
+      transition: transform 0.2s, background 0.2s;
+    }
+    .discover-card:hover { background: rgba(255, 255, 255, 0.35); }
+    .discover-card:active { transform: scale(0.97); }
+    .discover-tag { display: inline-block; font-size: 9px; font-weight: 700; background: #4285f4; color: #fff; padding: 2px 6px; border-radius: var(--radius-pill); margin-bottom: 4px; }
+    .discover-title { font-size: 12px; font-weight: 700; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .discover-meta { font-size: 10px; opacity: 0.7; margin-top: 3px; }
+
+    /* AI Suite Widget */
+    .widget-ai-suite {
+      background: linear-gradient(135deg, rgba(16, 163, 127, 0.25), rgba(66, 133, 244, 0.25));
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-xl);
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+    }
+    .ai-suite-header { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 800; }
+    .ai-suite-header svg { width: 18px; height: 18px; fill: var(--md-sys-color-primary); }
+    .ai-chips-row { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+    .ai-chips-row::-webkit-scrollbar { display: none; }
+    .ai-chip {
+      background: var(--md-sys-color-surface-container);
+      color: var(--md-sys-color-on-surface);
+      padding: 5px 10px;
+      border-radius: var(--radius-pill);
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+      cursor: pointer;
+      border: 1px solid var(--glass-border);
+      transition: all 0.2s;
+    }
+    .ai-chip:hover { background: var(--md-sys-color-primary); color: var(--md-sys-color-on-primary); transform: scale(1.04); }
+
+    /* Featured Tool Card */
+    .widget-tool-card {
+      background: var(--md-sys-color-surface-container);
+      color: var(--md-sys-color-on-surface);
+      border-radius: var(--radius-xl);
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 6px 18px var(--md-sys-color-shadow);
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .widget-tool-card:active { transform: scale(0.97); }
+    .tool-icon { width: 40px; height: 40px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .tool-icon svg { width: 22px; height: 22px; }
+    .tool-content { flex: 1; overflow: hidden; }
+    .tool-title { font-size: 13px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .tool-sub { font-size: 10px; opacity: 0.75; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .tool-arrow { width: 18px; height: 18px; fill: currentColor; opacity: 0.6; flex-shrink: 0; }
+
+    /* Quick Tasks Widget */
+    .widget-notes {
+      background: var(--md-sys-color-surface-container-high);
+      color: var(--md-sys-color-on-surface);
+      border-radius: var(--radius-xl);
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      box-shadow: 0 6px 18px var(--md-sys-color-shadow);
+    }
+    .notes-header { display: flex; justify-content: space-between; align-items: center; }
+    .notes-title { font-size: 13px; font-weight: 800; }
+    .notes-badge { font-size: 10px; font-weight: 700; background: var(--md-sys-color-primary-container); color: var(--md-sys-color-on-primary-container); padding: 2px 7px; border-radius: var(--radius-pill); }
+    .notes-list { display: flex; flex-direction: column; gap: 6px; }
+    .todo-item { display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 600; cursor: pointer; }
+    .todo-item input[type="checkbox"] { accent-color: var(--md-sys-color-primary); width: 15px; height: 15px; cursor: pointer; }
+
+    /* Agenda Card */
+    .widget-agenda {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-xl);
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+    }
+    .agenda-time { font-size: 16px; font-weight: 800; color: var(--md-sys-color-primary); }
+    .agenda-details { flex: 1; }
+    .agenda-title { font-size: 12px; font-weight: 700; }
+    .agenda-sub { font-size: 10px; opacity: 0.7; }
+
+    /* Streaming Hub Banner */
+    .widget-streaming-banner {
+      background: linear-gradient(135deg, #e50914, #9146ff);
+      color: #ffffff;
+      border-radius: var(--radius-xl);
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+    }
+    .stream-badge { font-size: 9px; font-weight: 800; letter-spacing: 0.8px; opacity: 0.9; }
+    .stream-title { font-size: 15px; font-weight: 800; }
+    .stream-sub { font-size: 11px; opacity: 0.85; }
+
     /* App Icons Grid */
     .app-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 16px 12px;
-      margin-top: auto;
-      padding-bottom: 10px;
+      gap: 12px 8px;
+      padding: 4px 0;
     }
 
     .app-item {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
       cursor: pointer;
       transition: transform 0.2s var(--motion-bounce);
     }
@@ -418,20 +576,20 @@
     }
 
     .app-icon {
-      width: 60px;
-      height: 60px;
-      border-radius: 20px;
+      width: 56px;
+      height: 56px;
+      border-radius: 18px;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+      box-shadow: 0 5px 14px rgba(0,0,0,0.25);
       position: relative;
       overflow: hidden;
       transition: background-color var(--anim-speed);
     }
     .app-icon svg {
-      width: 32px;
-      height: 32px;
+      width: 28px;
+      height: 28px;
     }
 
     .app-label {
@@ -443,38 +601,24 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      max-width: 72px;
-    }
-
-    /* Pinned Dock */
-    .dock-container {
-      background: var(--glass-bg);
-      backdrop-filter: blur(25px);
-      -webkit-backdrop-filter: blur(25px);
-      border: 1px solid var(--glass-border);
-      border-radius: 32px;
-      padding: 10px 14px;
-      display: flex;
-      justify-content: space-around;
-      margin-top: 10px;
-      flex-shrink: 0;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+      max-width: 68px;
     }
 
     /* Mobile Responsive Scaling for Short Screen Heights */
     @media (max-height: 820px) {
-      .widgets-container { gap: 10px; margin-top: 0; }
-      .widget-clock { padding: 12px 16px; }
-      .widget-clock-time { font-size: 32px; }
-      .analog-clock-canvas { width: 54px; height: 54px; }
-      .widget-music { padding: 8px 12px; }
-      .music-art { width: 44px; height: 44px; }
-      .app-grid { gap: 8px 6px; margin-top: 6px; padding-bottom: 4px; }
-      .app-icon { width: 50px; height: 50px; border-radius: 16px; }
-      .app-icon svg { width: 26px; height: 26px; }
-      .app-label { font-size: 10px; }
-      .dock-container { padding: 6px 10px; margin-top: 4px; }
+      .widgets-container { gap: 8px; }
+      .widget-clock { padding: 10px 14px; }
+      .widget-clock-time { font-size: 30px; }
+      .analog-clock-canvas { width: 50px; height: 50px; }
+      .widget-music { padding: 6px 10px; }
+      .music-art { width: 38px; height: 38px; }
+      .app-grid { gap: 6px 4px; padding: 2px 0; }
+      .app-icon { width: 46px; height: 46px; border-radius: 14px; }
+      .app-icon svg { width: 24px; height: 24px; }
+      .app-label { font-size: 9.5px; max-width: 58px; }
+      .dock-container { padding: 6px 8px; margin: 0 12px 2px 12px; }
     }
+
 
     /* Gesture Pill / Nav Bar */
     .nav-bar {
@@ -1075,145 +1219,228 @@
       </div>
     </div>
 
-    <!-- HOME SCREEN & WIDGETS -->
-    <div class="home-screen" id="homeScreen">
+    <!-- 5-SCREEN HOME PAGER WRAPPER -->
+    <div class="home-wrapper" id="homeWrapper">
       
-      <!-- Top Widgets -->
-      <div class="widgets-container">
-        
-        <!-- Analog + Digital Clock Widget -->
-        <div class="widget-clock" onclick="openApp('clock')">
-          <div class="widget-clock-digital">
-            <div class="widget-clock-time" id="widgetTime">10:42</div>
-            <div class="widget-clock-date" id="widgetDate">Sat, Aug 1</div>
-          </div>
-          <canvas class="analog-clock-canvas" id="analogClockCanvas" width="68" height="68"></canvas>
-        </div>
-
-        <!-- Music Player Widget -->
-        <div class="widget-music">
-          <div class="music-art">
-            <svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
-          </div>
-          <div class="music-info">
-            <div class="music-title" id="widgetMusicTitle">Android Lofi Beats</div>
-            <div class="music-artist" id="widgetMusicArtist">Material Audio Synth</div>
-          </div>
-          <div class="music-controls">
-            <button class="btn-icon" onclick="togglePlayMusic(event)">
-              <svg id="musicPlayIcon" style="width:24px;height:24px;fill:currentColor;" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-            </button>
-          </div>
-        </div>
-
-        <!-- Meter Widgets Row -->
-        <div class="widgets-row">
-          <div class="widget-mini">
-            <div class="widget-mini-title">Battery</div>
-            <div class="widget-mini-value" id="meterBattery">85%</div>
-            <div class="progress-bar-bg">
-              <div class="progress-bar-fill" id="meterBatteryFill" style="width: 85%;"></div>
+      <div class="home-pager-container" id="homePagerContainer">
+        <div class="home-screens-track" id="homeScreensTrack">
+          
+          <!-- ================================================================
+             PAGE 0: GOOGLE DISCOVER & KNOWLEDGE SEARCH FEED
+             ================================================================ -->
+          <div class="home-page" id="homePage0">
+            
+            <!-- Google Material You Search Bar Widget -->
+            <div class="google-search-widget" onclick="openApp('search_workstation')" title="Launch Search Workstation">
+              <div class="google-logo">
+                <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.24v3.15C3.26 21.36 7.33 24 12 24z"/><path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.24C.45 8.16 0 9.92 0 12c0 2.08.45 3.84 1.24 5.42l4.04-3.15z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.24 6.58l4.04 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/></svg>
+              </div>
+              <span class="google-search-text">Search workstation & web...</span>
+              <div class="google-search-icons">
+                <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
+              </div>
             </div>
-          </div>
-          <div class="widget-mini">
-            <div class="widget-mini-title">Storage</div>
-            <div class="widget-mini-value">64 GB</div>
-            <div class="progress-bar-bg">
-              <div class="progress-bar-fill" style="width: 42%; background: var(--md-sys-color-tertiary);"></div>
+
+            <!-- At a Glance Widget -->
+            <div class="widget-glance">
+              <div class="glance-date" id="glanceDate">Saturday, Aug 1</div>
+              <div class="glance-info">
+                <span class="glance-weather">🌤️ 28°C • Mostly Sunny</span>
+                <span class="glance-badge">Discover</span>
+              </div>
             </div>
-          </div>
-        </div>
 
+            <!-- Discover News Cards Feed -->
+            <div class="discover-feed">
+              <div class="discover-card" onclick="openApp('news')">
+                <div class="discover-tag">Google News</div>
+                <div class="discover-title">Android 14 Material You: Dynamic Color Theming & Gesture Navigation</div>
+                <div class="discover-meta">Technology • 15m ago</div>
+              </div>
+              <div class="discover-card" onclick="openApp('hackernews')">
+                <div class="discover-tag" style="background:#ff6600;">Hacker News</div>
+                <div class="discover-title">Show HN: Modular Multi-Engine OSINT Research Workstation</div>
+                <div class="discover-meta">Trending • 1h ago</div>
+              </div>
+              <div class="discover-card" onclick="openApp('devto')">
+                <div class="discover-tag" style="background:#0a0a0a;">Dev.to</div>
+                <div class="discover-title">Building client-side applications with Vanilla JavaScript & ES Modules</div>
+                <div class="discover-meta">Development • 3h ago</div>
+              </div>
+            </div>
+
+            <!-- Knowledge Apps Grid -->
+            <div class="app-grid" id="gridPage0"></div>
+
+          </div>
+
+          <!-- ================================================================
+             PAGE 1: MAIN CORE HOME SCREEN (DEFAULT ANDROID 14)
+             ================================================================ -->
+          <div class="home-page" id="homePage1">
+            
+            <div class="widgets-container">
+              <!-- Analog + Digital Clock Widget -->
+              <div class="widget-clock" onclick="openApp('clock')">
+                <div class="widget-clock-digital">
+                  <div class="widget-clock-time" id="widgetTime">10:42</div>
+                  <div class="widget-clock-date" id="widgetDate">Sat, Aug 1</div>
+                </div>
+                <canvas class="analog-clock-canvas" id="analogClockCanvas" width="64" height="64"></canvas>
+              </div>
+
+              <!-- Music Player Widget -->
+              <div class="widget-music">
+                <div class="music-art">
+                  <svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
+                </div>
+                <div class="music-info">
+                  <div class="music-title" id="widgetMusicTitle">Android Lofi Beats</div>
+                  <div class="music-artist" id="widgetMusicArtist">Material Audio Synth</div>
+                </div>
+                <div class="music-controls">
+                  <button class="btn-icon" onclick="togglePlayMusic(event)">
+                    <svg id="musicPlayIcon" style="width:24px;height:24px;fill:currentColor;" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Meter Widgets Row -->
+              <div class="widgets-row">
+                <div class="widget-mini">
+                  <div class="widget-mini-title">Battery</div>
+                  <div class="widget-mini-value" id="meterBattery">85%</div>
+                  <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" id="meterBatteryFill" style="width: 85%;"></div>
+                  </div>
+                </div>
+                <div class="widget-mini">
+                  <div class="widget-mini-title">Storage</div>
+                  <div class="widget-mini-value">64 GB</div>
+                  <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" style="width: 42%; background: var(--md-sys-color-tertiary);"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Core App Grid -->
+            <div class="app-grid" id="gridPage1"></div>
+
+          </div>
+
+          <!-- ================================================================
+             PAGE 2: AI & DEVELOPER WORKSTATION HUB
+             ================================================================ -->
+          <div class="home-page" id="homePage2">
+            
+            <!-- AI Suite Banner -->
+            <div class="widget-ai-suite">
+              <div class="ai-suite-header">
+                <svg viewBox="0 0 24 24"><path d="M12 2L9.5 8.5 3 11l6.5 2.5L12 20l2.5-6.5L21 11l-6.5-2.5L12 2z"/></svg>
+                <span>AI Intelligence Suite</span>
+              </div>
+              <div class="ai-chips-row">
+                <div class="ai-chip" onclick="openApp('chatgpt')">ChatGPT</div>
+                <div class="ai-chip" onclick="openApp('claude')">Claude</div>
+                <div class="ai-chip" onclick="openApp('gemini')">Gemini</div>
+                <div class="ai-chip" onclick="openApp('perplexity')">Perplexity</div>
+                <div class="ai-chip" onclick="openApp('deepseek')">DeepSeek</div>
+              </div>
+            </div>
+
+            <!-- Search Workstation Featured Tool Card -->
+            <div class="widget-tool-card" onclick="openApp('search_workstation')">
+              <div class="tool-icon" style="background:#1ed760;">
+                <svg viewBox="0 0 24 24" fill="white"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+              </div>
+              <div class="tool-content">
+                <div class="tool-title">Search Workstation</div>
+                <div class="tool-sub">30 Presets • 25 Dork Templates • 10 Engines</div>
+              </div>
+              <svg class="tool-arrow" viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg>
+            </div>
+
+            <!-- Developer & AI App Grid -->
+            <div class="app-grid" id="gridPage2"></div>
+
+          </div>
+
+          <!-- ================================================================
+             PAGE 3: PRODUCTIVITY, WORKSPACE & NOTES HUB
+             ================================================================ -->
+          <div class="home-page" id="homePage3">
+            
+            <!-- Quick Tasks Widget -->
+            <div class="widget-notes">
+              <div class="notes-header">
+                <span class="notes-title">Quick Tasks & Notes</span>
+                <span class="notes-badge" id="notesCount">3 tasks</span>
+              </div>
+              <div class="notes-list">
+                <label class="todo-item">
+                  <input type="checkbox" checked onchange="updateTaskCount()">
+                  <span>Review Search Workstation presets</span>
+                </label>
+                <label class="todo-item">
+                  <input type="checkbox" checked onchange="updateTaskCount()">
+                  <span>Test Android 14 5-screen pager</span>
+                </label>
+                <label class="todo-item">
+                  <input type="checkbox" onchange="updateTaskCount()">
+                  <span>Explore AI generative video prompts</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Calendar Agenda Card -->
+            <div class="widget-agenda" onclick="openApp('calendar')">
+              <div class="agenda-time">14:00</div>
+              <div class="agenda-details">
+                <div class="agenda-title">Pair Programming Session</div>
+                <div class="agenda-sub">Web App Development & Design</div>
+              </div>
+            </div>
+
+            <!-- Productivity App Grid -->
+            <div class="app-grid" id="gridPage3"></div>
+
+          </div>
+
+          <!-- ================================================================
+             PAGE 4: MEDIA, STREAMING & SOCIAL HUB
+             ================================================================ -->
+          <div class="home-page" id="homePage4">
+            
+            <!-- Streaming Hub Banner -->
+            <div class="widget-streaming-banner">
+              <div class="stream-badge">LIVE STREAMING & SOCIAL</div>
+              <div class="stream-title">Media & Entertainment Hub</div>
+              <div class="stream-sub">Fast access to videos, feeds & music</div>
+            </div>
+
+            <!-- Media & Social App Grid -->
+            <div class="app-grid" id="gridPage4"></div>
+
+          </div>
+
+        </div>
       </div>
 
-      <!-- App Grid -->
-      <div class="app-grid">
-        
-        <!-- Phone -->
-        <div class="app-item" onclick="openApp('phone')">
-          <div class="app-icon" style="background:#34c759;">
-            <svg viewBox="0 0 24 24" fill="white"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
-          </div>
-          <span class="app-label">Phone</span>
-        </div>
-
-        <!-- Messages -->
-        <div class="app-item" onclick="openApp('messages')">
-          <div class="app-icon" style="background:#007aff;">
-            <svg viewBox="0 0 24 24" fill="white"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
-          </div>
-          <span class="app-label">Messages</span>
-        </div>
-
-        <!-- Chrome -->
-        <div class="app-item" onclick="openApp('chrome')">
-          <div class="app-icon" style="background:#ff9500;">
-            <svg viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
-          </div>
-          <span class="app-label">Chrome</span>
-        </div>
-
-        <!-- Camera -->
-        <div class="app-item" onclick="openApp('camera')">
-          <div class="app-icon" style="background:#5856d6;">
-            <svg viewBox="0 0 24 24" fill="white"><path d="M12 15c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3 1.34 3 3 3zm9-8h-3.17L16 5H8L6.17 7H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2zm-9 12c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg>
-          </div>
-          <span class="app-label">Camera</span>
-        </div>
-
-        <!-- Photos -->
-        <div class="app-item" onclick="openApp('photos')">
-          <div class="app-icon" style="background:#ff2d55;">
-            <svg viewBox="0 0 24 24" fill="white"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
-          </div>
-          <span class="app-label">Photos</span>
-        </div>
-
-        <!-- Clock -->
-        <div class="app-item" onclick="openApp('clock')">
-          <div class="app-icon" style="background:#af52de;">
-            <svg viewBox="0 0 24 24" fill="white"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
-          </div>
-          <span class="app-label">Clock</span>
-        </div>
-
-        <!-- Contacts -->
-        <div class="app-item" onclick="openApp('contacts')">
-          <div class="app-icon" style="background:#55bef0;">
-            <svg viewBox="0 0 24 24" fill="white"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-          </div>
-          <span class="app-label">Contacts</span>
-        </div>
-
-        <!-- Settings -->
-        <div class="app-item" onclick="openApp('settings')">
-          <div class="app-icon" style="background:#8e8e93;">
-            <svg viewBox="0 0 24 24" fill="white"><path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/></svg>
-          </div>
-          <span class="app-label">Settings</span>
-        </div>
-
+      <!-- Page Indicator (5 Dots) -->
+      <div class="page-indicator" id="pageIndicator">
+        <div class="dot" onclick="goToHomeScreen(0)" title="Discover"></div>
+        <div class="dot active" onclick="goToHomeScreen(1)" title="Main Home"></div>
+        <div class="dot" onclick="goToHomeScreen(2)" title="AI & Dev"></div>
+        <div class="dot" onclick="goToHomeScreen(3)" title="Productivity"></div>
+        <div class="dot" onclick="goToHomeScreen(4)" title="Media & Social"></div>
       </div>
 
-      <!-- Dock Container -->
-      <div class="dock-container">
-        <div class="app-item" onclick="openApp('phone')">
-          <div class="app-icon" style="background:#34c759;"><svg viewBox="0 0 24 24" fill="white"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></div>
-        </div>
-        <div class="app-item" onclick="openApp('messages')">
-          <div class="app-icon" style="background:#007aff;"><svg viewBox="0 0 24 24" fill="white"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg></div>
-        </div>
-        <div class="app-item" onclick="openApp('chrome')">
-          <div class="app-icon" style="background:#ff9500;"><svg viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg></div>
-        </div>
-        <div class="app-item" onclick="openApp('camera')">
-          <div class="app-icon" style="background:#5856d6;"><svg viewBox="0 0 24 24" fill="white"><path d="M12 15c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3 1.34 3 3 3zm9-8h-3.17L16 5H8L6.17 7H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2z"/></svg></div>
-        </div>
-      </div>
+      <!-- Pinned Dock Container (Always visible across all 5 home screens) -->
+      <div class="dock-container" id="dockContainer"></div>
 
     </div>
 
-    <!-- Bottom Navigation Bar Gesture Pill -->
     <div class="nav-bar" id="navBar" onclick="handleNavClick()">
       <div class="nav-pill"></div>
     </div>
@@ -1618,10 +1845,13 @@
     /* Initialize System */
     window.addEventListener('DOMContentLoaded', () => {
       initTime();
+      renderHomeScreenGrids();
       renderDrawerApps();
       applyWallpaper(1);
       setupGestures();
       setupContextMenu();
+      goToHomeScreen(1);
+      updateTaskCount();
       
       // Analog Clock Ticking Loop
       setInterval(drawAnalogClock, 1000);
@@ -1646,10 +1876,17 @@
 
         const options = { weekday: 'short', month: 'short', day: 'numeric' };
         document.getElementById('widgetDate').textContent = now.toLocaleDateString('en-US', options);
+
+        const glanceDate = document.getElementById('glanceDate');
+        if (glanceDate) {
+          const fullOptions = { weekday: 'long', month: 'short', day: 'numeric' };
+          glanceDate.textContent = now.toLocaleDateString('en-US', fullOptions);
+        }
       };
       updateClocks();
       setInterval(updateClocks, 1000);
     }
+
 
     /* Draw Material You Analog Clock */
     function drawAnalogClock() {
@@ -1903,8 +2140,39 @@
     }
 
     /* ==========================================================================
-       GESTURE CONTROLS & SYSTEM UI PANELS (TOUCH & MOUSE POINTER SUPPORT)
+       5-SCREEN PAGED HOMESCREEN CONTROLLER
        ========================================================================== */
+    let currentHomeScreenIndex = 1; // Default to Main Home (Page 1)
+
+    function goToHomeScreen(index) {
+      if (index < 0) index = 0;
+      if (index > 4) index = 4;
+      currentHomeScreenIndex = index;
+
+      const track = document.getElementById('homeScreensTrack');
+      if (track) {
+        track.style.transition = 'transform 0.35s cubic-bezier(0.2, 0, 0, 1)';
+        track.style.transform = `translateX(-${index * 20}%)`;
+      }
+
+      // Update Page Indicator (5 Dots)
+      const dots = document.querySelectorAll('.page-indicator .dot');
+      dots.forEach((dot, idx) => {
+        dot.classList.toggle('active', idx === index);
+      });
+    }
+
+    function updateTaskCount() {
+      const checkboxes = document.querySelectorAll('.notes-list input[type="checkbox"]');
+      const total = checkboxes.length;
+      const checked = Array.from(checkboxes).filter(c => c.checked).length;
+      const badge = document.getElementById('notesCount');
+      if (badge) {
+        const remaining = total - checked;
+        badge.textContent = remaining === 0 ? 'All done! 🎉' : `${remaining} left`;
+      }
+    }
+
     /* ==========================================================================
        GESTURE CONTROLS & SYSTEM UI PANELS (TOUCH & MOUSE POINTER SUPPORT)
        ========================================================================== */
@@ -1930,21 +2198,22 @@
       let startX = 0;
       let startY = 0;
       let startTime = 0;
-      let dragMode = null; // 'open-shade' | 'open-drawer' | 'close-shade' | 'close-drawer'
+      let dragMode = null; // 'open-shade' | 'open-drawer' | 'close-shade' | 'close-drawer' | 'swipe-home'
+      let currentDeltaX = 0;
       let currentDeltaY = 0;
 
       function onDragStart(clientX, clientY, targetEl) {
         if (state.activeApp) return;
 
-        const rect = deviceShell.getBoundingClientRect();
-        const relY = clientY - rect.top;
         const isShadeOpen = shadePanel.classList.contains('open');
         const isDrawerOpen = drawerPanel.classList.contains('open');
 
         startX = clientX;
         startY = clientY;
         startTime = Date.now();
+        currentDeltaX = 0;
         currentDeltaY = 0;
+        dragMode = null;
 
         if (isShadeOpen) {
           // Closing Shade: allow gesture across panel (except interactive sliders/toggles)
@@ -1968,44 +2237,81 @@
             drawerPanel.style.transition = 'none';
           }
         } else {
-          // Home Screen: Opening Shade or Drawer
-          if (relY < rect.height * 0.42) {
-            // Dragging down from top -> Open Shade
-            isDragging = true;
-            dragMode = 'open-shade';
-            shadePanel.style.transition = 'none';
-          } else if (relY > rect.height * 0.52) {
-            // Dragging up from bottom -> Open Drawer
-            isDragging = true;
-            dragMode = 'open-drawer';
-            drawerPanel.style.transition = 'none';
-          }
+          // Home Screen: Allow dragging
+          isDragging = true;
         }
       }
 
       function onDragMove(clientX, clientY) {
-        if (!isDragging || !dragMode) return;
+        if (!isDragging) return;
+        currentDeltaX = clientX - startX;
         currentDeltaY = clientY - startY;
 
-        if (dragMode === 'open-shade') {
-          // Pulling shade down from top (-100% to 0%)
+        const rect = deviceShell.getBoundingClientRect();
+        const relY = startY - rect.top;
+        const absX = Math.abs(currentDeltaX);
+        const absY = Math.abs(currentDeltaY);
+
+        // Lock drag mode once movement exceeds 7px threshold
+        if (dragMode === null) {
+          if (absX > 7 || absY > 7) {
+            if (absX > absY) {
+              // Horizontal swipe between home screens
+              dragMode = 'swipe-home';
+              const track = document.getElementById('homeScreensTrack');
+              if (track) track.style.transition = 'none';
+            } else {
+              // Vertical swipe
+              if (relY < rect.height * 0.45 && currentDeltaY > 0) {
+                dragMode = 'open-shade';
+                shadePanel.style.transition = 'none';
+              } else if (relY > rect.height * 0.5 && currentDeltaY < 0) {
+                dragMode = 'open-drawer';
+                drawerPanel.style.transition = 'none';
+              } else {
+                if (currentDeltaY > 0) {
+                  dragMode = 'open-shade';
+                  shadePanel.style.transition = 'none';
+                } else {
+                  dragMode = 'open-drawer';
+                  drawerPanel.style.transition = 'none';
+                }
+              }
+            }
+          } else {
+            return;
+          }
+        }
+
+        if (dragMode === 'swipe-home') {
+          const track = document.getElementById('homeScreensTrack');
+          if (track) {
+            const shellWidth = rect.width || 380;
+            let percentOffset = (currentDeltaX / shellWidth) * 20;
+            // Elastic boundary resistance on ends
+            if (currentHomeScreenIndex === 0 && currentDeltaX > 0) {
+              percentOffset *= 0.35;
+            } else if (currentHomeScreenIndex === 4 && currentDeltaX < 0) {
+              percentOffset *= 0.35;
+            }
+            const basePercent = -(currentHomeScreenIndex * 20);
+            track.style.transform = `translateX(${basePercent + percentOffset}%)`;
+          }
+        } else if (dragMode === 'open-shade') {
           if (currentDeltaY > 0) {
             const percent = Math.min(100, (currentDeltaY / 320) * 100);
             shadePanel.style.transform = `translateY(${percent - 100}%)`;
           }
         } else if (dragMode === 'open-drawer') {
-          // Pulling drawer up from bottom (100% to 0%)
           if (currentDeltaY < 0) {
             const percent = Math.min(100, (Math.abs(currentDeltaY) / 320) * 100);
             drawerPanel.style.transform = `translateY(${100 - percent}%)`;
           }
         } else if (dragMode === 'close-shade') {
-          // Dragging shade UP to close (0 to -100%)
           if (currentDeltaY < 0) {
             shadePanel.style.transform = `translateY(${currentDeltaY}px)`;
           }
         } else if (dragMode === 'close-drawer') {
-          // Dragging drawer DOWN to close (0 to 100%)
           if (currentDeltaY > 0) {
             drawerPanel.style.transform = `translateY(${currentDeltaY}px)`;
           }
@@ -2013,39 +2319,54 @@
       }
 
       function onDragEnd() {
-        if (!isDragging || !dragMode) {
-          isDragging = false;
-          dragMode = null;
-          return;
-        }
+        if (!isDragging) return;
+        isDragging = false;
 
         const elapsed = Math.max(1, Date.now() - startTime);
-        const velocity = Math.abs(currentDeltaY) / elapsed; // px per ms
-        const isFlick = velocity > 0.25;
 
-        shadePanel.style.transition = '';
-        drawerPanel.style.transition = '';
+        if (dragMode === 'swipe-home') {
+          const velocityX = Math.abs(currentDeltaX) / elapsed;
+          const isFlickX = velocityX > 0.22;
 
-        if (dragMode === 'open-shade') {
-          if (currentDeltaY > 60 || (currentDeltaY > 20 && isFlick)) {
+          if (currentDeltaX < -45 || (currentDeltaX < -15 && isFlickX)) {
+            goToHomeScreen(Math.min(4, currentHomeScreenIndex + 1));
+          } else if (currentDeltaX > 45 || (currentDeltaX > 15 && isFlickX)) {
+            goToHomeScreen(Math.max(0, currentHomeScreenIndex - 1));
+          } else {
+            goToHomeScreen(currentHomeScreenIndex);
+          }
+        } else if (dragMode === 'open-shade') {
+          const velocityY = Math.abs(currentDeltaY) / elapsed;
+          const isFlickY = velocityY > 0.25;
+          shadePanel.style.transition = '';
+          if (currentDeltaY > 60 || (currentDeltaY > 20 && isFlickY)) {
             openShade();
           } else {
             closeShade();
           }
         } else if (dragMode === 'open-drawer') {
-          if (currentDeltaY < -60 || (currentDeltaY < -20 && isFlick)) {
+          const velocityY = Math.abs(currentDeltaY) / elapsed;
+          const isFlickY = velocityY > 0.25;
+          drawerPanel.style.transition = '';
+          if (currentDeltaY < -60 || (currentDeltaY < -20 && isFlickY)) {
             openDrawer();
           } else {
             closeDrawer();
           }
         } else if (dragMode === 'close-shade') {
-          if (currentDeltaY < -50 || (currentDeltaY < -15 && isFlick)) {
+          const velocityY = Math.abs(currentDeltaY) / elapsed;
+          const isFlickY = velocityY > 0.25;
+          shadePanel.style.transition = '';
+          if (currentDeltaY < -50 || (currentDeltaY < -15 && isFlickY)) {
             closeShade();
           } else {
             openShade();
           }
         } else if (dragMode === 'close-drawer') {
-          if (currentDeltaY > 50 || (currentDeltaY > 15 && isFlick)) {
+          const velocityY = Math.abs(currentDeltaY) / elapsed;
+          const isFlickY = velocityY > 0.25;
+          drawerPanel.style.transition = '';
+          if (currentDeltaY > 50 || (currentDeltaY > 15 && isFlickY)) {
             closeDrawer();
           } else {
             openDrawer();
@@ -2054,8 +2375,8 @@
 
         shadePanel.style.transform = '';
         drawerPanel.style.transform = '';
-        isDragging = false;
         dragMode = null;
+        currentDeltaX = 0;
         currentDeltaY = 0;
       }
 
@@ -2089,6 +2410,8 @@
 
       // Keyboard Shortcuts for Desktop Navigation
       window.addEventListener('keydown', (e) => {
+        const isOverlayOpen = drawerPanel.classList.contains('open') || shadePanel.classList.contains('open') || state.activeApp;
+
         if (e.key === 'Escape') {
           if (state.activeApp) closeApp(state.activeApp);
           else if (drawerPanel.classList.contains('open')) closeDrawer();
@@ -2097,6 +2420,10 @@
           openShade();
         } else if (e.key === 'ArrowUp' && (e.altKey || e.ctrlKey)) {
           openDrawer();
+        } else if (e.key === 'ArrowRight' && !isOverlayOpen) {
+          goToHomeScreen(Math.min(4, currentHomeScreenIndex + 1));
+        } else if (e.key === 'ArrowLeft' && !isOverlayOpen) {
+          goToHomeScreen(Math.max(0, currentHomeScreenIndex - 1));
         } else if (e.key === 'Home') {
           handleNavClick();
         }
@@ -2132,9 +2459,10 @@
       closeDrawer();
       if (state.activeApp) {
         closeApp(state.activeApp);
+      } else if (currentHomeScreenIndex !== 1) {
+        goToHomeScreen(1); // Return to Main Home
       }
     }
-
 
     function toggleQS(el) {
       el.classList.toggle('active');
@@ -2156,12 +2484,25 @@
     }
 
     /* ==========================================================================
-       APP LAUNCHER & DRAWER RENDER
+       APP LAUNCHER & DRAWER / HOMESCREEN RENDERING
        ========================================================================== */
-    function renderAppCardHtml(app) {
+    function renderAppCardHtml(app, isDock = false) {
+      if (!app) return '';
       const linkBadge = app.url ? `<div style="position:absolute; top:4px; right:4px; width:12px; height:12px; background:rgba(0,0,0,0.5); border-radius:50%; display:flex; align-items:center; justify-content:center;"><svg style="width:8px;height:8px;fill:white;" viewBox="0 0 24 24"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg></div>` : '';
+      
+      if (isDock) {
+        return `
+          <div class="app-item" title="${app.url ? 'Opens ' + app.url + ' in new tab' : app.label}" onclick="openApp('${app.id}')">
+            <div class="app-icon" style="background:${app.color};">
+              <svg viewBox="0 0 24 24" fill="white">${app.icon}</svg>
+              ${linkBadge}
+            </div>
+          </div>
+        `;
+      }
+
       return `
-        <div class="app-item" title="${app.url ? 'Opens ' + app.url + ' in new tab' : app.label}" onclick="openApp('${app.id}'); closeDrawer();">
+        <div class="app-item" title="${app.url ? 'Opens ' + app.url + ' in new tab' : app.label}" onclick="openApp('${app.id}'); if (document.getElementById('drawerPanel').classList.contains('open')) closeDrawer();">
           <div class="app-icon" style="background:${app.color};">
             <svg viewBox="0 0 24 24" fill="white">${app.icon}</svg>
             ${linkBadge}
@@ -2171,16 +2512,62 @@
       `;
     }
 
+    function renderHomeScreenGrids() {
+      const getApp = (id) => APPS.find(a => a.id === id);
+
+      // Page 0: Knowledge & News (8 apps)
+      const page0Ids = ['wikipedia', 'bbcnews', 'hackernews', 'medium', 'substack', 'wolframalpha', 'archive', 'news'];
+      const grid0 = document.getElementById('gridPage0');
+      if (grid0) {
+        grid0.innerHTML = page0Ids.map(getApp).filter(Boolean).map(a => renderAppCardHtml(a)).join('');
+      }
+
+      // Page 1: Main Core Android Apps (8 apps)
+      const page1Ids = ['phone', 'messages', 'chrome', 'camera', 'photos', 'clock', 'contacts', 'settings'];
+      const grid1 = document.getElementById('gridPage1');
+      if (grid1) {
+        grid1.innerHTML = page1Ids.map(getApp).filter(Boolean).map(a => renderAppCardHtml(a)).join('');
+      }
+
+      // Page 2: AI & Developer Workstation (8 apps)
+      const page2Ids = ['chatgpt', 'claude', 'gemini', 'perplexity', 'github', 'gitlab', 'stackoverflow', 'codepen'];
+      const grid2 = document.getElementById('gridPage2');
+      if (grid2) {
+        grid2.innerHTML = page2Ids.map(getApp).filter(Boolean).map(a => renderAppCardHtml(a)).join('');
+      }
+
+      // Page 3: Productivity & Workspace (8 apps)
+      const page3Ids = ['drive', 'docs', 'sheets', 'keep', 'calendar', 'notion', 'trello', 'figma'];
+      const grid3 = document.getElementById('gridPage3');
+      if (grid3) {
+        grid3.innerHTML = page3Ids.map(getApp).filter(Boolean).map(a => renderAppCardHtml(a)).join('');
+      }
+
+      // Page 4: Media, Streaming & Social Hub (8 apps)
+      const page4Ids = ['youtube', 'spotify', 'netflix', 'primevideo', 'reddit', 'twitter', 'discord', 'telegram'];
+      const grid4 = document.getElementById('gridPage4');
+      if (grid4) {
+        grid4.innerHTML = page4Ids.map(getApp).filter(Boolean).map(a => renderAppCardHtml(a)).join('');
+      }
+
+      // Pinned Dock (4 apps)
+      const dockIds = ['phone', 'messages', 'chrome', 'camera'];
+      const dock = document.getElementById('dockContainer');
+      if (dock) {
+        dock.innerHTML = dockIds.map(getApp).filter(Boolean).map(a => renderAppCardHtml(a, true)).join('');
+      }
+    }
+
     function renderDrawerApps() {
       const grid = document.getElementById('drawerGrid');
-      grid.innerHTML = APPS.map(renderAppCardHtml).join('');
+      grid.innerHTML = APPS.map(a => renderAppCardHtml(a)).join('');
     }
 
     function filterDrawerApps(query) {
       const q = query.toLowerCase();
       const filtered = APPS.filter(a => a.label.toLowerCase().includes(q));
       const grid = document.getElementById('drawerGrid');
-      grid.innerHTML = filtered.map(renderAppCardHtml).join('');
+      grid.innerHTML = filtered.map(a => renderAppCardHtml(a)).join('');
     }
 
     function openApp(id) {
@@ -2211,14 +2598,15 @@
        CONTEXT MENU & EASTER EGG
        ========================================================================== */
     function setupContextMenu() {
-      const home = document.getElementById('homeScreen');
+      const home = document.getElementById('homeWrapper');
       const menu = document.getElementById('contextMenu');
+      if (!home || !menu) return;
 
       home.addEventListener('contextmenu', (e) => {
         e.preventDefault();
         menu.style.display = 'block';
-        menu.style.top = `${e.offsetY}px`;
-        menu.style.left = `${e.offsetX}px`;
+        menu.style.top = `${e.offsetY || 100}px`;
+        menu.style.left = `${e.offsetX || 50}px`;
       });
 
       document.addEventListener('click', hideContextMenu);
@@ -2231,6 +2619,7 @@
     function triggerEasterEgg() {
       document.getElementById('easterEggModal').classList.add('active');
     }
+
   </script>
 </body>
 </html>

@@ -12,24 +12,25 @@ The **Android 14 Material You OS Simulator** ([`android_sim.html`](file:///d:/pr
 
 - **Material You Theme Engine**: Automatically extracts dominant color palettes from any wallpaper using HTML5 Canvas and updates CSS variables (`--md-sys-color-primary`, `--md-sys-color-surface`, etc.) in real time.
 - **Quick Settings & Notification Shade**: Swipe down or click the status bar to pull down Quick Settings tiles (Wi-Fi, Bluetooth, Dark Theme, Flashlight simulation, Do Not Disturb, Battery Saver), brightness slider, and dismissible notifications.
-- **App Drawer & Instant Search**: Swipe up or click the gesture bar to slide up the App Drawer with real-time app filtering.
-- **Built-in Activity Apps**:
-  - **Phone / Dialer**: Interactive dialpad with authentic dual-tone multi-frequency (DTMF) key audio feedback powered by Web Audio API.
-  - **Clock & Alarm**: Live digital clock with Web Audio alarm chime.
-  - **Settings**: Wallpaper selector (with preset wallpapers & custom image upload), Dark theme switch, and About Phone (with secret animated Android 14 logo Easter Egg).
-  - **Camera**: Viewfinder simulation with flash effect and photo shutter sound.
-  - **Contacts**: Searchable contact list directory.
-- **Interactive Home Screen Widgets**:
-  - Analog + Digital Clock widget with live ticking hands.
-  - Music Player widget with built-in Web Audio lofi synth beats playback.
-  - Battery and storage progress meters.
+- **5-Screen Multi-Paged Home Launcher**: Swipe left and right across 5 distinct home screens with animated page indicator dots:
+  - **Screen 0 (Google Discover & Knowledge)**: Google Search bar pill, At A Glance live weather/date, trending news cards feed, and knowledge apps grid.
+  - **Screen 1 (Main Home Screen)**: Material You Analog + Digital Clock widget, Lo-Fi Synthesizer Beats player, Battery & Storage meters, and core apps.
+  - **Screen 2 (AI & Developer Workstation)**: AI Suite launcher (ChatGPT, Claude, Gemini, Perplexity, DeepSeek), Search Workstation banner, and dev tools grid.
+  - **Screen 3 (Productivity & Tasks)**: Interactive Material You Todo checklist with live remaining count badge, Calendar Agenda card, and productivity apps grid.
+  - **Screen 4 (Media & Entertainment Hub)**: Live streaming hub banner and social/video streaming apps grid.
+  - **Pinned Dock**: Persistent 4-app dock accessible across all 5 home pages.
+- **Bi-directional Gesture Engine**: Smooth touch and pointer gesture tracking for closing and opening panels with flick/velocity recognition:
+  - Swipe UP on Notification Shade or tap its bottom handle to close.
+  - Swipe DOWN on App Drawer or tap its top handle to close.
+  - Swipe LEFT / RIGHT to paginate across all 5 home screens.
+  - Tap the bottom gesture bar (`.nav-bar`) from any overlay to return Home.
 
 ---
 
 ## 🚀 How to Run
 
-1. Open [`android_sim.html`](file:///d:/projects_2/Github-Repo/github_account_2/webapp1_clean/android_sim.html) directly in any modern web browser (Chrome, Edge, Firefox, Safari).
-2. Alternatively, run with VS Code Live Server at `http://127.0.0.1:5501/android_sim.html`.
+1. Open [`index.html`](file:///d:/projects_2/Github-Repo/github_account_2/webapp1_clean/index.html) directly in any modern web browser (Chrome, Edge, Firefox, Safari).
+2. Alternatively, run with any local dev server (e.g. `npx serve .` or VS Code Live Server).
 
 ---
 
@@ -37,11 +38,15 @@ The **Android 14 Material You OS Simulator** ([`android_sim.html`](file:///d:/pr
 
 | Action | Mouse / Desktop Input | Touch / Mobile Input | Keyboard Shortcut |
 | :--- | :--- | :--- | :--- |
-| **Open Notification Shade** | Click / Drag Down Status Bar | Swipe Down from top | `Alt + ↓` or `Ctrl + ↓` |
-| **Open App Drawer** | Click / Drag Up Nav Bar | Swipe Up from bottom | `Alt + ↑` or `Ctrl + ↑` |
-| **Back / Close App** | Click Back Chevron / Nav Bar | Tap Gesture Bar | `Escape` key |
-| **Home Screen** | Click Gesture Bar | Tap Gesture Bar | `Home` key |
+| **Navigate Home Screens** | Drag Left / Right on Home | Swipe Left / Right on Home | `←` / `→` Arrow keys |
+| **Open Notification Shade** | Drag Down Status Bar / Top | Swipe Down from top | `Alt + ↓` or `Ctrl + ↓` |
+| **Close Notification Shade** | Drag Up Shade / Tap Bottom Handle | Swipe Up on Shade / Tap Handle | `Escape` key |
+| **Open App Drawer** | Drag Up Nav Bar / Home Bottom | Swipe Up from bottom | `Alt + ↑` or `Ctrl + ↑` |
+| **Close App Drawer** | Drag Down Header / Tap Top Handle | Swipe Down Drawer / Tap Handle | `Escape` key |
+| **Return to Main Home Screen** | Click Bottom Gesture Bar | Tap Bottom Gesture Bar | `Home` key |
+| **Back / Close Active App** | Click Back Chevron / Nav Bar | Tap Gesture Bar | `Escape` key |
 | **Context Menu** | Right-click Home Screen | Long-press empty space | N/A |
+
 
 ---
 
