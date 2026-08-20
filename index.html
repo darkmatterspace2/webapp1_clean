@@ -219,28 +219,106 @@
     }
 
     /* ==========================================================================
-       HOME SCREEN & WIDGETS
+       PAGED HOME SCREENS SYSTEM (5 HOMESCREENS)
        ========================================================================== */
-    .home-screen {
+    .home-wrapper {
       position: relative;
       width: 100%;
       height: 100%;
       z-index: 10;
-      padding: 46px 16px calc(32px + env(safe-area-inset-bottom, 0px)) 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 44px 0 calc(28px + env(safe-area-inset-bottom, 0px)) 0;
+      overflow: hidden;
+      box-sizing: border-box;
+    }
+
+    .home-pager-container {
+      position: relative;
+      flex: 1;
+      width: 100%;
+      overflow: hidden;
+      display: flex;
+    }
+
+    .home-screens-track {
+      display: flex;
+      width: 500%;
+      height: 100%;
+      transform: translateX(-20%); /* Default to Page 1 (Main Home Screen) */
+      transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: transform;
+      touch-action: pan-y;
+    }
+
+    .home-page {
+      width: 20%;
+      height: 100%;
+      padding: 0 16px 4px 16px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       overflow-y: auto;
       scrollbar-width: none;
+      box-sizing: border-box;
+      flex-shrink: 0;
+      gap: 12px;
     }
-    .home-screen::-webkit-scrollbar { display: none; }
+    .home-page::-webkit-scrollbar { display: none; }
 
+    /* Page Indicator (5 Dots) */
+    .page-indicator {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      padding: 2px 0 6px 0;
+      z-index: 20;
+      cursor: pointer;
+    }
+
+    .page-indicator .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: var(--radius-pill);
+      background: rgba(255, 255, 255, 0.35);
+      transition: all 0.25s var(--motion-standard);
+      cursor: pointer;
+    }
+    .page-indicator .dot:hover {
+      background: rgba(255, 255, 255, 0.7);
+    }
+    .page-indicator .dot.active {
+      width: 22px;
+      background: #ffffff;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
+    }
+
+    /* Pinned Dock Container */
+    .dock-container {
+      background: var(--glass-bg);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      border: 1px solid var(--glass-border);
+      border-radius: 32px;
+      padding: 10px 14px;
+      display: flex;
+      justify-content: space-around;
+      margin: 0 16px 4px 16px;
+      flex-shrink: 0;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+      z-index: 20;
+    }
+
+    /* ==========================================================================
+       HOME SCREEN WIDGETS & SECTIONS
+       ========================================================================== */
     /* Widgets Section */
     .widgets-container {
       display: flex;
       flex-direction: column;
-      gap: 16px;
-      margin-top: 10px;
+      gap: 14px;
     }
 
     /* Clock Widget */
@@ -248,7 +326,7 @@
       background: var(--md-sys-color-primary-container);
       color: var(--md-sys-color-on-primary-container);
       border-radius: var(--radius-xl);
-      padding: 20px;
+      padding: 18px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -256,29 +334,10 @@
       transition: background-color var(--anim-speed), color var(--anim-speed);
       cursor: pointer;
     }
-
-    .widget-clock-digital {
-      display: flex;
-      flex-direction: column;
-    }
-    .widget-clock-time {
-      font-size: 42px;
-      font-weight: 800;
-      line-height: 1;
-      letter-spacing: -1px;
-    }
-    .widget-clock-date {
-      font-size: 14px;
-      font-weight: 500;
-      opacity: 0.85;
-      margin-top: 4px;
-    }
-
-    /* Analog Clock Canvas */
-    .analog-clock-canvas {
-      width: 68px;
-      height: 68px;
-    }
+    .widget-clock-digital { display: flex; flex-direction: column; }
+    .widget-clock-time { font-size: 38px; font-weight: 800; line-height: 1; letter-spacing: -1px; }
+    .widget-clock-date { font-size: 13px; font-weight: 500; opacity: 0.85; margin-top: 4px; }
+    .analog-clock-canvas { width: 64px; height: 64px; }
 
     /* Music Widget */
     .widget-music {
@@ -287,17 +346,16 @@
       -webkit-backdrop-filter: blur(20px);
       border: 1px solid var(--glass-border);
       border-radius: var(--radius-xl);
-      padding: 14px 18px;
+      padding: 12px 16px;
       display: flex;
       align-items: center;
       gap: 14px;
       color: #ffffff;
       box-shadow: 0 8px 24px rgba(0,0,0,0.25);
     }
-
     .music-art {
-      width: 52px;
-      height: 52px;
+      width: 48px;
+      height: 48px;
       border-radius: var(--radius-md);
       background: linear-gradient(135deg, var(--md-sys-color-primary), var(--md-sys-color-tertiary));
       display: flex;
@@ -306,83 +364,29 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.3);
       flex-shrink: 0;
     }
-
-    .music-art svg {
-      width: 26px;
-      height: 26px;
-      fill: #ffffff;
-    }
-
-    .music-info {
-      flex: 1;
-      overflow: hidden;
-    }
-    .music-title {
-      font-size: 15px;
-      font-weight: 700;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .music-artist {
-      font-size: 12px;
-      opacity: 0.8;
-      margin-top: 2px;
-    }
-
-    .music-controls {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .btn-icon {
-      background: none;
-      border: none;
-      color: currentColor;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 6px;
-      border-radius: 50%;
-      transition: background 0.2s;
-    }
-    .btn-icon:hover { background: rgba(255,255,255,0.15); }
-    .btn-icon:active { transform: scale(0.92); }
+    .music-art svg { width: 24px; height: 24px; fill: #ffffff; }
+    .music-info { flex: 1; overflow: hidden; }
+    .music-title { font-size: 14px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .music-artist { font-size: 11px; opacity: 0.8; margin-top: 2px; }
+    .music-controls { display: flex; align-items: center; gap: 10px; }
 
     /* Meter Widget Row */
-    .widgets-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-    }
-
+    .widgets-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     .widget-mini {
       background: var(--md-sys-color-surface-container);
       color: var(--md-sys-color-on-surface);
       border-radius: var(--radius-xl);
-      padding: 14px;
+      padding: 12px 14px;
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 6px;
       box-shadow: 0 4px 16px var(--md-sys-color-shadow);
       transition: background var(--anim-speed);
     }
-    .widget-mini-title {
-      font-size: 12px;
-      font-weight: 600;
-      opacity: 0.7;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    .widget-mini-value {
-      font-size: 22px;
-      font-weight: 800;
-    }
-
+    .widget-mini-title { font-size: 11px; font-weight: 600; opacity: 0.7; text-transform: uppercase; letter-spacing: 0.5px; }
+    .widget-mini-value { font-size: 20px; font-weight: 800; }
     .progress-bar-bg {
-      height: 8px;
+      height: 7px;
       width: 100%;
       background: var(--md-sys-color-surface-container-highest);
       border-radius: var(--radius-pill);
@@ -396,20 +400,175 @@
       transition: width 0.5s ease;
     }
 
+    /* Google Search Pill */
+    .google-search-widget {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-pill);
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+      transition: transform 0.2s;
+    }
+    .google-search-widget:active { transform: scale(0.98); }
+    .google-logo { width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .google-logo svg { width: 22px; height: 22px; }
+    .google-search-text { font-size: 13px; font-weight: 500; opacity: 0.85; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .google-search-icons { display: flex; align-items: center; gap: 8px; }
+    .google-search-icons svg { width: 18px; height: 18px; fill: currentColor; opacity: 0.8; }
+
+    /* At a Glance */
+    .widget-glance {
+      background: var(--md-sys-color-primary-container);
+      color: var(--md-sys-color-on-primary-container);
+      border-radius: var(--radius-xl);
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      box-shadow: 0 6px 20px var(--md-sys-color-shadow);
+    }
+    .glance-date { font-size: 16px; font-weight: 800; letter-spacing: -0.5px; }
+    .glance-info { display: flex; align-items: center; justify-content: space-between; font-size: 12px; font-weight: 600; opacity: 0.9; }
+    .glance-badge { background: var(--md-sys-color-primary); color: var(--md-sys-color-on-primary); padding: 2px 7px; border-radius: var(--radius-pill); font-size: 10px; font-weight: 700; }
+
+    /* Discover Feed Cards */
+    .discover-feed { display: flex; flex-direction: column; gap: 8px; }
+    .discover-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-md);
+      padding: 10px 12px;
+      cursor: pointer;
+      transition: transform 0.2s, background 0.2s;
+    }
+    .discover-card:hover { background: rgba(255, 255, 255, 0.35); }
+    .discover-card:active { transform: scale(0.97); }
+    .discover-tag { display: inline-block; font-size: 9px; font-weight: 700; background: #4285f4; color: #fff; padding: 2px 6px; border-radius: var(--radius-pill); margin-bottom: 4px; }
+    .discover-title { font-size: 12px; font-weight: 700; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .discover-meta { font-size: 10px; opacity: 0.7; margin-top: 3px; }
+
+    /* AI Suite Widget */
+    .widget-ai-suite {
+      background: linear-gradient(135deg, rgba(16, 163, 127, 0.25), rgba(66, 133, 244, 0.25));
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-xl);
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+    }
+    .ai-suite-header { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 800; }
+    .ai-suite-header svg { width: 18px; height: 18px; fill: var(--md-sys-color-primary); }
+    .ai-chips-row { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+    .ai-chips-row::-webkit-scrollbar { display: none; }
+    .ai-chip {
+      background: var(--md-sys-color-surface-container);
+      color: var(--md-sys-color-on-surface);
+      padding: 5px 10px;
+      border-radius: var(--radius-pill);
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+      cursor: pointer;
+      border: 1px solid var(--glass-border);
+      transition: all 0.2s;
+    }
+    .ai-chip:hover { background: var(--md-sys-color-primary); color: var(--md-sys-color-on-primary); transform: scale(1.04); }
+
+    /* Featured Tool Card */
+    .widget-tool-card {
+      background: var(--md-sys-color-surface-container);
+      color: var(--md-sys-color-on-surface);
+      border-radius: var(--radius-xl);
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 6px 18px var(--md-sys-color-shadow);
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .widget-tool-card:active { transform: scale(0.97); }
+    .tool-icon { width: 40px; height: 40px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .tool-icon svg { width: 22px; height: 22px; }
+    .tool-content { flex: 1; overflow: hidden; }
+    .tool-title { font-size: 13px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .tool-sub { font-size: 10px; opacity: 0.75; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .tool-arrow { width: 18px; height: 18px; fill: currentColor; opacity: 0.6; flex-shrink: 0; }
+
+    /* Quick Tasks Widget */
+    .widget-notes {
+      background: var(--md-sys-color-surface-container-high);
+      color: var(--md-sys-color-on-surface);
+      border-radius: var(--radius-xl);
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      box-shadow: 0 6px 18px var(--md-sys-color-shadow);
+    }
+    .notes-header { display: flex; justify-content: space-between; align-items: center; }
+    .notes-title { font-size: 13px; font-weight: 800; }
+    .notes-badge { font-size: 10px; font-weight: 700; background: var(--md-sys-color-primary-container); color: var(--md-sys-color-on-primary-container); padding: 2px 7px; border-radius: var(--radius-pill); }
+    .notes-list { display: flex; flex-direction: column; gap: 6px; }
+    .todo-item { display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 600; cursor: pointer; }
+    .todo-item input[type="checkbox"] { accent-color: var(--md-sys-color-primary); width: 15px; height: 15px; cursor: pointer; }
+
+    /* Agenda Card */
+    .widget-agenda {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-xl);
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+    }
+    .agenda-time { font-size: 16px; font-weight: 800; color: var(--md-sys-color-primary); }
+    .agenda-details { flex: 1; }
+    .agenda-title { font-size: 12px; font-weight: 700; }
+    .agenda-sub { font-size: 10px; opacity: 0.7; }
+
+    /* Streaming Hub Banner */
+    .widget-streaming-banner {
+      background: linear-gradient(135deg, #e50914, #9146ff);
+      color: #ffffff;
+      border-radius: var(--radius-xl);
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+    }
+    .stream-badge { font-size: 9px; font-weight: 800; letter-spacing: 0.8px; opacity: 0.9; }
+    .stream-title { font-size: 15px; font-weight: 800; }
+    .stream-sub { font-size: 11px; opacity: 0.85; }
+
     /* App Icons Grid */
     .app-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 16px 12px;
-      margin-top: auto;
-      padding-bottom: 10px;
+      gap: 12px 8px;
+      padding: 4px 0;
     }
 
     .app-item {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
       cursor: pointer;
       transition: transform 0.2s var(--motion-bounce);
     }
@@ -418,20 +577,20 @@
     }
 
     .app-icon {
-      width: 60px;
-      height: 60px;
-      border-radius: 20px;
+      width: 56px;
+      height: 56px;
+      border-radius: 18px;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+      box-shadow: 0 5px 14px rgba(0,0,0,0.25);
       position: relative;
       overflow: hidden;
       transition: background-color var(--anim-speed);
     }
     .app-icon svg {
-      width: 32px;
-      height: 32px;
+      width: 28px;
+      height: 28px;
     }
 
     .app-label {
@@ -443,38 +602,24 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      max-width: 72px;
-    }
-
-    /* Pinned Dock */
-    .dock-container {
-      background: var(--glass-bg);
-      backdrop-filter: blur(25px);
-      -webkit-backdrop-filter: blur(25px);
-      border: 1px solid var(--glass-border);
-      border-radius: 32px;
-      padding: 10px 14px;
-      display: flex;
-      justify-content: space-around;
-      margin-top: 10px;
-      flex-shrink: 0;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+      max-width: 68px;
     }
 
     /* Mobile Responsive Scaling for Short Screen Heights */
     @media (max-height: 820px) {
-      .widgets-container { gap: 10px; margin-top: 0; }
-      .widget-clock { padding: 12px 16px; }
-      .widget-clock-time { font-size: 32px; }
-      .analog-clock-canvas { width: 54px; height: 54px; }
-      .widget-music { padding: 8px 12px; }
-      .music-art { width: 44px; height: 44px; }
-      .app-grid { gap: 8px 6px; margin-top: 6px; padding-bottom: 4px; }
-      .app-icon { width: 50px; height: 50px; border-radius: 16px; }
-      .app-icon svg { width: 26px; height: 26px; }
-      .app-label { font-size: 10px; }
-      .dock-container { padding: 6px 10px; margin-top: 4px; }
+      .widgets-container { gap: 8px; }
+      .widget-clock { padding: 10px 14px; }
+      .widget-clock-time { font-size: 30px; }
+      .analog-clock-canvas { width: 50px; height: 50px; }
+      .widget-music { padding: 6px 10px; }
+      .music-art { width: 38px; height: 38px; }
+      .app-grid { gap: 6px 4px; padding: 2px 0; }
+      .app-icon { width: 46px; height: 46px; border-radius: 14px; }
+      .app-icon svg { width: 24px; height: 24px; }
+      .app-label { font-size: 9.5px; max-width: 58px; }
+      .dock-container { padding: 6px 8px; margin: 0 12px 2px 12px; }
     }
+
 
     /* Gesture Pill / Nav Bar */
     .nav-bar {
@@ -482,12 +627,14 @@
       bottom: 0;
       left: 0;
       right: 0;
-      height: 28px;
+      height: 36px;
       display: flex;
       justify-content: center;
       align-items: center;
-      z-index: 9000;
-      cursor: ns-resize;
+      z-index: 25000;
+      cursor: pointer;
+      touch-action: none;
+      -webkit-tap-highlight-color: transparent;
     }
 
     .nav-pill {
@@ -495,14 +642,70 @@
       height: 5px;
       background: rgba(255, 255, 255, 0.85);
       border-radius: var(--radius-pill);
-      box-shadow: 0 1px 3px rgba(0,0,0,0.4);
-      transition: width 0.2s, background 0.2s;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.5);
+      transition: width 0.2s, background 0.2s, transform 0.15s;
     }
-    .nav-bar:hover .nav-pill {
+    .nav-bar:hover .nav-pill,
+    .nav-bar:active .nav-pill {
       width: 150px;
       background: #ffffff;
       height: 6px;
+      transform: scale(1.05);
     }
+
+    /* Shade Dismiss Handle */
+    .shade-dismiss-bar {
+      width: 100%;
+      padding: 16px 0 10px 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      margin-top: auto;
+      flex-shrink: 0;
+      touch-action: none;
+    }
+    .shade-dismiss-pill {
+      width: 50px;
+      height: 5px;
+      background: var(--md-sys-color-outline);
+      border-radius: var(--radius-pill);
+      opacity: 0.6;
+      transition: opacity 0.2s, width 0.2s, transform 0.2s;
+    }
+    .shade-dismiss-bar:hover .shade-dismiss-pill,
+    .shade-dismiss-bar:active .shade-dismiss-pill {
+      opacity: 1;
+      width: 70px;
+      transform: translateY(-2px);
+    }
+
+    /* Drawer Handle Bar */
+    .drawer-handle-bar {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 2px 0 14px 0;
+      cursor: pointer;
+      flex-shrink: 0;
+      touch-action: none;
+    }
+    .drawer-handle-pill {
+      width: 44px;
+      height: 5px;
+      background: var(--md-sys-color-outline);
+      border-radius: var(--radius-pill);
+      opacity: 0.6;
+      transition: opacity 0.2s, width 0.2s, transform 0.2s;
+    }
+    .drawer-handle-bar:hover .drawer-handle-pill,
+    .drawer-handle-bar:active .drawer-handle-pill {
+      opacity: 1;
+      width: 65px;
+      transform: translateY(2px);
+    }
+
 
     /* ==========================================================================
        NOTIFICATION SHADE & QUICK SETTINGS PANEL
@@ -979,7 +1182,125 @@
       height: 160px;
       animation: spin 10s linear infinite;
     }
-    @keyframes spin { 100% { transform: rotate(360deg); } }
+    /* ==========================================================================
+       ALIENWARE (DELL) BOOT / REBOOT LOADING SCREEN
+       ========================================================================== */
+    .boot-screen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #05070a;
+      z-index: 99999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: 120px 24px 60px 24px;
+      box-sizing: border-box;
+      opacity: 1;
+      transition: opacity 0.5s cubic-bezier(0.2, 0, 0, 1);
+      pointer-events: all;
+    }
+    .boot-screen.fade-out {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .boot-logo-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+      margin-top: auto;
+      margin-bottom: auto;
+    }
+
+    .boot-alienware-logo {
+      width: 80px;
+      height: 96px;
+      animation: alienwareGlow 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes alienwareGlow {
+      0% {
+        transform: scale(0.96);
+        filter: drop-shadow(0 0 14px rgba(0, 240, 255, 0.7));
+      }
+      100% {
+        transform: scale(1.05);
+        filter: drop-shadow(0 0 28px rgba(0, 240, 255, 0.98)) drop-shadow(0 0 45px rgba(0, 180, 255, 0.75));
+      }
+    }
+
+    .boot-progress-bar {
+      width: 150px;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 2px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .boot-progress-fill {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 40%;
+      background: linear-gradient(90deg, #00f0ff, #7000ff, #00e5ff);
+      border-radius: 2px;
+      animation: bootIndeterminate 1.4s ease-in-out infinite;
+    }
+
+    @keyframes bootIndeterminate {
+      0% { left: -40%; width: 30%; }
+      50% { left: 30%; width: 60%; }
+      100% { left: 100%; width: 30%; }
+    }
+
+    .boot-footer {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .boot-powered-by {
+      font-size: 10px;
+      color: rgba(255, 255, 255, 0.4);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    .boot-brand-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .boot-brand-title .alienware-text {
+      background: linear-gradient(135deg, #00f0ff, #a8c7fa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .boot-brand-title .android-sub {
+      font-size: 12px;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.45);
+      letter-spacing: 1px;
+      border-left: 1px solid rgba(255, 255, 255, 0.2);
+      padding-left: 10px;
+      text-transform: none;
+    }
   </style>
 </head>
 <body data-theme="dark">
@@ -992,6 +1313,27 @@
 
   <!-- Phone Shell Container -->
   <div class="device-shell" id="deviceShell">
+    
+    <!-- Alienware (Dell) Boot / Reboot Loading Screen -->
+    <div class="boot-screen" id="bootScreen">
+      <div class="boot-logo-container">
+        <!-- Alienware Head Logo SVG (Accurate Vector Contour from Official Image) -->
+        <svg class="boot-alienware-logo" viewBox="0 0 200 240">
+          <path fill="#00F0FF" fill-rule="evenodd" clip-rule="evenodd" d="M 100,18 C 155,18 185,48 185,108 C 185,158 148,198 104,211 C 101.5,211.8 98.5,211.8 96,211 C 52,198 15,158 15,108 C 15,48 45,18 100,18 Z M 38,114 C 45,100 75,106 91,128 C 85,160 55,172 38,150 C 32,138 32,126 38,114 Z M 162,114 C 155,100 125,106 109,128 C 115,160 145,172 162,150 C 168,138 168,126 162,114 Z"/>
+        </svg>
+        <div class="boot-progress-bar">
+          <div class="boot-progress-fill"></div>
+        </div>
+      </div>
+      
+      <div class="boot-footer">
+        <span class="boot-powered-by">powered by</span>
+        <div class="boot-brand-title">
+          <span class="alienware-text">ALIENWARE</span>
+          <span class="android-sub">Android 14</span>
+        </div>
+      </div>
+    </div>
     
     <!-- Punch Hole Camera Cutout -->
     <div class="camera-punch"></div>
@@ -1017,145 +1359,228 @@
       </div>
     </div>
 
-    <!-- HOME SCREEN & WIDGETS -->
-    <div class="home-screen" id="homeScreen">
+    <!-- 5-SCREEN HOME PAGER WRAPPER -->
+    <div class="home-wrapper" id="homeWrapper">
       
-      <!-- Top Widgets -->
-      <div class="widgets-container">
-        
-        <!-- Analog + Digital Clock Widget -->
-        <div class="widget-clock" onclick="openApp('clock')">
-          <div class="widget-clock-digital">
-            <div class="widget-clock-time" id="widgetTime">10:42</div>
-            <div class="widget-clock-date" id="widgetDate">Sat, Aug 1</div>
-          </div>
-          <canvas class="analog-clock-canvas" id="analogClockCanvas" width="68" height="68"></canvas>
-        </div>
-
-        <!-- Music Player Widget -->
-        <div class="widget-music">
-          <div class="music-art">
-            <svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
-          </div>
-          <div class="music-info">
-            <div class="music-title" id="widgetMusicTitle">Android Lofi Beats</div>
-            <div class="music-artist" id="widgetMusicArtist">Material Audio Synth</div>
-          </div>
-          <div class="music-controls">
-            <button class="btn-icon" onclick="togglePlayMusic(event)">
-              <svg id="musicPlayIcon" style="width:24px;height:24px;fill:currentColor;" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-            </button>
-          </div>
-        </div>
-
-        <!-- Meter Widgets Row -->
-        <div class="widgets-row">
-          <div class="widget-mini">
-            <div class="widget-mini-title">Battery</div>
-            <div class="widget-mini-value" id="meterBattery">85%</div>
-            <div class="progress-bar-bg">
-              <div class="progress-bar-fill" id="meterBatteryFill" style="width: 85%;"></div>
+      <div class="home-pager-container" id="homePagerContainer">
+        <div class="home-screens-track" id="homeScreensTrack">
+          
+          <!-- ================================================================
+             PAGE 0: GOOGLE DISCOVER & KNOWLEDGE SEARCH FEED
+             ================================================================ -->
+          <div class="home-page" id="homePage0">
+            
+            <!-- Google Material You Search Bar Widget -->
+            <div class="google-search-widget" onclick="openApp('search_workstation')" title="Launch Search Workstation">
+              <div class="google-logo">
+                <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.24v3.15C3.26 21.36 7.33 24 12 24z"/><path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.24C.45 8.16 0 9.92 0 12c0 2.08.45 3.84 1.24 5.42l4.04-3.15z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.24 6.58l4.04 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/></svg>
+              </div>
+              <span class="google-search-text">Search workstation & web...</span>
+              <div class="google-search-icons">
+                <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
+              </div>
             </div>
-          </div>
-          <div class="widget-mini">
-            <div class="widget-mini-title">Storage</div>
-            <div class="widget-mini-value">64 GB</div>
-            <div class="progress-bar-bg">
-              <div class="progress-bar-fill" style="width: 42%; background: var(--md-sys-color-tertiary);"></div>
+
+            <!-- At a Glance Widget -->
+            <div class="widget-glance">
+              <div class="glance-date" id="glanceDate">Saturday, Aug 1</div>
+              <div class="glance-info">
+                <span class="glance-weather">🌤️ 28°C • Mostly Sunny</span>
+                <span class="glance-badge">Discover</span>
+              </div>
             </div>
-          </div>
-        </div>
 
+            <!-- Discover News Cards Feed -->
+            <div class="discover-feed">
+              <div class="discover-card" onclick="openApp('news')">
+                <div class="discover-tag">Google News</div>
+                <div class="discover-title">Android 14 Material You: Dynamic Color Theming & Gesture Navigation</div>
+                <div class="discover-meta">Technology • 15m ago</div>
+              </div>
+              <div class="discover-card" onclick="openApp('hackernews')">
+                <div class="discover-tag" style="background:#ff6600;">Hacker News</div>
+                <div class="discover-title">Show HN: Modular Multi-Engine OSINT Research Workstation</div>
+                <div class="discover-meta">Trending • 1h ago</div>
+              </div>
+              <div class="discover-card" onclick="openApp('devto')">
+                <div class="discover-tag" style="background:#0a0a0a;">Dev.to</div>
+                <div class="discover-title">Building client-side applications with Vanilla JavaScript & ES Modules</div>
+                <div class="discover-meta">Development • 3h ago</div>
+              </div>
+            </div>
+
+            <!-- Knowledge Apps Grid -->
+            <div class="app-grid" id="gridPage0"></div>
+
+          </div>
+
+          <!-- ================================================================
+             PAGE 1: MAIN CORE HOME SCREEN (DEFAULT ANDROID 14)
+             ================================================================ -->
+          <div class="home-page" id="homePage1">
+            
+            <div class="widgets-container">
+              <!-- Analog + Digital Clock Widget -->
+              <div class="widget-clock" onclick="openApp('clock')">
+                <div class="widget-clock-digital">
+                  <div class="widget-clock-time" id="widgetTime">10:42</div>
+                  <div class="widget-clock-date" id="widgetDate">Sat, Aug 1</div>
+                </div>
+                <canvas class="analog-clock-canvas" id="analogClockCanvas" width="64" height="64"></canvas>
+              </div>
+
+              <!-- Music Player Widget -->
+              <div class="widget-music">
+                <div class="music-art">
+                  <svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
+                </div>
+                <div class="music-info">
+                  <div class="music-title" id="widgetMusicTitle">Android Lofi Beats</div>
+                  <div class="music-artist" id="widgetMusicArtist">Material Audio Synth</div>
+                </div>
+                <div class="music-controls">
+                  <button class="btn-icon" onclick="togglePlayMusic(event)">
+                    <svg id="musicPlayIcon" style="width:24px;height:24px;fill:currentColor;" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Meter Widgets Row -->
+              <div class="widgets-row">
+                <div class="widget-mini">
+                  <div class="widget-mini-title">Battery</div>
+                  <div class="widget-mini-value" id="meterBattery">85%</div>
+                  <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" id="meterBatteryFill" style="width: 85%;"></div>
+                  </div>
+                </div>
+                <div class="widget-mini">
+                  <div class="widget-mini-title">Storage</div>
+                  <div class="widget-mini-value">64 GB</div>
+                  <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" style="width: 42%; background: var(--md-sys-color-tertiary);"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Core App Grid -->
+            <div class="app-grid" id="gridPage1"></div>
+
+          </div>
+
+          <!-- ================================================================
+             PAGE 2: AI & DEVELOPER WORKSTATION HUB
+             ================================================================ -->
+          <div class="home-page" id="homePage2">
+            
+            <!-- AI Suite Banner -->
+            <div class="widget-ai-suite">
+              <div class="ai-suite-header">
+                <svg viewBox="0 0 24 24"><path d="M12 2L9.5 8.5 3 11l6.5 2.5L12 20l2.5-6.5L21 11l-6.5-2.5L12 2z"/></svg>
+                <span>AI Intelligence Suite</span>
+              </div>
+              <div class="ai-chips-row">
+                <div class="ai-chip" onclick="openApp('chatgpt')">ChatGPT</div>
+                <div class="ai-chip" onclick="openApp('claude')">Claude</div>
+                <div class="ai-chip" onclick="openApp('gemini')">Gemini</div>
+                <div class="ai-chip" onclick="openApp('perplexity')">Perplexity</div>
+                <div class="ai-chip" onclick="openApp('deepseek')">DeepSeek</div>
+              </div>
+            </div>
+
+            <!-- Search Workstation Featured Tool Card -->
+            <div class="widget-tool-card" onclick="openApp('search_workstation')">
+              <div class="tool-icon" style="background:#1ed760;">
+                <svg viewBox="0 0 24 24" fill="white"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+              </div>
+              <div class="tool-content">
+                <div class="tool-title">Search Workstation</div>
+                <div class="tool-sub">30 Presets • 25 Dork Templates • 10 Engines</div>
+              </div>
+              <svg class="tool-arrow" viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg>
+            </div>
+
+            <!-- Developer & AI App Grid -->
+            <div class="app-grid" id="gridPage2"></div>
+
+          </div>
+
+          <!-- ================================================================
+             PAGE 3: PRODUCTIVITY, WORKSPACE & NOTES HUB
+             ================================================================ -->
+          <div class="home-page" id="homePage3">
+            
+            <!-- Quick Tasks Widget -->
+            <div class="widget-notes">
+              <div class="notes-header">
+                <span class="notes-title">Quick Tasks & Notes</span>
+                <span class="notes-badge" id="notesCount">3 tasks</span>
+              </div>
+              <div class="notes-list">
+                <label class="todo-item">
+                  <input type="checkbox" checked onchange="updateTaskCount()">
+                  <span>Review Search Workstation presets</span>
+                </label>
+                <label class="todo-item">
+                  <input type="checkbox" checked onchange="updateTaskCount()">
+                  <span>Test Android 14 5-screen pager</span>
+                </label>
+                <label class="todo-item">
+                  <input type="checkbox" onchange="updateTaskCount()">
+                  <span>Explore AI generative video prompts</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Calendar Agenda Card -->
+            <div class="widget-agenda" onclick="openApp('calendar')">
+              <div class="agenda-time">14:00</div>
+              <div class="agenda-details">
+                <div class="agenda-title">Pair Programming Session</div>
+                <div class="agenda-sub">Web App Development & Design</div>
+              </div>
+            </div>
+
+            <!-- Productivity App Grid -->
+            <div class="app-grid" id="gridPage3"></div>
+
+          </div>
+
+          <!-- ================================================================
+             PAGE 4: MEDIA, STREAMING & SOCIAL HUB
+             ================================================================ -->
+          <div class="home-page" id="homePage4">
+            
+            <!-- Streaming Hub Banner -->
+            <div class="widget-streaming-banner">
+              <div class="stream-badge">LIVE STREAMING & SOCIAL</div>
+              <div class="stream-title">Media & Entertainment Hub</div>
+              <div class="stream-sub">Fast access to videos, feeds & music</div>
+            </div>
+
+            <!-- Media & Social App Grid -->
+            <div class="app-grid" id="gridPage4"></div>
+
+          </div>
+
+        </div>
       </div>
 
-      <!-- App Grid -->
-      <div class="app-grid">
-        
-        <!-- Phone -->
-        <div class="app-item" onclick="openApp('phone')">
-          <div class="app-icon" style="background:#34c759;">
-            <svg viewBox="0 0 24 24" fill="white"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
-          </div>
-          <span class="app-label">Phone</span>
-        </div>
-
-        <!-- Messages -->
-        <div class="app-item" onclick="openApp('messages')">
-          <div class="app-icon" style="background:#007aff;">
-            <svg viewBox="0 0 24 24" fill="white"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
-          </div>
-          <span class="app-label">Messages</span>
-        </div>
-
-        <!-- Chrome -->
-        <div class="app-item" onclick="openApp('chrome')">
-          <div class="app-icon" style="background:#ff9500;">
-            <svg viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
-          </div>
-          <span class="app-label">Chrome</span>
-        </div>
-
-        <!-- Camera -->
-        <div class="app-item" onclick="openApp('camera')">
-          <div class="app-icon" style="background:#5856d6;">
-            <svg viewBox="0 0 24 24" fill="white"><path d="M12 15c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3 1.34 3 3 3zm9-8h-3.17L16 5H8L6.17 7H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2zm-9 12c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg>
-          </div>
-          <span class="app-label">Camera</span>
-        </div>
-
-        <!-- Photos -->
-        <div class="app-item" onclick="openApp('photos')">
-          <div class="app-icon" style="background:#ff2d55;">
-            <svg viewBox="0 0 24 24" fill="white"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
-          </div>
-          <span class="app-label">Photos</span>
-        </div>
-
-        <!-- Clock -->
-        <div class="app-item" onclick="openApp('clock')">
-          <div class="app-icon" style="background:#af52de;">
-            <svg viewBox="0 0 24 24" fill="white"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
-          </div>
-          <span class="app-label">Clock</span>
-        </div>
-
-        <!-- Contacts -->
-        <div class="app-item" onclick="openApp('contacts')">
-          <div class="app-icon" style="background:#55bef0;">
-            <svg viewBox="0 0 24 24" fill="white"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-          </div>
-          <span class="app-label">Contacts</span>
-        </div>
-
-        <!-- Settings -->
-        <div class="app-item" onclick="openApp('settings')">
-          <div class="app-icon" style="background:#8e8e93;">
-            <svg viewBox="0 0 24 24" fill="white"><path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/></svg>
-          </div>
-          <span class="app-label">Settings</span>
-        </div>
-
+      <!-- Page Indicator (5 Dots) -->
+      <div class="page-indicator" id="pageIndicator">
+        <div class="dot" onclick="goToHomeScreen(0)" title="Discover"></div>
+        <div class="dot active" onclick="goToHomeScreen(1)" title="Main Home"></div>
+        <div class="dot" onclick="goToHomeScreen(2)" title="AI & Dev"></div>
+        <div class="dot" onclick="goToHomeScreen(3)" title="Productivity"></div>
+        <div class="dot" onclick="goToHomeScreen(4)" title="Media & Social"></div>
       </div>
 
-      <!-- Dock Container -->
-      <div class="dock-container">
-        <div class="app-item" onclick="openApp('phone')">
-          <div class="app-icon" style="background:#34c759;"><svg viewBox="0 0 24 24" fill="white"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></div>
-        </div>
-        <div class="app-item" onclick="openApp('messages')">
-          <div class="app-icon" style="background:#007aff;"><svg viewBox="0 0 24 24" fill="white"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg></div>
-        </div>
-        <div class="app-item" onclick="openApp('chrome')">
-          <div class="app-icon" style="background:#ff9500;"><svg viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg></div>
-        </div>
-        <div class="app-item" onclick="openApp('camera')">
-          <div class="app-icon" style="background:#5856d6;"><svg viewBox="0 0 24 24" fill="white"><path d="M12 15c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3 1.34 3 3 3zm9-8h-3.17L16 5H8L6.17 7H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2z"/></svg></div>
-        </div>
-      </div>
+      <!-- Pinned Dock Container (Always visible across all 5 home screens) -->
+      <div class="dock-container" id="dockContainer"></div>
 
     </div>
 
-    <!-- Bottom Navigation Bar Gesture Pill -->
     <div class="nav-bar" id="navBar" onclick="handleNavClick()">
       <div class="nav-pill"></div>
     </div>
@@ -1167,7 +1592,10 @@
       <div class="shade-header">
         <div class="shade-clock" id="shadeClock">10:42</div>
         <div class="shade-header-actions">
-          <button class="btn-icon" onclick="openApp('settings')">
+          <button class="btn-icon" onclick="restartSystem()" title="Restart / Reload System">
+            <svg style="width:22px;height:22px;fill:currentColor;" viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+          </button>
+          <button class="btn-icon" onclick="openApp('settings')" title="Settings">
             <svg style="width:24px;height:24px;fill:currentColor;" viewBox="0 0 24 24"><path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/></svg>
           </button>
         </div>
@@ -1237,12 +1665,22 @@
         </div>
       </div>
 
+      <!-- Dismiss Handle Bar at Bottom of Shade -->
+      <div class="shade-dismiss-bar" onclick="closeShade()" title="Swipe up or tap to close">
+        <div class="shade-dismiss-pill"></div>
+      </div>
+
     </div>
 
     <!-- ==========================================================================
        APP DRAWER PANEL
        ========================================================================== -->
     <div class="drawer-panel" id="drawerPanel">
+      <!-- Drag Handle at Top of Drawer -->
+      <div class="drawer-handle-bar" onclick="closeDrawer()" title="Swipe down or tap to close">
+        <div class="drawer-handle-pill"></div>
+      </div>
+
       <div class="search-bar">
         <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
         <input type="text" class="search-input" id="drawerSearch" placeholder="Search apps..." oninput="filterDrawerApps(this.value)">
@@ -1252,6 +1690,7 @@
         <!-- Rendered dynamically -->
       </div>
     </div>
+
 
     <!-- ==========================================================================
        BUILT-IN ACTIVITY APPS
@@ -1445,35 +1884,132 @@
 
     /* Built-in & External Apps Registry */
     const APPS = [
+      // Core Built-in Activity Apps
       { id: 'phone', label: 'Phone', color: '#34c759', icon: '<path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>' },
       { id: 'messages', label: 'Messages', color: '#007aff', icon: '<path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>' },
-      { id: 'chrome', label: 'Chrome', color: '#ff9500', url: 'https://www.google.com', icon: '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/>' },
-      { id: 'camera', label: 'Camera', color: '#5856d6', icon: '<path d="M12 15c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3 1.34 3 3 3zm9-8h-3.17L16 5H8L6.17 7H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2z"/>' },
-      { id: 'photos', label: 'Photos', color: '#ff2d55', url: 'https://photos.google.com', icon: '<path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>' },
-      { id: 'clock', label: 'Clock', color: '#af52de', icon: '<path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2z"/>' },
+      { id: 'camera', label: 'Camera', color: '#5856d6', icon: '<path d="M12 15c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3 1.34 3 3 3zm9-8h-3.17L16 5H8L6.17 7H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2zm-9 12c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/>' },
+      { id: 'clock', label: 'Clock', color: '#af52de', icon: '<path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>' },
       { id: 'contacts', label: 'Contacts', color: '#55bef0', icon: '<path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>' },
-      { id: 'settings', label: 'Settings', color: '#8e8e93', icon: '<path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65z"/>' },
-      { id: 'youtube', label: 'YouTube', color: '#ff0000', url: 'https://www.youtube.com', icon: '<path d="M21.58 7.19c-.23-.86-.91-1.54-1.77-1.77C18.25 5 12 5 12 5s-6.25 0-7.81.42c-.86.23-1.54.91-1.77 1.77C2 8.75 2 12 2 12s0 3.25.42 4.81c.23.86.91 1.54 1.77 1.77C5.75 19 12 19 12 19s6.25 0 7.81-.42c.86-.23 1.54-.91 1.77-1.77C22 15.25 22 12 22 12s0-3.25-.42-4.81zM9.75 15.02V8.98L15 12l-5.25 3.02z"/>' },
-      { id: 'github', label: 'GitHub', color: '#24292e', url: 'https://github.com', icon: '<path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>' },
-      { id: 'reddit', label: 'Reddit', color: '#ff4500', url: 'https://www.reddit.com', icon: '<path d="M12 2A10 10 0 0 0 2 12a10 10 0 0 0 10 10 10 10 0 0 0 10-10A10 10 0 0 0 12 2zm5.01 4.74c.68 0 1.24.56 1.24 1.24a1.24 1.24 0 0 1-1.24 1.24c-.08 0-.16-.01-.24-.03a5.97 5.97 0 0 1-3.77 5.09v.01a7.88 7.88 0 0 1-6.02 0v-.01a5.97 5.97 0 0 1-3.77-5.09 1.22 1.22 0 0 1-.24.03 1.24 1.24 0 0 1 0-2.48c.24 0 .46.07.65.19A7.2 7.2 0 0 1 12 6.74c2.23 0 4.22.95 5.66 2.47a1.23 1.23 0 0 1 .65-.19z"/>' },
-      { id: 'wikipedia', label: 'Wikipedia', color: '#333333', url: 'https://www.wikipedia.org', icon: '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15h-2v-6h2v6zm0-8h-2V7h2v2zm4 8h-2v-6h2v6zm0-8h-2V7h2v2z"/>' },
-      { id: 'search_workstation', label: 'Search Workstation', color: '#1ed760', url: 'apps/search-workstation/index.html', icon: '<path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm4.586 14.424c-.18.295-.563.387-.857.207-2.35-1.434-5.308-1.758-8.793-.963-.335.077-.67-.133-.746-.467-.077-.334.132-.67.467-.746 3.808-.87 7.076-.496 9.722 1.12.295.18.387.563.207.857zm1.223-2.72c-.226.367-.706.482-1.072.257-2.687-1.652-6.785-2.131-9.965-1.166-.413.126-.848-.106-.973-.519-.126-.413.106-.848.519-.973 3.632-1.102 8.147-.568 11.238 1.328.366.226.48.707.255 1.073zm.13-2.837c-3.224-1.914-8.54-2.09-11.618-1.156-.495.15-1.02-.128-1.17-.623-.15-.495.128-1.02.623-1.17 3.538-1.074 9.405-.863 13.118 1.34.444.264.59.838.327 1.282-.264.443-.838.59-1.28.327z"/>' },
-      { id: 'amazon', label: 'Amazon', color: '#ff9900', url: 'https://www.amazon.com', icon: '<path d="M15.93 17.09c-2.75 2.03-6.74 3.11-10.18 3.11-4.83 0-9.17-1.76-12.44-4.71-.26-.23-.03-.54.28-.37 3.5 1.98 7.8 3.18 12.16 3.18 3.06 0 6.64-.72 9.73-2.22.46-.22.85.34.45.61zM17.5 15.6c-.36-.46-2.36-.22-3.26-.11-.27.03-.31-.21-.06-.39 1.62-1.15 4.27-.82 4.54-.48.27.34-.12 3.03-1.63 4.31-.23.2-.45.09-.34-.17.37-.87 1.11-2.7.75-3.16z"/>' },
+      { id: 'settings', label: 'Settings', color: '#8e8e93', icon: '<path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/>' },
+
+      // AI & Intelligent Assistants
+      { id: 'chatgpt', label: 'ChatGPT', color: '#10a37f', url: 'https://chatgpt.com', icon: '<path d="M20.5 10.5c-.2-1.6-1.3-2.9-2.8-3.4-.4-1.6-1.6-2.8-3.2-3.2-1.6-.4-3.3.1-4.4 1.2-1-.7-2.3-1-3.6-.6-1.5.4-2.6 1.7-2.9 3.2-1.2.6-2 1.8-2 3.3 0 1.2.6 2.3 1.5 3-.2 1.6.3 3.2 1.4 4.3 1.1 1.1 2.7 1.6 4.3 1.4.6 1.2 1.8 2 3.3 2 1.5 0 2.8-.9 3.4-2.2 1.4.2 2.8-.3 3.8-1.4 1-1.1 1.4-2.6 1.1-4.1 1-.8 1.6-2 1.6-3.3 0-.1 0-.2-.1-.2zm-8.5 9c-.6 0-1.1-.2-1.5-.6l-1.9-1.9v-2.8l3.4 2v3.3zm-5.4-3.6c-.4-.6-.5-1.3-.3-2l.9-2.5 2.5 1.4v4l-3.1-.9zm-1.5-6.3c.2-.6.7-1.1 1.3-1.3l2.5-.9 1.4 2.5h-4l-1.2-.3zm9.3-3.6c.6 0 1.1.2 1.5.6l1.9 1.9v2.8l-3.4-2V6.5zm5.4 3.6c.4.6.5 1.3.3 2l-.9 2.5-2.5-1.4v-4l3.1.9zm-1.3 6.3l-2.5.9-1.4-2.5h4l1.2.3c-.2.6-.7 1.1-1.3 1.3z"/>' },
+      { id: 'claude', label: 'Claude AI', color: '#d97757', url: 'https://claude.ai', icon: '<path d="M12 2L9.5 8.5 3 11l6.5 2.5L12 20l2.5-6.5L21 11l-6.5-2.5L12 2zm0 4.8l1.3 3.4 3.4 1.3-3.4 1.3-1.3 3.4-1.3-3.4-3.4-1.3 3.4-1.3L12 6.8z"/>' },
+      { id: 'gemini', label: 'Gemini', color: '#4285f4', url: 'https://gemini.google.com', icon: '<path d="M12 2C12 7.52 7.52 12 2 12c5.52 0 10 4.48 10 10 0-5.52 4.48-10 10-10-5.52 0-10-4.48-10-10z"/>' },
+      { id: 'perplexity', label: 'Perplexity', color: '#20b2aa', url: 'https://www.perplexity.ai', icon: '<path d="M12 2L4 6v12l8 4 8-4V6l-8-4zm0 2.5l5.5 2.75L12 10 6.5 7.25 12 4.5zM6 8.7l5 2.5v7.6l-5-2.5V8.7zm7 10.1v-7.6l5-2.5v7.6l-5 2.5z"/>' },
+      { id: 'huggingface', label: 'Hugging Face', color: '#ffcc4d', url: 'https://huggingface.co', icon: '<path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8zm-4.5-9a1.5 1.5 0 1 0-1.5-1.5A1.5 1.5 0 0 0 7.5 11zm9 0a1.5 1.5 0 1 0-1.5-1.5 1.5 1.5 0 0 0 1.5 1.5zm-8.5 3.5a5.5 5.5 0 0 0 8 0 .75.75 0 0 0-1.06-1.06 4 4 0 0 1-5.88 0 .75.75 0 0 0-1.06 1.06z"/>' },
+      { id: 'deepseek', label: 'DeepSeek', color: '#1d4ed8', url: 'https://chat.deepseek.com', icon: '<path d="M12 2a10 10 0 0 0-8 16l2.5-2.5A6.5 6.5 0 1 1 18.5 12a6.43 6.43 0 0 1-1.9 4.6l2.5 2.5A10 10 0 0 0 12 2zm0 5a5 5 0 1 0 5 5 5 5 0 0 0-5-5zm0 3a2 2 0 1 1-2 2 2 2 0 0 1 2-2z"/>' },
+      { id: 'poe', label: 'Poe AI', color: '#6366f1', url: 'https://poe.com', icon: '<path d="M12 2C6.48 2 2 6.48 2 12c0 4.42 2.87 8.17 6.84 9.5.5.09.66-.22.66-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.89 1.53 2.34 1.09 2.91.83.09-.64.35-1.09.64-1.34-2.22-.25-4.56-1.11-4.56-4.95 0-1.09.39-1.99 1.03-2.69-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.03A9.56 9.56 0 0 1 12 6.84c.85.01 1.7.12 2.5.34 1.91-1.3 2.75-1.03 2.75-1.03.55 1.38.2 2.4.1 2.65.64.7 1.03 1.6 1.03 2.69 0 3.85-2.34 4.7-4.57 4.95.36.31.68.92.68 1.85V21c0 .27.16.58.67.48A10.02 10.02 0 0 0 22 12c0-5.52-4.48-10-10-10z"/>' },
+
+      // Local Apps & Workstations
+      { id: 'search_workstation', label: 'Search Workstation', color: '#1ed760', url: 'apps/search-workstation/index.html', icon: '<path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14zM10 9H8v2h2v2h2v-2h2V9h-2V7h-2v2z"/>' },
+      { id: 'gif_to_mp4', label: 'GIF to MP4', color: '#8b5cf6', url: 'apps/other/gif_to_mp4.html', icon: '<path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zm6 10l5-4-5-4v8z"/>' },
+      { id: 'gallery_converter', label: 'HTML Gallery', color: '#ec4899', url: 'apps/other/html_to_image_gallery_converter.html', icon: '<path d="M22 16V4c0-1.1-.9-2-2-2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2zm-11-4l2.03 2.71L16 11l4 5H8l3-4zM2 6v14c0 1.1.9 2 2 2h14v-2H4V6H2z"/>' },
+      { id: 'RetroWiki', label: 'RetroWiki', color: '#333333', url: 'https://darkmatterspace2.github.io/webapp2_wiki/', icon: '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15h-2v-6h2v6zm0-8h-2V7h2v2zm4 8h-2v-6h2v6zm0-8h-2V7h2v2z"/>' },
+      { id: 'abeto_game', label: 'Abeto Game', color: '#ff2d55', url: 'https://messenger.abeto.co', icon: '<path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>' },     
+      { id: 'image_board_1', label: 'Booru ImageBoard', color: '#00a82d', url: 'https://darkmatterspace2.github.io/webapp_booru_1', icon: '<path d="M19.5 3h-15A2.5 2.5 0 0 0 2 5.5v13A2.5 2.5 0 0 0 4.5 21h15a2.5 2.5 0 0 0 2.5-2.5v-13A2.5 2.5 0 0 0 19.5 3zm-3.5 12h-8v-2h8v2zm0-4h-8V9h8v2z"/>' },      
+      // Google Suite
+      { id: 'chrome', label: 'Chrome', color: '#ff9500', url: 'https://www.google.com', icon: '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>' },
       { id: 'gmail', label: 'Gmail', color: '#ea4335', url: 'https://mail.google.com', icon: '<path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>' },
-      { id: 'maps', label: 'Maps', color: '#34a853', url: 'https://maps.google.com', icon: '<path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>' }
+      { id: 'maps', label: 'Maps', color: '#34a853', url: 'https://maps.google.com', icon: '<path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>' },
+      { id: 'drive', label: 'Drive', color: '#ffbb00', url: 'https://drive.google.com', icon: '<path d="M7.71 3.5L1.15 15l3.43 6 6.55-11.5M9.73 15L6.3 21h13.12l3.43-6M22.85 15l-6.57-11.5H9.72l6.57 11.5"/>' },
+      { id: 'docs', label: 'Docs', color: '#4285f4', url: 'https://docs.google.com', icon: '<path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>' },
+      { id: 'sheets', label: 'Sheets', color: '#0f9d58', url: 'https://sheets.google.com', icon: '<path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H6v-3h3v3zm0-5H6V9h3v3zm0-5H6V5h3v2zm5 10h-3v-3h3v3zm0-5h-3V9h3v3zm0-5h-3V5h3v2zm5 10h-3v-3h3v3zm0-5h-3V9h3v3zm0-5h-3V5h3v2z"/>' },
+      { id: 'calendar', label: 'Calendar', color: '#1a73e8', url: 'https://calendar.google.com', icon: '<path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11zM7 11h5v5H7z"/>' },
+      { id: 'keep', label: 'Keep', color: '#fbbc04', url: 'https://keep.google.com', icon: '<path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7z"/>' },
+      { id: 'translate', label: 'Translate', color: '#1a73e8', url: 'https://translate.google.com', icon: '<path d="M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v1.99h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"/>' },
+      { id: 'news', label: 'News', color: '#1a73e8', url: 'https://news.google.com', icon: '<path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>' },
+
+      // Social & Communication Networks
+      { id: 'youtube', label: 'YouTube', color: '#ff0000', url: 'https://www.youtube.com', icon: '<path d="M21.58 7.19c-.23-.86-.91-1.54-1.77-1.77C18.25 5 12 5 12 5s-6.25 0-7.81.42c-.86.23-1.54.91-1.77 1.77C2 8.75 2 12 2 12s0 3.25.42 4.81c.23.86.91 1.54 1.77 1.77C5.75 19 12 19 12 19s6.25 0 7.81-.42c.86-.23 1.54-.91 1.77-1.77C22 15.25 22 12 22 12s0-3.25-.42-4.81zM9.75 15.02V8.98L15 12l-5.25 3.02z"/>' },
+      { id: 'reddit', label: 'Reddit', color: '#ff4500', url: 'https://www.reddit.com', icon: '<path d="M12 2A10 10 0 0 0 2 12a10 10 0 0 0 10 10 10 10 0 0 0 10-10A10 10 0 0 0 12 2zm5.01 4.74c.68 0 1.24.56 1.24 1.24a1.24 1.24 0 0 1-1.24 1.24c-.08 0-.16-.01-.24-.03a5.97 5.97 0 0 1-3.77 5.09v.01a7.88 7.88 0 0 1-6.02 0v-.01a5.97 5.97 0 0 1-3.77-5.09 1.22 1.22 0 0 1-.24.03 1.24 1.24 0 0 1 0-2.48c.24 0 .46.07.65.19A7.2 7.2 0 0 1 12 6.74c2.23 0 4.22.95 5.66 2.47a1.23 1.23 0 0 1 .65-.19z"/>' },
+      { id: 'twitter', label: 'X (Twitter)', color: '#000000', url: 'https://x.com', icon: '<path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>' },
+      { id: 'discord', label: 'Discord', color: '#5865f2', url: 'https://discord.com', icon: '<path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.894.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>' },
+      { id: 'telegram', label: 'Telegram', color: '#229ed9', url: 'https://web.telegram.org', icon: '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 0 0-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/>' },
+      { id: 'whatsapp', label: 'WhatsApp', color: '#25d366', url: 'https://web.whatsapp.com', icon: '<path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2m.01 1.67c2.2 0 4.26.86 5.82 2.42a8.23 8.23 0 0 1 2.41 5.83c0 4.54-3.7 8.24-8.24 8.24-1.48 0-2.93-.39-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.19 8.19 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24m4.52 11.64c-.25-.13-1.47-.72-1.7-.81-.23-.08-.39-.13-.56.13-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.13-1.06-.39-2.03-1.25-.75-.67-1.26-1.5-1.41-1.75-.14-.25-.02-.39.11-.51.11-.11.25-.29.37-.44.13-.14.17-.25.25-.42.08-.17.04-.31-.02-.44-.06-.13-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.44.06-.67.31-.23.25-.88.86-.88 2.1 0 1.24.9 2.44 1.03 2.61.13.17 1.77 2.7 4.29 3.79.6.26 1.07.41 1.44.53.6.19 1.15.16 1.59.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.15-1.18-.07-.1-.23-.17-.48-.29z"/>' },
+      { id: 'instagram', label: 'Instagram', color: '#e1306c', url: 'https://www.instagram.com', icon: '<path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>' },
+      { id: 'linkedin', label: 'LinkedIn', color: '#0a66c2', url: 'https://www.linkedin.com', icon: '<path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/>' },
+      { id: 'tiktok', label: 'TikTok', color: '#010101', url: 'https://www.tiktok.com', icon: '<path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.89 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.35 0 .68.07.99.19V9.41a6.34 6.34 0 0 0-.99-.08 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.33 6.34 6.34 0 0 0 6.33-6.33V9.22a8.16 8.16 0 0 0 4.77 1.52V7.29a4.83 4.83 0 0 1-1-.6z"/>' },
+      { id: 'twitch', label: 'Twitch', color: '#9146ff', url: 'https://www.twitch.tv', icon: '<path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714Z"/>' },
+      { id: 'slack', label: 'Slack', color: '#4a154b', url: 'https://slack.com', icon: '<path d="M6 15a2 2 0 0 1-2 2 2 2 0 0 1-2-2 2 2 0 0 1 2-2h2v2zm1 0a2 2 0 0 1 2-2 2 2 0 0 1 2 2v5a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-5zm2-8a2 2 0 0 1-2-2 2 2 0 0 1 2-2 2 2 0 0 1 2 2v2H9zm0 1a2 2 0 0 1 2 2 2 2 0 0 1-2 2H4a2 2 0 0 1-2-2 2 2 0 0 1 2-2h5zm8 2a2 2 0 0 1 2-2 2 2 0 0 1 2 2 2 2 0 0 1-2 2h-2v-2zm-1 0a2 2 0 0 1-2 2 2 2 0 0 1-2-2V5a2 2 0 0 1 2-2 2 2 0 0 1 2 2v5zm-2 8a2 2 0 0 1 2 2 2 2 0 0 1-2 2 2 2 0 0 1-2-2v-2h2zm0-1a2 2 0 0 1-2-2 2 2 0 0 1 2-2h5a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-5z"/>' },
+      { id: 'pinterest', label: 'Pinterest', color: '#bd081c', url: 'https://www.pinterest.com', icon: '<path d="M12 0a12 12 0 0 0-4.37 23.18c-.05-.98-.1-2.48.02-3.55.13-1.07.82-3.87.82-3.87s-.2-.43-.2-1.06c0-1 0-1.74.57-1.74.54 0 .8.4.8.9 0 .54-.34 1.35-.52 2.1-.15.63.32 1.15.94 1.15 1.13 0 2-1.2 2-2.92 0-1.53-1.1-2.6-2.67-2.6-1.82 0-2.88 1.36-2.88 2.77 0 .55.21 1.14.48 1.46a.2.2 0 0 1 .05.19c-.05.23-.17.7-.2.8-.03.14-.11.17-.25.1-1-.46-1.62-1.9-1.62-3.07 0-2.5 1.82-4.8 5.24-4.8 2.75 0 4.89 1.96 4.89 4.58 0 2.73-1.72 4.93-4.11 4.93-.8 0-1.56-.42-1.82-.91l-.5 1.9c-.18.7-.67 1.57-1 2.1A12 12 0 1 0 12 0z"/>' },
+      { id: 'threads', label: 'Threads', color: '#101010', url: 'https://www.threads.net', icon: '<path d="M12.003 2c-5.523 0-10 4.477-10 10s4.477 10 10 10 10-4.477 10-10-4.477-10-10-10zm4.27 12.87c-.36 1.7-1.58 2.82-3.41 2.82-2.14 0-3.66-1.5-3.66-3.6 0-2.1 1.54-3.6 3.73-3.6 1.48 0 2.6.72 3.01 1.97l-1.37.58c-.28-.7-.91-1.05-1.64-1.05-1.28 0-2.19.89-2.19 2.1 0 1.21.91 2.1 2.19 2.1 1.05 0 1.68-.54 1.87-1.42h-1.87v-1.4h3.34v1.5z"/>' },
+      { id: 'bluesky', label: 'Bluesky', color: '#0285ff', url: 'https://bsky.app', icon: '<path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566 1.01 1.678 1.408 1.054 2.06c-.732.766-.826 2.478-.826 3.528 0 4.793 2.518 10.428 6.096 12.066-2.58-.692-5.074-2.502-3.535-6.22 0 0 1.423-3.003 5.485.496 1.472 1.268 2.526 2.762 3.726 4.07 1.2-1.308 2.254-2.802 3.726-4.07 4.062-3.499 5.485-.496 5.485-.496 1.539 3.718-.955 5.528-3.535 6.22 3.578-1.638 6.096-7.273 6.096-12.066 0-1.05-.094-2.762-.826-3.528-.624-.652-1.512-1.05-4.148.745-2.752 1.942-5.71 5.881-6.798 7.995z"/>' },
+
+      // Developer & Engineering Tools
+      { id: 'github', label: 'GitHub', color: '#24292e', url: 'https://github.com', icon: '<path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>' },
+      { id: 'gitlab', label: 'GitLab', color: '#fc6d26', url: 'https://gitlab.com', icon: '<path d="M22.65 14.39L12 22.13 1.35 14.39a.84.84 0 0 1-.3-.94l1.22-3.78 2.44-7.51A.42.42 0 0 1 5.5 2a.43.43 0 0 1 .4.27l2.24 6.9h7.72l2.24-6.9a.43.43 0 0 1 .4-.27.42.42 0 0 1 .39.21l2.44 7.51 1.22 3.78a.84.84 0 0 1-.3.89z"/>' },
+      { id: 'stackoverflow', label: 'Stack Overflow', color: '#f48024', url: 'https://stackoverflow.com', icon: '<path d="M18.986 21.865v-6.408h2.134V24H2.88v-8.543h2.134v6.408h13.972zM7.054 17.6l10.02 2.112.444-2.112L7.5 15.488 7.054 17.6zm1.332-4.572l9.244 4.356 1.02-2.112-9.244-4.356-1.02 2.112zm2.664-4.464l7.6 6.84 1.488-1.656-7.6-6.84-1.488 1.656zm5.112-4.8l-1.896 1.152 5.52 8.64 1.896-1.152-5.52-8.64zM16.92 0l-2.064.696 2.88 9.984 2.064-.696L16.92 0z"/>' },
+      { id: 'codepen', label: 'CodePen', color: '#131417', url: 'https://codepen.io', icon: '<path d="M23.638 7.414L12.52.005a1.18 1.18 0 0 0-1.04 0L.362 7.414a1.18 1.18 0 0 0-.362.862v7.448c0 .324.133.636.362.862l11.118 7.41a1.18 1.18 0 0 0 1.04 0l11.118-7.41a1.18 1.18 0 0 0 .362-.862V8.276a1.18 1.18 0 0 0-.362-.862zM12 2.373l8.665 5.777-3.864 2.581-4.801-3.2V2.373zM10.2 7.531l-4.801 3.2L1.535 8.15 10.2 2.373v5.158zm-7.865 3.125l3.35 2.234-3.35 2.234V10.656zm7.865 5.813l-4.801-3.2 4.801-3.2 4.801 3.2-4.801 3.2zm1.8 5.158v-5.158l4.801-3.2 3.864 2.581L12 21.627zm7.865-8.737l-3.35-2.234 3.35-2.234v4.468zM10.2 21.627L1.535 15.85l3.864-2.581 4.801 3.2v5.158z"/>' },
+      { id: 'replit', label: 'Replit', color: '#f26207', url: 'https://replit.com', icon: '<path d="M2 1.5A1.5 1.5 0 0 1 3.5 0h7A1.5 1.5 0 0 1 12 1.5V7a1 1 0 0 1-1 1H3.5A1.5 1.5 0 0 1 2 6.5v-5zm10 7.5a1 1 0 0 1 1-1h7.5A1.5 1.5 0 0 1 22 9.5v5a1.5 1.5 0 0 1-1.5 1.5H13a1 1 0 0 1-1-1V9zm-10 7A1.5 1.5 0 0 1 3.5 16h7a1.5 1.5 0 0 1 1.5 1.5v5.5a1.5 1.5 0 0 1-1.5 1.5h-7A1.5 1.5 0 0 1 2 22.5V16z"/>' },
+      { id: 'npm', label: 'NPM', color: '#cb3837', url: 'https://www.npmjs.com', icon: '<path d="M1.763 0C.786 0 0 .786 0 1.763v20.474C0 23.214.786 24 1.763 24h20.474c.977 0 1.763-.786 1.763-1.763V1.763C24 .786 23.214 0 22.237 0zM5.13 5.13h13.74v13.74h-3.435V8.565H11.99v10.305H5.13z"/>' },
+      { id: 'devto', label: 'Dev.to', color: '#0a0a0a', url: 'https://dev.to', icon: '<path d="M7.42 10.05c-.18-.12-.46-.17-.84-.17H5.12v4.24h1.43c.41 0 .71-.06.9-.19.19-.12.29-.34.29-.65v-2.58c0-.32-.1-.53-.32-.65zm-4.7-3.05h18.56c.7 0 1.28.57 1.28 1.28v11.44c0 .71-.58 1.28-1.28 1.28H2.72c-.71 0-1.28-.57-1.28-1.28V8.28c0-.71.57-1.28 1.28-1.28zm5.95 7.37c0-.85-.35-1.42-1.04-1.72.5-.28.76-.75.76-1.42 0-.64-.21-1.12-.64-1.44-.43-.32-1.06-.48-1.9-.48H3.6v8.48h2.33c.89 0 1.55-.18 1.99-.54.44-.36.66-.88.66-1.56v-1.32zm6.26-4.99H11.5v8.48h3.43v-1.44h-1.95v-2.12h1.76v-1.44h-1.76V8.82h1.95V7.38zm5.6 0l-1.41 6.13-1.41-6.13h-1.63l2.25 8.48h1.6l2.24-8.48H20.53z"/>' },
+      { id: 'vercel', label: 'Vercel', color: '#000000', url: 'https://vercel.com', icon: '<path d="M12 1L24 22H0L12 1z"/>' },
+      { id: 'netlify', label: 'Netlify', color: '#00c7b7', url: 'https://www.netlify.com', icon: '<path d="M18.87 9.87l-4.74-4.74a1.72 1.72 0 0 0-2.43 0l-1.2 1.2 5.95 5.95 2.42-2.41zm-13.74 4.26l4.74 4.74a1.72 1.72 0 0 0 2.43 0l1.2-1.2-5.95-5.95-2.42 2.41zM23.1 11.2l-2.3-2.3-2.42 2.42 2.3 2.3a1.72 1.72 0 0 0 2.42-2.42zM.9 12.8l2.3 2.3 2.42-2.42-2.3-2.3A1.72 1.72 0 0 0 .9 12.8z"/>' },
+
+      // Productivity & Workspace
+      { id: 'notion', label: 'Notion', color: '#000000', url: 'https://www.notion.so', icon: '<path d="M4.459 4.208c.746.606 1.026.56 2.428.466l13.215-.793c.28 0 .047-.28-.046-.326L17.86 1.549C17.3 1.082 16.507.756 15.342.85L2.33 1.782c-.42.047-.513.327-.373.56zm.84 4.526v12.783c0 .84.42 1.166 1.306 1.12l14.195-.84c.886-.046 1.073-.653 1.073-1.306V7.473c0-.653-.28-.98-.933-.933l-14.708.886c-.653.047-.933.42-.933.98v.328zm12.375.56l.093 9.704-2.892.14v-6.951l-3.313 6.997-2.473.14-2.519-7.278v6.858l-2.006.14-.093-9.564 2.893-.14 2.893 7.371 2.846-7.278 2.67-.14z"/>' },
+      { id: 'trello', label: 'Trello', color: '#0052cc', url: 'https://trello.com', icon: '<path d="M19.5 2h-15A2.5 2.5 0 0 0 2 4.5v15A2.5 2.5 0 0 0 4.5 22h15a2.5 2.5 0 0 0 2.5-2.5v-15A2.5 2.5 0 0 0 19.5 2zm-8.8 13.5a1.2 1.2 0 0 1-1.2 1.2H6.2a1.2 1.2 0 0 1-1.2-1.2V6.7a1.2 1.2 0 0 1 1.2-1.2h3.3a1.2 1.2 0 0 1 1.2 1.2v8.8zm7.1-4.8a1.2 1.2 0 0 1-1.2 1.2h-3.3a1.2 1.2 0 0 1-1.2-1.2V6.7a1.2 1.2 0 0 1 1.2-1.2h3.3a1.2 1.2 0 0 1 1.2 1.2v3.9z"/>' },
+      { id: 'figma', label: 'Figma', color: '#f24e1e', url: 'https://www.figma.com', icon: '<path d="M8.25 12A3.75 3.75 0 1 1 12 8.25V12H8.25zM12 12v3.75a3.75 3.75 0 1 1-3.75-3.75H12zm0-7.5H8.25a3.75 3.75 0 1 1 3.75-3.75V4.5zm0 0h3.75a3.75 3.75 0 1 1-3.75 3.75V4.5zm0 7.5h3.75a3.75 3.75 0 1 1-3.75 3.75V12z"/>' },
+      { id: 'canva', label: 'Canva', color: '#00c4cc', url: 'https://www.canva.com', icon: '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm3.88 14.54c-.6.3-1.42.46-2.22.46-2.6 0-4.66-1.74-4.66-4.9 0-3.32 2.22-5.1 4.76-5.1 1.04 0 1.94.34 2.5.82l-.84 1.24c-.42-.36-.96-.58-1.6-.58-1.58 0-2.88 1.22-2.88 3.52 0 2.22 1.28 3.48 2.88 3.48.56 0 1.1-.14 1.5-.38l.56 1.46z"/>' },
+      { id: 'miro', label: 'Miro', color: '#ffd02f', url: 'https://miro.com', icon: '<path d="M18.8 3L13.6 9.8V3H10v18l5.2-6.8V21h3.6V3zM5.2 3L0 9.8V3H0v18l5.2-6.8V21h3.6V3H5.2z"/>' },
+      { id: 'todoist', label: 'Todoist', color: '#e44332', url: 'https://todoist.com', icon: '<path d="M21.5 3H2.5A1.5 1.5 0 0 0 1 4.5v15A1.5 1.5 0 0 0 2.5 21h19a1.5 1.5 0 0 0 1.5-1.5v-15A1.5 1.5 0 0 0 21.5 3zM10 16.5l-4-4 1.4-1.4 2.6 2.6 6.6-6.6 1.4 1.4-8 8z"/>' },
+      { id: 'asana', label: 'Asana', color: '#f06a6a', url: 'https://asana.com', icon: '<path d="M12 2a4 4 0 1 0 0 8 4 4 0 0 0 0-8zm-5.5 12a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7zm11 0a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7z"/>' },
+      { id: 'linear', label: 'Linear', color: '#5e6ad2', url: 'https://linear.app', icon: '<path d="M2.5 2.5h19v19h-19zM19 19L5 5M5 19L19 5"/>' },
+      { id: 'obsidian', label: 'Obsidian', color: '#7c3aed', url: 'https://obsidian.md', icon: '<path d="M8.5 2.5l7 3.5 4 8-6 7.5-8-3.5-1-8.5 4-7zM12 6.5l-3 5 3 6 3-6-3-5z"/>' },
+
+      // Media, Audio & Entertainment
+      { id: 'spotify', label: 'Spotify', color: '#1db954', url: 'https://open.spotify.com', icon: '<path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm4.586 14.424c-.18.295-.563.387-.857.207-2.35-1.434-5.308-1.758-8.793-.963-.335.077-.67-.133-.746-.467-.077-.334.132-.67.467-.746 3.808-.87 7.076-.496 9.722 1.12.295.18.387.563.207.857zm1.223-2.72c-.226.367-.706.482-1.072.257-2.687-1.652-6.785-2.131-9.965-1.166-.413.126-.848-.106-.973-.519-.126-.413.106-.848.519-.973 3.632-1.102 8.147-.568 11.238 1.328.366.226.48.707.255 1.073zm.13-2.837c-3.224-1.914-8.54-2.09-11.618-1.156-.495.15-1.02-.128-1.17-.623-.15-.495.128-1.02.623-1.17 3.538-1.074 9.405-.863 13.118 1.34.444.264.59.838.327 1.282-.264.443-.838.59-1.28.327z"/>' },
+      { id: 'soundcloud', label: 'SoundCloud', color: '#ff5500', url: 'https://soundcloud.com', icon: '<path d="M1.5 14a1.5 1.5 0 0 1 3 0v4a1.5 1.5 0 0 1-3 0v-4zm4.5-3a1.5 1.5 0 0 1 3 0v7a1.5 1.5 0 0 1-3 0v-7zm4.5-2a1.5 1.5 0 0 1 3 0v9a1.5 1.5 0 0 1-3 0V9zm4.5 2a4.5 4.5 0 1 1 8.5 2 3.5 3.5 0 0 1-.5 7H15V11z"/>' },
+      { id: 'netflix', label: 'Netflix', color: '#e50914', url: 'https://www.netflix.com', icon: '<path d="M4 2v20l4-2V2H4zm12 0l-4 10V2H8v20h4l4-10v10h4V2h-4z"/>' },
+      { id: 'disney', label: 'Disney+', color: '#113ccf', url: 'https://www.disneyplus.com', icon: '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 14.5c-2.48 0-4.5-2.02-4.5-4.5S10.52 7.5 13 7.5c1.33 0 2.53.58 3.35 1.5l-1.42 1.42c-.52-.59-1.2-1.02-1.93-1.02-1.43 0-2.6 1.17-2.6 2.6s1.17 2.6 2.6 2.6c1.15 0 2.1-.75 2.45-1.8H13v-1.9h4.4c.06.3.1.61.1.94 0 2.62-1.88 4.76-4.5 4.76z"/>' },
+      { id: 'primevideo', label: 'Prime Video', color: '#00a8e1', url: 'https://www.primevideo.com', icon: '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/>' },
+      { id: 'imdb', label: 'IMDb', color: '#f5c518', url: 'https://www.imdb.com', icon: '<path d="M22 4H2v16h20V4zM5 16H3.5V8H5v8zm5.5 0h-1.5l-1.5-5.5V16H6V8h2.5l1.5 5.5V8h1.5v8zm4.5 0h-2V8h2a3 3 0 0 1 3 3v2a3 3 0 0 1-3 3zm4 0h-1.5V8H19v8zm-4.5-6.5h-.5v5h.5a1.5 1.5 0 0 0 1.5-1.5v-2a1.5 1.5 0 0 0-1.5-1.5z"/>' },
+      { id: 'bandcamp', label: 'Bandcamp', color: '#1da0c3', url: 'https://bandcamp.com', icon: '<path d="M0 18.75l7.437-13.5H24l-7.438 13.5H0z"/>' },
+
+      // Knowledge & News
+      { id: 'wikipedia', label: 'Wikipedia', color: '#333333', url: 'https://www.wikipedia.org', icon: '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15h-2v-6h2v6zm0-8h-2V7h2v2zm4 8h-2v-6h2v6zm0-8h-2V7h2v2z"/>' },
+      { id: 'bbcnews', label: 'BBC News', color: '#bb1919', url: 'https://www.bbc.com/news', icon: '<path d="M2 5h6v14H2V5zm7 0h6v14H9V5zm7 0h6v14h-6V5zM4 15h2v-2H4v2zm7 0h2v-2h-2v2zm7 0h2v-2h-2v2zm-14-6h2V7H4v2zm7 0h2V7h-2v2zm7 0h2V7h-2v2z"/>' },
+      { id: 'hackernews', label: 'Hacker News', color: '#ff6600', url: 'https://news.ycombinator.com', icon: '<path d="M2 2h20v20H2V2zm9.5 13.5h1v-4.5l3.5-6.5h-1.2L12 9.5 9.2 4.5H8l3.5 6.5v4.5z"/>' },
+      { id: 'medium', label: 'Medium', color: '#000000', url: 'https://medium.com', icon: '<path d="M13.54 12a6.8 6.8 0 0 1-6.77 6.82A6.8 6.8 0 0 1 0 12a6.8 6.8 0 0 1 6.77-6.82A6.8 6.8 0 0 1 13.54 12zM20.96 12c0 3.54-1.51 6.42-3.38 6.42-1.87 0-3.39-2.88-3.39-6.42s1.52-6.42 3.39-6.42c1.87 0 3.38 2.88 3.38 6.42M24 12c0 3.17-.53 5.75-1.19 5.75-.66 0-1.19-2.58-1.19-5.75s.53-5.75 1.19-5.75C23.47 6.25 24 8.83 24 12z"/>' },
+      { id: 'substack', label: 'Substack', color: '#ff6719', url: 'https://substack.com', icon: '<path d="M22.539 8.242H1.46V5.406h21.08v2.836zM1.46 10.812V24L12 18.11 22.54 24V10.812H1.46zM22.54 0H1.46v2.836h21.08V0z"/>' },
+      { id: 'wolframalpha', label: 'WolframAlpha', color: '#dd1100', url: 'https://www.wolframalpha.com', icon: '<path d="M12 2l2.4 5.3 5.6-2-2 5.6L23 13.3l-5.3 2.4 2 5.6-5.6-2L11.7 24.6 9.3 19.3l-5.6 2 2-5.6L.4 13.3 5.7 10.9l-2-5.6 5.6 2L12 2z"/>' },
+      { id: 'archive', label: 'Internet Archive', color: '#333333', url: 'https://archive.org', icon: '<path d="M12 2L2 7v2h20V7L12 2zM4 11v8h3v-8H4zm6 0v8h4v-8h-4zm7 0v8h3v-8h-3zM2 20v2h20v-2H2z"/>' },
+
+      // Shopping & Lifestyle
+      { id: 'amazon', label: 'Amazon', color: '#ff9900', url: 'https://www.amazon.com', icon: '<path d="M15.93 17.09c-2.75 2.03-6.74 3.11-10.18 3.11-4.83 0-9.17-1.76-12.44-4.71-.26-.23-.03-.54.28-.37 3.5 1.98 7.8 3.18 12.16 3.18 3.06 0 6.64-.72 9.73-2.22.46-.22.85.34.45.61zM17.5 15.6c-.36-.46-2.36-.22-3.26-.11-.27.03-.31-.21-.06-.39 1.62-1.15 4.27-.82 4.54-.48.27.34-.12 3.03-1.63 4.31-.23.2-.45.09-.34-.17.37-.87 1.11-2.7.75-3.16z"/>' },
+      { id: 'ebay', label: 'eBay', color: '#e53238', url: 'https://www.ebay.com', icon: '<path d="M5.5 15.5c-1.9 0-3.5-1.6-3.5-3.5S3.6 8.5 5.5 8.5c1.4 0 2.6.8 3.1 2H7c-.4-.6-1-.9-1.5-.9-1.1 0-2 .9-2 2s.9 2 2 2c.5 0 1.1-.3 1.5-.9h1.6c-.5 1.2-1.7 2-3.1 2zm6-7h1.5v7h-1.5v-7zm6.5 0c1.9 0 3.5 1.6 3.5 3.5s-1.6 3.5-3.5 3.5-3.5-1.6-3.5-3.5 1.6-3.5 3.5-3.5zm0 1.5c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>' },
+      { id: 'aliexpress', label: 'AliExpress', color: '#ff4747', url: 'https://www.aliexpress.com', icon: '<path d="M12 2L3 7v10l9 5 9-5V7l-9-5zm0 2.2l6.8 3.8-6.8 3.8-6.8-3.8L12 4.2zM5 9.2l6 3.3v6.7l-6-3.3V9.2zm8 10V12.5l6-3.3v6.7l-6 3.3z"/>' },
+      { id: 'airbnb', label: 'Airbnb', color: '#ff5a5f', url: 'https://www.airbnb.com', icon: '<path d="M12 2C7.5 2 4 6 4 10.5c0 3.8 2.6 7.5 8 11.5 5.4-4 8-7.7 8-11.5C20 6 16.5 2 12 2zm0 12c-1.7 0-3-1.3-3-3s1.3-3 3-3 3 1.3 3 3-1.3 3-3 3z"/>' },
+      { id: 'booking', label: 'Booking.com', color: '#003580', url: 'https://www.booking.com', icon: '<path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 13H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V6h10v2z"/>' },
+      { id: 'uber', label: 'Uber', color: '#000000', url: 'https://m.uber.com', icon: '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/>' }
     ];
 
     /* Initialize System */
     window.addEventListener('DOMContentLoaded', () => {
       initTime();
+      renderHomeScreenGrids();
       renderDrawerApps();
       applyWallpaper(1);
       setupGestures();
       setupContextMenu();
+      goToHomeScreen(1);
+      updateTaskCount();
       
       // Analog Clock Ticking Loop
       setInterval(drawAnalogClock, 1000);
       drawAnalogClock();
+
+      // Play Android 14 Boot Loading Screen
+      setTimeout(() => {
+        const boot = document.getElementById('bootScreen');
+        if (boot) {
+          boot.classList.add('fade-out');
+          setTimeout(() => {
+            boot.style.display = 'none';
+          }, 500);
+        }
+      }, 1500);
     });
 
     /* Real-Time Clock & Date Engine */
@@ -1494,10 +2030,17 @@
 
         const options = { weekday: 'short', month: 'short', day: 'numeric' };
         document.getElementById('widgetDate').textContent = now.toLocaleDateString('en-US', options);
+
+        const glanceDate = document.getElementById('glanceDate');
+        if (glanceDate) {
+          const fullOptions = { weekday: 'long', month: 'short', day: 'numeric' };
+          glanceDate.textContent = now.toLocaleDateString('en-US', fullOptions);
+        }
       };
       updateClocks();
       setInterval(updateClocks, 1000);
     }
+
 
     /* Draw Material You Analog Clock */
     function drawAnalogClock() {
@@ -1751,6 +2294,40 @@
     }
 
     /* ==========================================================================
+       5-SCREEN PAGED HOMESCREEN CONTROLLER
+       ========================================================================== */
+    let currentHomeScreenIndex = 1; // Default to Main Home (Page 1)
+
+    function goToHomeScreen(index) {
+      if (index < 0) index = 0;
+      if (index > 4) index = 4;
+      currentHomeScreenIndex = index;
+
+      const track = document.getElementById('homeScreensTrack');
+      if (track) {
+        track.style.transition = 'transform 0.32s cubic-bezier(0.16, 1, 0.3, 1)';
+        track.style.transform = `translateX(-${index * 20}%)`;
+      }
+
+      // Update Page Indicator (5 Dots)
+      const dots = document.querySelectorAll('.page-indicator .dot');
+      dots.forEach((dot, idx) => {
+        dot.classList.toggle('active', idx === index);
+      });
+    }
+
+    function updateTaskCount() {
+      const checkboxes = document.querySelectorAll('.notes-list input[type="checkbox"]');
+      const total = checkboxes.length;
+      const checked = Array.from(checkboxes).filter(c => c.checked).length;
+      const badge = document.getElementById('notesCount');
+      if (badge) {
+        const remaining = total - checked;
+        badge.textContent = remaining === 0 ? 'All done! 🎉' : `${remaining} left`;
+      }
+    }
+
+    /* ==========================================================================
        GESTURE CONTROLS & SYSTEM UI PANELS (TOUCH & MOUSE POINTER SUPPORT)
        ========================================================================== */
     function setupGestures() {
@@ -1758,10 +2335,11 @@
       const statusBar = document.getElementById('statusBar');
       const shadePanel = document.getElementById('shadePanel');
       const drawerPanel = document.getElementById('drawerPanel');
-      const wallpaperLayer = document.getElementById('wallpaperLayer');
+      const drawerGrid = document.getElementById('drawerGrid');
 
       // Click to toggle shade from status bar
-      statusBar.addEventListener('click', () => {
+      statusBar.addEventListener('click', (e) => {
+        e.stopPropagation();
         if (shadePanel.classList.contains('open')) {
           closeShade();
         } else {
@@ -1769,78 +2347,230 @@
         }
       });
 
-      // Pointer Drag State (Mouse, Touch, Stylus)
+      // Gesture State Management
       let isDragging = false;
+      let startX = 0;
       let startY = 0;
-      let dragTarget = null; // 'top' or 'bottom'
+      let startTime = 0;
+      let dragMode = null; // 'open-shade' | 'open-drawer' | 'close-shade' | 'close-drawer' | 'swipe-home'
+      let currentDeltaX = 0;
       let currentDeltaY = 0;
 
-      deviceShell.addEventListener('pointerdown', (e) => {
-        const rect = deviceShell.getBoundingClientRect();
-        const relativeY = e.clientY - rect.top;
+      function onDragStart(clientX, clientY, targetEl) {
+        if (state.activeApp) return;
 
-        // Check if drag starts near top (Status Bar region) or bottom (Nav Bar region)
-        if (relativeY < 120 && !drawerPanel.classList.contains('open') && !state.activeApp) {
+        const isShadeOpen = shadePanel.classList.contains('open');
+        const isDrawerOpen = drawerPanel.classList.contains('open');
+
+        startX = clientX;
+        startY = clientY;
+        startTime = Date.now();
+        currentDeltaX = 0;
+        currentDeltaY = 0;
+        dragMode = null;
+
+        if (isShadeOpen) {
+          // Closing Shade: allow gesture across panel (except interactive sliders/toggles)
+          if (targetEl && targetEl.closest('.range-slider, .switch, input, button:not(.shade-dismiss-bar)')) {
+            return;
+          }
           isDragging = true;
-          startY = e.clientY;
-          dragTarget = 'top';
+          dragMode = 'close-shade';
           shadePanel.style.transition = 'none';
-        } else if (relativeY > (rect.height - 120) && !shadePanel.classList.contains('open') && !state.activeApp) {
+        } else if (isDrawerOpen) {
+          // Closing Drawer: allowed from top handle, search area, or when drawerGrid is at top
+          if (targetEl && targetEl.closest('input')) {
+            return;
+          }
+          const isAtTop = !drawerGrid || drawerGrid.scrollTop <= 5;
+          const isHandleOrHeader = targetEl && targetEl.closest('.drawer-handle-bar, .search-bar');
+          
+          if (isAtTop || isHandleOrHeader) {
+            isDragging = true;
+            dragMode = 'close-drawer';
+            drawerPanel.style.transition = 'none';
+          }
+        } else {
+          // Home Screen: Allow dragging
           isDragging = true;
-          startY = e.clientY;
-          dragTarget = 'bottom';
-          drawerPanel.style.transition = 'none';
         }
-      });
+      }
 
-      window.addEventListener('pointermove', (e) => {
+      function onDragMove(clientX, clientY) {
         if (!isDragging) return;
-        currentDeltaY = e.clientY - startY;
+        currentDeltaX = clientX - startX;
+        currentDeltaY = clientY - startY;
 
-        if (dragTarget === 'top') {
-          // Pulling shade down
+        const rect = deviceShell.getBoundingClientRect();
+        const relY = startY - rect.top;
+        const absX = Math.abs(currentDeltaX);
+        const absY = Math.abs(currentDeltaY);
+
+        // Lock drag mode once movement exceeds 3px threshold for instant response
+        if (dragMode === null) {
+          if (absX > 3 || absY > 3) {
+            if (absX > absY) {
+              // Horizontal swipe between home screens
+              dragMode = 'swipe-home';
+              const track = document.getElementById('homeScreensTrack');
+              if (track) track.style.transition = 'none';
+            } else {
+              // Vertical swipe
+              if (relY < rect.height * 0.45 && currentDeltaY > 0) {
+                dragMode = 'open-shade';
+                shadePanel.style.transition = 'none';
+              } else if (relY > rect.height * 0.5 && currentDeltaY < 0) {
+                dragMode = 'open-drawer';
+                drawerPanel.style.transition = 'none';
+              } else {
+                if (currentDeltaY > 0) {
+                  dragMode = 'open-shade';
+                  shadePanel.style.transition = 'none';
+                } else {
+                  dragMode = 'open-drawer';
+                  drawerPanel.style.transition = 'none';
+                }
+              }
+            }
+          } else {
+            return;
+          }
+        }
+
+        if (dragMode === 'swipe-home') {
+          const track = document.getElementById('homeScreensTrack');
+          if (track) {
+            const shellWidth = rect.width || 380;
+            let percentOffset = (currentDeltaX / shellWidth) * 20;
+            // Elastic boundary resistance on ends
+            if (currentHomeScreenIndex === 0 && currentDeltaX > 0) {
+              percentOffset *= 0.35;
+            } else if (currentHomeScreenIndex === 4 && currentDeltaX < 0) {
+              percentOffset *= 0.35;
+            }
+            const basePercent = -(currentHomeScreenIndex * 20);
+            track.style.transform = `translateX(${basePercent + percentOffset}%)`;
+          }
+        } else if (dragMode === 'open-shade') {
           if (currentDeltaY > 0) {
-            const percent = Math.min(100, (currentDeltaY / 400) * 100);
+            const percent = Math.min(100, (currentDeltaY / 320) * 100);
             shadePanel.style.transform = `translateY(${percent - 100}%)`;
           }
-        } else if (dragTarget === 'bottom') {
-          // Pulling drawer up
+        } else if (dragMode === 'open-drawer') {
           if (currentDeltaY < 0) {
-            const percent = Math.min(100, (Math.abs(currentDeltaY) / 400) * 100);
+            const percent = Math.min(100, (Math.abs(currentDeltaY) / 320) * 100);
             drawerPanel.style.transform = `translateY(${100 - percent}%)`;
           }
+        } else if (dragMode === 'close-shade') {
+          if (currentDeltaY < 0) {
+            shadePanel.style.transform = `translateY(${currentDeltaY}px)`;
+          }
+        } else if (dragMode === 'close-drawer') {
+          if (currentDeltaY > 0) {
+            drawerPanel.style.transform = `translateY(${currentDeltaY}px)`;
+          }
         }
-      });
+      }
 
-      window.addEventListener('pointerup', () => {
+      function onDragEnd() {
         if (!isDragging) return;
         isDragging = false;
-        
-        shadePanel.style.transition = '';
-        drawerPanel.style.transition = '';
 
-        if (dragTarget === 'top') {
-          if (currentDeltaY > 80) {
+        const elapsed = Math.max(1, Date.now() - startTime);
+
+        if (dragMode === 'swipe-home') {
+          const velocityX = Math.abs(currentDeltaX) / elapsed;
+          const isFlickX = velocityX > 0.05; // Ultra-sensitive gentle flick threshold
+
+          // Swiping left (next screen)
+          if (currentDeltaX < -18 || (currentDeltaX < -6 && isFlickX)) {
+            goToHomeScreen(Math.min(4, currentHomeScreenIndex + 1));
+          } 
+          // Swiping right (prev screen)
+          else if (currentDeltaX > 18 || (currentDeltaX > 6 && isFlickX)) {
+            goToHomeScreen(Math.max(0, currentHomeScreenIndex - 1));
+          } 
+          else {
+            goToHomeScreen(currentHomeScreenIndex);
+          }
+        } else if (dragMode === 'open-shade') {
+          const velocityY = Math.abs(currentDeltaY) / elapsed;
+          const isFlickY = velocityY > 0.25;
+          shadePanel.style.transition = '';
+          if (currentDeltaY > 60 || (currentDeltaY > 20 && isFlickY)) {
             openShade();
           } else {
             closeShade();
           }
-        } else if (dragTarget === 'bottom') {
-          if (currentDeltaY < -80) {
+        } else if (dragMode === 'open-drawer') {
+          const velocityY = Math.abs(currentDeltaY) / elapsed;
+          const isFlickY = velocityY > 0.25;
+          drawerPanel.style.transition = '';
+          if (currentDeltaY < -60 || (currentDeltaY < -20 && isFlickY)) {
             openDrawer();
           } else {
             closeDrawer();
+          }
+        } else if (dragMode === 'close-shade') {
+          const velocityY = Math.abs(currentDeltaY) / elapsed;
+          const isFlickY = velocityY > 0.25;
+          shadePanel.style.transition = '';
+          if (currentDeltaY < -50 || (currentDeltaY < -15 && isFlickY)) {
+            closeShade();
+          } else {
+            openShade();
+          }
+        } else if (dragMode === 'close-drawer') {
+          const velocityY = Math.abs(currentDeltaY) / elapsed;
+          const isFlickY = velocityY > 0.25;
+          drawerPanel.style.transition = '';
+          if (currentDeltaY > 50 || (currentDeltaY > 15 && isFlickY)) {
+            closeDrawer();
+          } else {
+            openDrawer();
           }
         }
 
         shadePanel.style.transform = '';
         drawerPanel.style.transform = '';
-        dragTarget = null;
+        dragMode = null;
+        currentDeltaX = 0;
+
         currentDeltaY = 0;
+      }
+
+      // Pointer Events Support (Mouse, Stylus, Desktop)
+      deviceShell.addEventListener('pointerdown', (e) => {
+        onDragStart(e.clientX, e.clientY, e.target);
       });
+
+      window.addEventListener('pointermove', (e) => {
+        onDragMove(e.clientX, e.clientY);
+      });
+
+      window.addEventListener('pointerup', onDragEnd);
+      window.addEventListener('pointercancel', onDragEnd);
+
+      // Touch Events Support (Native Mobile Smoothness)
+      deviceShell.addEventListener('touchstart', (e) => {
+        if (e.touches && e.touches.length === 1) {
+          onDragStart(e.touches[0].clientX, e.touches[0].clientY, e.target);
+        }
+      }, { passive: true });
+
+      window.addEventListener('touchmove', (e) => {
+        if (isDragging && e.touches && e.touches.length === 1) {
+          onDragMove(e.touches[0].clientX, e.touches[0].clientY);
+        }
+      }, { passive: true });
+
+      window.addEventListener('touchend', onDragEnd, { passive: true });
+      window.addEventListener('touchcancel', onDragEnd, { passive: true });
 
       // Keyboard Shortcuts for Desktop Navigation
       window.addEventListener('keydown', (e) => {
+        const isOverlayOpen = drawerPanel.classList.contains('open') || shadePanel.classList.contains('open') || state.activeApp;
+
         if (e.key === 'Escape') {
           if (state.activeApp) closeApp(state.activeApp);
           else if (drawerPanel.classList.contains('open')) closeDrawer();
@@ -1849,6 +2579,10 @@
           openShade();
         } else if (e.key === 'ArrowUp' && (e.altKey || e.ctrlKey)) {
           openDrawer();
+        } else if (e.key === 'ArrowRight' && !isOverlayOpen) {
+          goToHomeScreen(Math.min(4, currentHomeScreenIndex + 1));
+        } else if (e.key === 'ArrowLeft' && !isOverlayOpen) {
+          goToHomeScreen(Math.max(0, currentHomeScreenIndex - 1));
         } else if (e.key === 'Home') {
           handleNavClick();
         }
@@ -1858,6 +2592,7 @@
     function openShade() {
       document.getElementById('shadePanel').classList.add('open');
       document.getElementById('wallpaperLayer').classList.add('blurred');
+      document.getElementById('drawerPanel').classList.remove('open');
     }
 
     function closeShade() {
@@ -1868,11 +2603,14 @@
     function openDrawer() {
       document.getElementById('drawerPanel').classList.add('open');
       document.getElementById('wallpaperLayer').classList.add('blurred');
+      document.getElementById('shadePanel').classList.remove('open');
     }
 
     function closeDrawer() {
       document.getElementById('drawerPanel').classList.remove('open');
       document.getElementById('wallpaperLayer').classList.remove('blurred');
+      const searchInput = document.getElementById('drawerSearch');
+      if (searchInput) searchInput.blur();
     }
 
     function handleNavClick() {
@@ -1880,7 +2618,20 @@
       closeDrawer();
       if (state.activeApp) {
         closeApp(state.activeApp);
+      } else if (currentHomeScreenIndex !== 1) {
+        goToHomeScreen(1); // Return to Main Home
       }
+    }
+
+    function restartSystem() {
+      const boot = document.getElementById('bootScreen');
+      if (boot) {
+        boot.style.display = 'flex';
+        boot.classList.remove('fade-out');
+      }
+      setTimeout(() => {
+        window.location.reload();
+      }, 350);
     }
 
     function toggleQS(el) {
@@ -1903,12 +2654,25 @@
     }
 
     /* ==========================================================================
-       APP LAUNCHER & DRAWER RENDER
+       APP LAUNCHER & DRAWER / HOMESCREEN RENDERING
        ========================================================================== */
-    function renderAppCardHtml(app) {
+    function renderAppCardHtml(app, isDock = false) {
+      if (!app) return '';
       const linkBadge = app.url ? `<div style="position:absolute; top:4px; right:4px; width:12px; height:12px; background:rgba(0,0,0,0.5); border-radius:50%; display:flex; align-items:center; justify-content:center;"><svg style="width:8px;height:8px;fill:white;" viewBox="0 0 24 24"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg></div>` : '';
+      
+      if (isDock) {
+        return `
+          <div class="app-item" title="${app.url ? 'Opens ' + app.url + ' in new tab' : app.label}" onclick="openApp('${app.id}')">
+            <div class="app-icon" style="background:${app.color};">
+              <svg viewBox="0 0 24 24" fill="white">${app.icon}</svg>
+              ${linkBadge}
+            </div>
+          </div>
+        `;
+      }
+
       return `
-        <div class="app-item" title="${app.url ? 'Opens ' + app.url + ' in new tab' : app.label}" onclick="openApp('${app.id}'); closeDrawer();">
+        <div class="app-item" title="${app.url ? 'Opens ' + app.url + ' in new tab' : app.label}" onclick="openApp('${app.id}'); if (document.getElementById('drawerPanel').classList.contains('open')) closeDrawer();">
           <div class="app-icon" style="background:${app.color};">
             <svg viewBox="0 0 24 24" fill="white">${app.icon}</svg>
             ${linkBadge}
@@ -1918,16 +2682,62 @@
       `;
     }
 
+    function renderHomeScreenGrids() {
+      const getApp = (id) => APPS.find(a => a.id === id);
+
+      // Page 0: Knowledge & News (8 apps)
+      const page0Ids = ['wikipedia', 'bbcnews', 'hackernews', 'medium', 'substack', 'wolframalpha', 'archive', 'news'];
+      const grid0 = document.getElementById('gridPage0');
+      if (grid0) {
+        grid0.innerHTML = page0Ids.map(getApp).filter(Boolean).map(a => renderAppCardHtml(a)).join('');
+      }
+
+      // Page 1: Main Core Android Apps (8 apps)
+      const page1Ids = ['phone', 'messages', 'chrome', 'camera', 'photos', 'clock', 'contacts', 'settings'];
+      const grid1 = document.getElementById('gridPage1');
+      if (grid1) {
+        grid1.innerHTML = page1Ids.map(getApp).filter(Boolean).map(a => renderAppCardHtml(a)).join('');
+      }
+
+      // Page 2: AI & Developer Workstation (8 apps)
+      const page2Ids = ['chatgpt', 'claude', 'gemini', 'perplexity', 'github', 'gitlab', 'stackoverflow', 'codepen'];
+      const grid2 = document.getElementById('gridPage2');
+      if (grid2) {
+        grid2.innerHTML = page2Ids.map(getApp).filter(Boolean).map(a => renderAppCardHtml(a)).join('');
+      }
+
+      // Page 3: Productivity & Workspace (8 apps)
+      const page3Ids = ['drive', 'docs', 'sheets', 'keep', 'calendar', 'notion', 'trello', 'figma'];
+      const grid3 = document.getElementById('gridPage3');
+      if (grid3) {
+        grid3.innerHTML = page3Ids.map(getApp).filter(Boolean).map(a => renderAppCardHtml(a)).join('');
+      }
+
+      // Page 4: Media, Streaming & Social Hub (8 apps)
+      const page4Ids = ['youtube', 'spotify', 'netflix', 'primevideo', 'reddit', 'twitter', 'discord', 'telegram'];
+      const grid4 = document.getElementById('gridPage4');
+      if (grid4) {
+        grid4.innerHTML = page4Ids.map(getApp).filter(Boolean).map(a => renderAppCardHtml(a)).join('');
+      }
+
+      // Pinned Dock (4 apps)
+      const dockIds = ['phone', 'messages', 'chrome', 'camera'];
+      const dock = document.getElementById('dockContainer');
+      if (dock) {
+        dock.innerHTML = dockIds.map(getApp).filter(Boolean).map(a => renderAppCardHtml(a, true)).join('');
+      }
+    }
+
     function renderDrawerApps() {
       const grid = document.getElementById('drawerGrid');
-      grid.innerHTML = APPS.map(renderAppCardHtml).join('');
+      grid.innerHTML = APPS.map(a => renderAppCardHtml(a)).join('');
     }
 
     function filterDrawerApps(query) {
       const q = query.toLowerCase();
       const filtered = APPS.filter(a => a.label.toLowerCase().includes(q));
       const grid = document.getElementById('drawerGrid');
-      grid.innerHTML = filtered.map(renderAppCardHtml).join('');
+      grid.innerHTML = filtered.map(a => renderAppCardHtml(a)).join('');
     }
 
     function openApp(id) {
@@ -1958,14 +2768,15 @@
        CONTEXT MENU & EASTER EGG
        ========================================================================== */
     function setupContextMenu() {
-      const home = document.getElementById('homeScreen');
+      const home = document.getElementById('homeWrapper');
       const menu = document.getElementById('contextMenu');
+      if (!home || !menu) return;
 
       home.addEventListener('contextmenu', (e) => {
         e.preventDefault();
         menu.style.display = 'block';
-        menu.style.top = `${e.offsetY}px`;
-        menu.style.left = `${e.offsetX}px`;
+        menu.style.top = `${e.offsetY || 100}px`;
+        menu.style.left = `${e.offsetX || 50}px`;
       });
 
       document.addEventListener('click', hideContextMenu);
@@ -1978,6 +2789,7 @@
     function triggerEasterEgg() {
       document.getElementById('easterEggModal').classList.add('active');
     }
+
   </script>
 </body>
 </html>

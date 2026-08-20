@@ -19,6 +19,7 @@ import imagesHighRes from './images/high-resolution.js';
 import imagesNoStock from './images/no-stock.js';
 import imagesNoSocial from './images/no-social-media.js';
 import image_filter_1 from './images/image_filter_1.js';
+import aiSlopImages from './images/ai-slop-images.js';
 
 // Video presets
 import videosNormal from './videos/normal.js';
@@ -28,6 +29,8 @@ import extreme_explicit from './videos/extreme_explicit.js';
 import explicit_p1 from './videos/explicit_p1.js';
 import cloudPublicVideos from './videos/cloud-public-videos.js';
 import techLectures from './videos/tech-lectures.js';
+import aiSlopVideos from './videos/ai-slop-videos.js';
+import aiHallucinationsSlop from './videos/ai-hallucinations-slop.js';
 
 // Document presets
 import academicDocs from './documents/academic.js';
@@ -49,15 +52,13 @@ export const BUILT_IN_PRESETS = [
     independentWeb2,
     independentWeb3,
 
-
-
-
     // Images
     imagesNormal,
     imagesHighRes,
     imagesNoStock,
     imagesNoSocial,
     image_filter_1,
+    aiSlopImages,
 
     // Videos
     videosNormal,
@@ -67,6 +68,8 @@ export const BUILT_IN_PRESETS = [
     extreme_explicit,
     cloudPublicVideos,
     techLectures,
+    aiSlopVideos,
+    aiHallucinationsSlop,
 
     // Documents
     academicDocs,
@@ -76,6 +79,7 @@ export const BUILT_IN_PRESETS = [
     openSciencePreprints,
     presentationDecks
 ];
+
 
 export function getPresetsForMode(modeId) {
     return BUILT_IN_PRESETS.filter(p => !p.applicableModes || p.applicableModes.includes(modeId));
