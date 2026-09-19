@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Production-quality modular browser-based Search Workstation. Enhance, analyze, and launch advanced search queries across multiple search engines.">
+  <meta name="color-scheme" content="dark light">
+  <title>Search Workstation — Multi-Engine Query Builder &amp; Dorking Workstation</title>
+  
+  <!-- Modern Workstation Stylesheet -->
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+  <div class="app-container">
+    
+    <!-- Top Header Navigation -->
+    <header class="app-header">
+      <div class="brand-section">
+        <div class="brand-icon" aria-hidden="true">⌕</div>
+        <div class="brand-titles">
+          <h1>
+            Search Workstation
+            <span class="brand-tag">v2.0 Modular</span>
+          </h1>
+          <p class="brand-subtitle">Multi-Engine Search Enhancer &amp; Advanced Dorking Workstation</p>
+        </div>
+      </div>
+
+      <div class="header-controls">
+        <button id="themeBtn" class="btn" type="button" title="Toggle color theme">
+          ☀️ Light
+        </button>
+        <button id="helpBtn" class="btn" type="button" title="View operators &amp; shortcuts">
+          ❓ Cheatsheet
+        </button>
+        <button id="resetPresetBtn" class="btn btn-danger" type="button" title="Restore active preset defaults">
+          Reset Preset
+        </button>
+        <button id="resetAllBtn" class="btn btn-danger" type="button" title="Reset all workstation data">
+          Reset All
+        </button>
+      </div>
+    </header>
+
+    <!-- Preset Selection Strip -->
+    <section class="panel" aria-labelledby="presetsSectionTitle">
+      <div class="panel-header">
+        <div>
+          <h2 id="presetsSectionTitle" class="panel-title">
+            <span>⚡</span>
+            <span>Search Presets</span>
+          </h2>
+          <span class="panel-subtitle">Independent configuration modules · Select workflow</span>
+        </div>
+        <div class="preset-header-actions" style="display:flex; align-items:center; gap:8px;">
+          <input type="file" id="importPresetFileInput" accept=".js,.mjs,.json" style="display:none;">
+          <button id="importPresetBtn" class="btn btn-sm" type="button" title="Import a preset configuration from a .js or .json file">
+            📥 Import Preset
+          </button>
+          <button id="exportPresetBtn" class="btn btn-sm btn-primary" type="button" title="Download your modified session search settings as a reusable .js preset module">
+            💾 Download Preset (.js)
+          </button>
+        </div>
+      </div>
+      <div id="presetSelector" class="presets-container" role="region" aria-label="Preset Configurations">
+        <!-- Dynamically rendered from presets/*.js -->
+      </div>
+    </section>
+
+    <!-- Main Workspace Two-Column Grid -->
+    <main class="layout-grid">
+      
+      <!-- Primary Column: Query Construction, Filters, Sites, Engines -->
+      <section class="primary-column" style="display:flex; flex-direction:column; gap:16px;">
+        
+        <!-- Search Query Panel -->
+        <div class="panel">
+          <div class="panel-header">
+            <h2 class="panel-title">
+              <span>✏️</span>
+              <span>Search Query Editor</span>
+            </h2>
+            <span class="panel-subtitle">Active Preset: <strong id="activePresetTitle" style="color:var(--accent);">General Research</strong></span>
+          </div>
+
+          <!-- Search Mode Tabs -->
+          <div id="modeTabs" class="search-modes-bar" role="tablist" aria-label="Search Modes">
+            <!-- Dynamically populated according to preset.searchTypes -->
+          </div>
+
+          <!-- Query Input -->
+          <div class="query-editor-wrap">
+            <textarea 
+              id="baseQueryInput" 
+              class="query-textarea" 
+              placeholder='Enter your keywords, terms, or phrases (e.g., "artificial intelligence" safety)...'
+              aria-label="Base search query input"
+              rows="3"
+            ></textarea>
+
+            <div class="query-actions-row">
+              <div class="query-btns">
+                <button id="searchBtn" class="btn btn-primary" type="button">
+                  <span>🚀 Launch Primary</span>
+                </button>
+                <button id="copyQueryBtn" class="btn" type="button">
+                  <span>📋 Copy Query</span>
+                </button>
+                <button id="clearQueryBtn" class="btn" type="button">
+                  <span>✕ Clear</span>
+                </button>
+              </div>
+              <div class="query-meta">
+                <span><kbd class="kbd">Ctrl</kbd> + <kbd class="kbd">K</kbd> to focus</span>
+                <span><kbd class="kbd">Ctrl</kbd> + <kbd class="kbd">Enter</kbd> to search all</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Operator Chips -->
+          <div>
+            <div style="font-size:11.5px; font-weight:700; color:var(--text-muted); margin-bottom:6px;">
+              Quick Insert Operators:
+            </div>
+            <div id="quickOperators" class="operators-strip" aria-label="Quick Operators">
+              <!-- Dynamically populated from preset.operators -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Dynamic Preset Filters Panel -->
+        <div class="panel">
+          <div class="panel-header">
+            <h2 class="panel-title">
+              <span>⚙️</span>
+              <span>Preset Filters &amp; Parameters</span>
+            </h2>
+            <span class="panel-subtitle">Dynamic schema controls</span>
+          </div>
+          <div id="dynamicControls" class="dynamic-controls-grid">
+            <!-- Dynamically rendered from preset.filters without hardcoding -->
+          </div>
+        </div>
+
+        <!-- Domain Inclusion & Exclusion Management Panel -->
+        <div class="panel">
+          <div class="panel-header">
+            <h2 class="panel-title">
+              <span>🌐</span>
+              <span>Site &amp; Domain Restrictions</span>
+            </h2>
+            <span class="panel-subtitle">Automatic site: and -site: rules</span>
+          </div>
+
+          <div class="sites-grid">
+            <!-- Included Sites -->
+            <div class="site-box" id="includeSiteBox">
+              <div class="site-box-head include">
+                <label class="site-head-label" for="enableIncludeSites">
+                  <input type="checkbox" id="enableIncludeSites" class="site-checkbox" checked>
+                  <span>Include Domains (site:)</span>
+                </label>
+                <span id="includeSiteStatus" style="font-size:10.5px; color:var(--text-dim);">OR grouped</span>
+              </div>
+              <div class="site-input-row">
+                <input id="newIncludeSiteInput" class="control-input" type="text" placeholder="e.g. arxiv.org">
+                <button id="addIncludeSiteBtn" class="btn btn-sm" type="button">+ Add</button>
+              </div>
+              <div id="includeSitesList" class="site-tags-list">
+                <!-- Included domain badges rendered dynamically -->
+              </div>
+            </div>
+
+            <!-- Excluded Sites -->
+            <div class="site-box" id="excludeSiteBox">
+              <div class="site-box-head exclude">
+                <label class="site-head-label" for="enableExcludeSites">
+                  <input type="checkbox" id="enableExcludeSites" class="site-checkbox" checked>
+                  <span>Exclude Domains (-site:)</span>
+                </label>
+                <span id="excludeSiteStatus" style="font-size:10.5px; color:var(--text-dim);">Negated</span>
+              </div>
+              <div class="site-input-row">
+                <input id="newExcludeSiteInput" class="control-input" type="text" placeholder="e.g. pinterest.com">
+                <button id="addExcludeSiteBtn" class="btn btn-sm" type="button">+ Add</button>
+              </div>
+              <div id="excludeSitesList" class="site-tags-list">
+                <!-- Excluded domain badges rendered dynamically -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Final Generated Query Live Preview Panel -->
+        <div class="panel">
+          <div class="panel-header">
+            <h2 class="panel-title">
+              <span>👁️</span>
+              <span>Live Generated Query</span>
+            </h2>
+            <div class="preview-chips">
+              <span id="queryLengthCounter" class="badge badge-info">0 chars · 0 tokens</span>
+              <button id="rawToggleBtn" class="btn btn-sm" type="button">Raw View</button>
+            </div>
+          </div>
+
+          <div class="preview-container">
+            <div id="finalQueryPreview" class="preview-box" role="region" aria-label="Final query preview" tabindex="0">
+              <!-- Live syntax-highlighted tokens -->
+            </div>
+
+            <div class="preview-summary-bar">
+              <div style="font-size:12px; color:var(--text-dim);">
+                Fully assembled with operators, filters, exclusions, and normalization.
+              </div>
+              <div style="display:flex; gap:6px;">
+                <button id="copyFinalBtn" class="btn btn-primary btn-sm" type="button">
+                  <span>📋 Copy Final Query</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Multi-Engine Dispatch & Results Grid Panel -->
+        <div class="panel">
+          <div class="panel-header">
+            <h2 class="panel-title">
+              <span>🔍</span>
+              <span>Search Engines &amp; Launchpad</span>
+            </h2>
+            <span class="panel-subtitle">Multi-index dispatch</span>
+          </div>
+
+          <div class="engine-toolbar">
+            <div class="query-btns">
+              <button id="searchAllEnginesBtn" class="btn btn-primary" type="button">
+                <span>⚡ Launch All Engines</span>
+              </button>
+              <button id="copyAllUrlsBtn" class="btn" type="button">
+                <span>🔗 Copy All URLs</span>
+              </button>
+              <button id="copyAllQueriesBtn" class="btn" type="button">
+                <span>📋 Copy Generated Query</span>
+              </button>
+            </div>
+            <span style="font-size:11.5px; color:var(--text-dim);">10 search engines supported</span>
+          </div>
+
+          <div id="engineCards" class="engine-cards-grid">
+            <!-- Dynamically populated engine cards -->
+          </div>
+        </div>
+
+      </section>
+
+      <!-- Secondary Column: Templates, Help, Shortcuts -->
+      <aside class="aside-column">
+
+        <!-- Research & Dorking Templates Panel -->
+        <div class="panel">
+          <div class="panel-header">
+            <h2 class="panel-title">
+              <span>📑</span>
+              <span>Query Templates</span>
+            </h2>
+            <span class="panel-subtitle">Preset-defined patterns</span>
+          </div>
+
+          <div class="templates-filter-row">
+            <input 
+              id="templateSearchInput" 
+              class="control-input" 
+              type="text" 
+              placeholder="Search templates..."
+              aria-label="Search templates"
+            >
+          </div>
+
+          <div id="templatesList" class="templates-grid">
+            <!-- Dynamically populated templates from active preset -->
+          </div>
+        </div>
+
+        <!-- Keyboard Shortcuts Panel -->
+        <div class="panel">
+          <div class="panel-header">
+            <h2 class="panel-title">
+              <span>⌨️</span>
+              <span>Workstation Shortcuts</span>
+            </h2>
+          </div>
+          <table class="shortcuts-table">
+            <tbody>
+              <tr>
+                <td><kbd class="kbd">Ctrl</kbd> / <kbd class="kbd">Cmd</kbd> + <kbd class="kbd">K</kbd></td>
+                <td style="color:var(--text-muted);">Focus search query</td>
+              </tr>
+              <tr>
+                <td><kbd class="kbd">Ctrl</kbd> / <kbd class="kbd">Cmd</kbd> + <kbd class="kbd">Enter</kbd></td>
+                <td style="color:var(--text-muted);">Launch search on all engines</td>
+              </tr>
+              <tr>
+                <td><kbd class="kbd">Ctrl</kbd> / <kbd class="kbd">Cmd</kbd> + <kbd class="kbd">Shift</kbd> + <kbd class="kbd">C</kbd></td>
+                <td style="color:var(--text-muted);">Copy final generated query</td>
+              </tr>
+              <tr>
+                <td><kbd class="kbd">Escape</kbd></td>
+                <td style="color:var(--text-muted);">Close dialogs or blur active input</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Advanced Operators Quick Reference Panel -->
+        <div class="panel">
+          <div class="panel-header">
+            <h2 class="panel-title">
+              <span>💡</span>
+              <span>Search Operator Reference</span>
+            </h2>
+          </div>
+          <div class="help-grid">
+            <div class="help-row">
+              <span class="help-syntax">site:example.com</span>
+              <span class="help-desc">Restrict results exclusively to a domain or subdomain.</span>
+            </div>
+            <div class="help-row">
+              <span class="help-syntax">-site:domain.com</span>
+              <span class="help-desc">Exclude specific domain or spam platform from results.</span>
+            </div>
+            <div class="help-row">
+              <span class="help-syntax">filetype:pdf / ext:pdf</span>
+              <span class="help-desc">Limit results to specific document or file extension.</span>
+            </div>
+            <div class="help-row">
+              <span class="help-syntax">intitle:"exact term"</span>
+              <span class="help-desc">Require word or exact phrase in the webpage title.</span>
+            </div>
+            <div class="help-row">
+              <span class="help-syntax">inurl:keyword</span>
+              <span class="help-desc">Require keyword anywhere within URL address slug.</span>
+            </div>
+            <div class="help-row">
+              <span class="help-syntax">intext:"exact phrase"</span>
+              <span class="help-desc">Require phrase in webpage body text.</span>
+            </div>
+            <div class="help-row">
+              <span class="help-syntax">AROUND(n)</span>
+              <span class="help-desc">Find pages where two terms are within n words of each other.</span>
+            </div>
+            <div class="help-row">
+              <span class="help-syntax">"exact phrase"</span>
+              <span class="help-desc">Match precise wording in order without synonym expansion.</span>
+            </div>
+          </div>
+        </div>
+
+      </aside>
+    </main>
+
+    <!-- Footer Information -->
+    <footer class="app-footer">
+      <span>100% Client-Side Search Workstation · Zero Telemetry · Zero Tracking · Queries stay entirely in your browser</span>
+    </footer>
+  </div>
+
+  <!-- Export / Download Preset Modal -->
+  <div id="exportPresetModal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="exportModalTitle">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="exportModalTitle" class="modal-title">
+          <span>💾</span>
+          <span>Download Modified Preset (.js)</span>
+        </h3>
+        <button id="closeExportModalBtn" class="modal-close" type="button" aria-label="Close dialog">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size:12.5px; color:var(--text-muted); margin:0;">
+          Export your current session customizations (active query, modified filter choices, and site lists) as a standalone JavaScript module. You can save it to your browser or download it as a <code>.js</code> file to drop into <code>presets/</code>.
+        </p>
+
+        <div class="form-row-h">
+          <div class="form-row">
+            <label class="form-label" for="exportPresetName">Preset Name</label>
+            <input type="text" id="exportPresetName" class="form-input" placeholder="e.g. My Custom Research">
+          </div>
+          <div class="form-row">
+            <label class="form-label" for="exportPresetId">Preset ID (Slug)</label>
+            <input type="text" id="exportPresetId" class="form-input form-input-mono" placeholder="e.g. my-custom-research">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <label class="form-label" for="exportPresetDesc">Description</label>
+          <input type="text" id="exportPresetDesc" class="form-input" placeholder="Brief summary of what this preset optimizes for">
+        </div>
+
+        <div class="form-row" style="flex-direction:row; align-items:center; gap:8px;">
+          <input type="checkbox" id="exportIncludeQuery" checked style="cursor:pointer;">
+          <label for="exportIncludeQuery" style="font-size:12.5px; cursor:pointer; user-select:none;">
+            Include current base query as preset default
+          </label>
+        </div>
+
+        <div class="form-row">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <label class="form-label">Generated ES Module Preview (.js)</label>
+            <span style="font-size:11px; color:var(--text-dim);">Live updated from session</span>
+          </div>
+          <div id="exportCodePreview" class="code-preview-area"></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="copyExportCodeBtn" class="btn btn-sm" type="button">
+          📋 Copy Code
+        </button>
+        <div style="display:flex; gap:8px;">
+          <button id="saveWorkstationPresetBtn" class="btn btn-sm" type="button" title="Keep this preset available in this browser's preset bar">
+            📌 Save to Workstation
+          </button>
+          <button id="downloadPresetFileBtn" class="btn btn-sm btn-primary" type="button">
+            💾 Download .js File
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Import Preset Modal -->
+  <div id="importPresetModal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="importModalTitle">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="importModalTitle" class="modal-title">
+          <span>📥</span>
+          <span>Import Preset (.js / .json)</span>
+        </h3>
+        <button id="closeImportModalBtn" class="modal-close" type="button" aria-label="Close dialog">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size:12.5px; color:var(--text-muted); margin:0;">
+          Upload an exported Search Workstation <code>.js</code> or <code>.json</code> preset file, or paste its source code below.
+        </p>
+
+        <!-- Dropzone File Upload -->
+        <div id="importDropzone" class="dropzone-box" tabindex="0" role="button">
+          <span class="dropzone-icon">📁</span>
+          <span class="dropzone-title">Click to browse or drop .js / .json preset file here</span>
+          <span class="dropzone-sub">Accepts ES Module (.js, .mjs) and JSON format preset plugins</span>
+        </div>
+
+        <div style="display:flex; align-items:center; gap:10px; margin: 4px 0;">
+          <hr style="flex:1; border:none; border-top:1px solid var(--border);">
+          <span style="font-size:11px; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.5px;">Or paste preset code</span>
+          <hr style="flex:1; border:none; border-top:1px solid var(--border);">
+        </div>
+
+        <!-- Paste Code Textarea -->
+        <div class="form-row">
+          <label class="form-label" for="importPresetCodeInput">Preset Code (export default { ... })</label>
+          <textarea id="importPresetCodeInput" class="form-input form-input-mono" rows="6" placeholder="// Paste preset export default { ... } code here"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer" style="justify-content:flex-end;">
+        <button id="cancelImportBtn" class="btn btn-sm" type="button">Cancel</button>
+        <button id="loadPastedPresetBtn" class="btn btn-sm btn-primary" type="button">
+          ⚡ Load &amp; Register Preset
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- ES Module Application Entrypoint -->
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
